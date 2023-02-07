@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "s8nuuXhG9cEB717xljxArH+8k78TDMmlMF6jDnMB73cBKxakpJ/pUlWfQDfi/VzymL+ofLFYGvrjWgoj4FFtiQ==",
+  "dgSpecHash": "qnbiFLaW6nIQKKTr7b3An8RXvK73WEGmfwMPinRjp7daN+qLZlyNP0LPA8MyAl+FL42Cv4F+RJofQLWAnS+WVA==",
   "success": true,
-  "projectFilePath": "C:\\ASP\\publishing\\publishing\\publishing.csproj",
+  "projectFilePath": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\publishing.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

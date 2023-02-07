@@ -20,3 +20,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.btn-primary {
+    margin-top: 10px;
+}
+
+a {
+    text-decoration: none;
+}

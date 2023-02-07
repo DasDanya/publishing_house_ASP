@@ -10616,11 +10616,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\ASP\\publishing\\publishing\\publishing.csproj",
+      "projectUniqueName": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\publishing.csproj",
       "projectName": "publishing",
-      "projectPath": "C:\\ASP\\publishing\\publishing\\publishing.csproj",
+      "projectPath": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\publishing.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\ASP\\publishing\\publishing\\obj\\",
+      "outputPath": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

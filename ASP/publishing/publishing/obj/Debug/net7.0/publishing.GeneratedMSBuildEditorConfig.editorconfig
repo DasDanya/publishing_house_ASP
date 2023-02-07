@@ -9,197 +9,197 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = publishing
 build_property.RootNamespace = publishing
-build_property.ProjectDir = C:\ASP\publishing\publishing\
+build_property.ProjectDir = C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\ASP\publishing\publishing
+build_property.MSBuildProjectDirectory = C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/ASP/publishing/publishing/Views/BookingEmployees/Create.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/BookingEmployees/Delete.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/BookingEmployees/Details.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/BookingEmployees/Edit.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/BookingEmployees/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Bookings/Create.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Bookings/Delete.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Bookings/Details.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Bookings/Edit.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Bookings/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Customers/Create.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Customers/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Customers/Delete.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Customers/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Customers/Details.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Customers/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Customers/Edit.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Customers/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Customers/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Customers/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Employees/Create.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Employees/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Employees/Delete.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Employees/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Employees/Details.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Employees/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Employees/Edit.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Employees/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Employees/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Employees/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Home/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Home/Privacy.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Materials/Create.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Materials/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Materials/Delete.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Materials/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxzXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Materials/Details.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Materials/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxzXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Materials/Edit.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Materials/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxzXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Materials/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Materials/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/PrintingHouses/Create.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/PrintingHouses/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbnRpbmdIb3VzZXNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/PrintingHouses/Delete.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/PrintingHouses/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbnRpbmdIb3VzZXNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/PrintingHouses/Details.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/PrintingHouses/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbnRpbmdIb3VzZXNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/PrintingHouses/Edit.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/PrintingHouses/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbnRpbmdIb3VzZXNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/PrintingHouses/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/PrintingHouses/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbnRpbmdIb3VzZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/ProductMaterials/Create.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/ProductMaterials/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdE1hdGVyaWFsc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/ProductMaterials/Delete.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/ProductMaterials/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdE1hdGVyaWFsc1xEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/ProductMaterials/Details.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/ProductMaterials/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdE1hdGVyaWFsc1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/ProductMaterials/Edit.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/ProductMaterials/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdE1hdGVyaWFsc1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/ProductMaterials/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/ProductMaterials/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdE1hdGVyaWFsc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Products/Create.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Products/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Products/Delete.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Products/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Products/Details.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Products/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Products/Edit.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Products/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Products/Index.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Products/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Shared/Error.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/_ViewImports.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/_ViewStart.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/ASP/publishing/publishing/Views/Shared/_Layout.cshtml]
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-k9522ign8f
