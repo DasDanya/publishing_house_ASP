@@ -31,8 +31,8 @@ namespace publishing.Models
 
         [Required(ErrorMessage = "Введите стоимость материала")]
         [DisplayName("Стоимость материала")]
-        [DataType(DataType.Currency, ErrorMessage = "Стоимость должна быть указана только числами")] // Игнорируется мой ErrorMessage
-        [Range( typeof(double),"0,1","100", ErrorMessage = "Стоимость должна входить в диапазон: [0.1,100]")] 
+        [DataType(DataType.Currency)] // Игнорируется мой ErrorMessage
+        [Range( typeof(double),"0,1","100", ErrorMessage = "Стоимость должна входить в диапазон: [0.1,100]")]
         public double Cost { get; set; }
 
     }

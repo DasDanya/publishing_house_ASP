@@ -13,12 +13,6 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NumEdition)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NumEdition)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class = "col-sm-10">
@@ -43,16 +37,22 @@
             @Html.DisplayFor(model => model.Cost)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TypeProduct)
+            @Html.DisplayNameFor(model => model.Type)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TypeProduct.Id)
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Margin)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Margin)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Booking)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Booking.Id)
+            @Html.DisplayFor(model => model.Booking.Status)
         </dd>
     </dl>
     

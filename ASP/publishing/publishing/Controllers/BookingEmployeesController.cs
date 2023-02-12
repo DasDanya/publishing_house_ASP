@@ -49,7 +49,7 @@ namespace publishing.Controllers
         public IActionResult Create()
         {
             ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id");
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id");
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Surname");
             return View();
         }
 
@@ -67,7 +67,7 @@ namespace publishing.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", bookingEmployee.BookingId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", bookingEmployee.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Surname", bookingEmployee.EmployeeId);
             return View(bookingEmployee);
         }
 
@@ -85,7 +85,7 @@ namespace publishing.Controllers
                 return NotFound();
             }
             ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", bookingEmployee.BookingId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", bookingEmployee.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Surname", bookingEmployee.EmployeeId);
             return View(bookingEmployee);
         }
 
@@ -122,7 +122,7 @@ namespace publishing.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", bookingEmployee.BookingId);
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", bookingEmployee.EmployeeId);
+            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Surname", bookingEmployee.EmployeeId);
             return View(bookingEmployee);
         }
 

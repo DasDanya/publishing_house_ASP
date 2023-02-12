@@ -21,7 +21,7 @@ namespace publishing.Controllers
         // GET: Bookings
         public async Task<IActionResult> Index()
         {
-            var publishingDBContext = _context.Bookings.Include(b => b.Employee).Include(b => b.PrintingHouse);
+            var publishingDBContext = _context.Bookings.Include(b => b.Customer).Include(b => b.PrintingHouse);
             return View(await publishingDBContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace publishing.Controllers
             }
 
             var booking = await _context.Bookings
-                .Include(b => b.Employee)
+                .Include(b => b.Customer)
                 .Include(b => b.PrintingHouse)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (booking == null)
@@ -48,8 +48,8 @@ namespace publishing.Controllers
         // GET: Bookings/Create
         public IActionResult Create()
         {
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id");
-            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Id");
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name");
+            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name");
             return View();
         }
 
@@ -58,7 +58,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Start,End,Status,Cost,PrintingHouseId,EmployeeId")] Booking booking)
+        public async Task<IActionResult> Create([Bind("Id,Start,End,Status,Cost,PrintingHouseId,CustomerId")] Booking booking)
         {
             if (ModelState.IsValid)
             {
@@ -66,8 +66,8 @@ namespace publishing.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", booking.EmployeeId);
-            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Id", booking.PrintingHouseId);
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", booking.CustomerId);
+            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name", booking.PrintingHouseId);
             return View(booking);
         }
 
@@ -84,8 +84,8 @@ namespace publishing.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", booking.EmployeeId);
-            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Id", booking.PrintingHouseId);
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", booking.CustomerId);
+            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name", booking.PrintingHouseId);
             return View(booking);
         }
 
@@ -94,7 +94,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Start,End,Status,Cost,PrintingHouseId,EmployeeId")] Booking booking)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Start,End,Status,Cost,PrintingHouseId,CustomerId")] Booking booking)
         {
             if (id != booking.Id)
             {
@@ -121,8 +121,8 @@ namespace publishing.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", booking.EmployeeId);
-            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Id", booking.PrintingHouseId);
+            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", booking.CustomerId);
+            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name", booking.PrintingHouseId);
             return View(booking);
         }
 
@@ -135,7 +135,7 @@ namespace publishing.Controllers
             }
 
             var booking = await _context.Bookings
-                .Include(b => b.Employee)
+                .Include(b => b.Customer)
                 .Include(b => b.PrintingHouse)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (booking == null)

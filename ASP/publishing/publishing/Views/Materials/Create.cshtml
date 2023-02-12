@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Cost" class="control-label"></label>
-                <input asp-for="Cost" class="form-control" type = "number"/> 
+                <input asp-for="Cost" class="form-control" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true"/>
                 <span asp-validation-for="Cost" class="text-danger"></span>
             </div>
             <div class="form-group">

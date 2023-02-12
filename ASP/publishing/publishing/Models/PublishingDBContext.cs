@@ -9,8 +9,6 @@ namespace publishing.Models
                 
         }
 
-        public DbSet<TypeProduct> TypeProducts { get; set; }
-
         public DbSet<Material> Materials { get; set; }
         public DbSet<PrintingHouse> PrintingHouses { get; set; }
 

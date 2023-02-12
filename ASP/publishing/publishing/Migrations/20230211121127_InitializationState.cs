@@ -17,9 +17,9 @@ namespace publishing.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,9 +52,9 @@ namespace publishing.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Size = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Color = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
+                    Size = table.Column<string>(type: "nvarchar(2)", maxLength: 2, nullable: false),
                     Cost = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
@@ -71,30 +71,14 @@ namespace publishing.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<int>(type: "int", nullable: false),
-                    TypeState = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TypeStreet = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     House = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PrintingHouses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TypeProducts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Margin = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TypeProducts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -163,8 +147,9 @@ namespace publishing.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Visual = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     Edition = table.Column<int>(type: "int", nullable: false),
-                    Cost = table.Column<int>(type: "int", nullable: false),
-                    TypeProductId = table.Column<int>(type: "int", nullable: false),
+                    Cost = table.Column<double>(type: "float", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Margin = table.Column<double>(type: "float", nullable: false),
                     BookingId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -174,12 +159,6 @@ namespace publishing.Migrations
                         name: "FK_Products_Bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Bookings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_Products_TypeProducts_TypeProductId",
-                        column: x => x.TypeProductId,
-                        principalTable: "TypeProducts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
@@ -245,11 +224,6 @@ namespace publishing.Migrations
                 name: "IX_Products_BookingId",
                 table: "Products",
                 column: "BookingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_TypeProductId",
-                table: "Products",
-                column: "TypeProductId");
         }
 
         /// <inheritdoc />
@@ -272,9 +246,6 @@ namespace publishing.Migrations
 
             migrationBuilder.DropTable(
                 name: "Bookings");
-
-            migrationBuilder.DropTable(
-                name: "TypeProducts");
 
             migrationBuilder.DropTable(
                 name: "Employees");

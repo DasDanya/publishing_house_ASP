@@ -55,7 +55,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phone,Email,TypeState,State,City,TypeStreet,Street,House")] PrintingHouse printingHouse)
+        public async Task<IActionResult> Create([Bind("Id,Name,Phone,Email,State,City,Street,House")] PrintingHouse printingHouse)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Phone,Email,TypeState,State,City,TypeStreet,Street,House")] PrintingHouse printingHouse)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Phone,Email,State,City,Street,House")] PrintingHouse printingHouse)
         {
             if (id != printingHouse.Id)
             {

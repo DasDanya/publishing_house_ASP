@@ -21,7 +21,7 @@ namespace publishing.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var publishingDBContext = _context.Products.Include(p => p.Booking).Include(p => p.TypeProduct);
+            var publishingDBContext = _context.Products.Include(p => p.Booking);
             return View(await publishingDBContext.ToListAsync());
         }
 
@@ -35,7 +35,6 @@ namespace publishing.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Booking)
-                .Include(p => p.TypeProduct)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
@@ -48,8 +47,7 @@ namespace publishing.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id");
-            ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Id");
+            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Status");
             return View();
         }
 
@@ -58,7 +56,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NumEdition,Name,Visual,Edition,Cost,TypeProductId,BookingId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,Visual,Edition,Cost,Type,Margin,BookingId")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -66,8 +64,7 @@ namespace publishing.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", product.BookingId);
-            ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Id", product.TypeProductId);
+            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Status", product.BookingId);
             return View(product);
         }
 
@@ -84,8 +81,7 @@ namespace publishing.Controllers
             {
                 return NotFound();
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", product.BookingId);
-            ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Id", product.TypeProductId);
+            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Status", product.BookingId);
             return View(product);
         }
 
@@ -94,7 +90,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NumEdition,Name,Visual,Edition,Cost,TypeProductId,BookingId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Visual,Edition,Cost,Type,Margin,BookingId")] Product product)
         {
             if (id != product.Id)
             {
@@ -121,8 +117,7 @@ namespace publishing.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", product.BookingId);
-            ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Id", product.TypeProductId);
+            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Status", product.BookingId);
             return View(product);
         }
 
@@ -136,7 +131,6 @@ namespace publishing.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Booking)
-                .Include(p => p.TypeProduct)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
