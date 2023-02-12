@@ -47,7 +47,7 @@ namespace publishing.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Status");
+            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id");
             return View();
         }
 
@@ -56,7 +56,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Visual,Edition,Cost,Type,Margin,BookingId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,NumEdition,Name,Visual,Edition,Cost,Type,Margin,BookingId")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +64,7 @@ namespace publishing.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Status", product.BookingId);
+            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", product.BookingId);
             return View(product);
         }
 
@@ -81,7 +81,7 @@ namespace publishing.Controllers
             {
                 return NotFound();
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Status", product.BookingId);
+            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", product.BookingId);
             return View(product);
         }
 
@@ -90,7 +90,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Visual,Edition,Cost,Type,Margin,BookingId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NumEdition,Name,Visual,Edition,Cost,Type,Margin,BookingId")] Product product)
         {
             if (id != product.Id)
             {
@@ -117,7 +117,7 @@ namespace publishing.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Status", product.BookingId);
+            ViewData["BookingId"] = new SelectList(_context.Bookings, "Id", "Id", product.BookingId);
             return View(product);
         }
 

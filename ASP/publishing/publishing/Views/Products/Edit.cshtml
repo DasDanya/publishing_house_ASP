@@ -5,15 +5,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Изменение данных о продукции</h1>
 
-<h4>Product</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="NumEdition" class="control-label"></label>
+                <input asp-for="NumEdition" class="form-control" />
+                <span asp-validation-for="NumEdition" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -31,7 +35,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Cost" class="control-label"></label>
-                <input asp-for="Cost" class="form-control" />
+                <input asp-for="Cost" class="form-control" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" />
                 <span asp-validation-for="Cost" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -41,23 +45,23 @@
             </div>
             <div class="form-group">
                 <label asp-for="Margin" class="control-label"></label>
-                <input asp-for="Margin" class="form-control" />
+                <input asp-for="Margin" class="form-control" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" />
                 <span asp-validation-for="Margin" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BookingId" class="control-label"></label>
+                <label asp-for="BookingId" class="control-label">Номер заказа</label>
                 <select asp-for="BookingId" class="form-control" asp-items="ViewBag.BookingId"></select>
                 <span asp-validation-for="BookingId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Изменить" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Вернуться к списку продукций</a>
 </div>
 
 @section Scripts {
