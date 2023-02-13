@@ -35,5 +35,12 @@ namespace publishing.Models
         [Range( typeof(double),"0,1","100", ErrorMessage = "Стоимость должна входить в диапазон: [0.1,100]")]
         public double Cost { get; set; }
 
+        public virtual ICollection<ProductMaterial> ProductMaterials { get; set; }
+
+        public Material()
+        {
+            ProductMaterials = new List<ProductMaterial>();
+        }
+
     }
 }

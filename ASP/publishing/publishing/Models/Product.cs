@@ -52,5 +52,12 @@ namespace publishing.Models
         public int BookingId { get; set; }
         public Booking? Booking { get; set; }
 
+        public virtual ICollection<ProductMaterial> ProductMaterials { get; set; }
+
+        public Product()
+        {
+            ProductMaterials = new List<ProductMaterial>(); 
+        }
+
     }
 }

@@ -21,9 +21,9 @@ namespace publishing.Controllers
         // GET: PrintingHouses
         public async Task<IActionResult> Index()
         {
-              return _context.PrintingHouses != null ? 
-                          View(await _context.PrintingHouses.ToListAsync()) :
-                          Problem("Entity set 'PublishingDBContext.PrintingHouses'  is null.");
+            return _context.PrintingHouses != null ?
+                        View(await _context.PrintingHouses.ToListAsync()) :
+                        Problem("Entity set 'PublishingDBContext.PrintingHouses'  is null.");
         }
 
         // GET: PrintingHouses/Details/5
@@ -149,14 +149,16 @@ namespace publishing.Controllers
             {
                 _context.PrintingHouses.Remove(printingHouse);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PrintingHouseExists(int id)
         {
-          return (_context.PrintingHouses?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.PrintingHouses?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
+
+

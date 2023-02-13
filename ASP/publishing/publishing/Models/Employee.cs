@@ -58,5 +58,12 @@ namespace publishing.Models
         [DisplayName("Фото сотрудника")]
         public string Visual { get; set;}
 
+        public virtual ICollection<BookingEmployee> BookingEmployees { get; set;}
+
+        public Employee() 
+        {
+            BookingEmployees = new List<BookingEmployee>(); 
+        }
+
     }
 }

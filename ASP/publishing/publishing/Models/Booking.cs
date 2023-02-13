@@ -40,5 +40,15 @@ namespace publishing.Models
         public int CustomerId { get; set; }
 
         public Customer? Customer { get; set; }
+
+        public virtual ICollection<BookingEmployee> Bookings { get; set; }
+
+        public virtual ICollection<Product> Products { get; set; }
+
+        public Booking() 
+        { 
+            Bookings = new List<BookingEmployee>();
+            Products = new List<Product>();
+        }
     }
 }
