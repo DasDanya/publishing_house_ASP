@@ -14,9 +14,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.NumEdition)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
@@ -29,10 +26,7 @@
                 @Html.DisplayNameFor(model => model.Cost)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Margin)
+                @Html.DisplayNameFor(model => model.TypeProduct.Type)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Booking.Id)
@@ -43,9 +37,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NumEdition)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -59,10 +50,7 @@
                 @Html.DisplayFor(modelItem => item.Cost)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Margin)
+                @Html.DisplayFor(modelItem => item.TypeProduct.Type)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Booking.Id)

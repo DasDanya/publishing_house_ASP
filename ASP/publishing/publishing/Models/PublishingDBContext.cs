@@ -23,5 +23,7 @@ namespace publishing.Models
 
         public DbSet<ProductMaterial> ProductMaterials { get; set; }
 
+        public DbSet<TypeProduct> TypeProducts { get; set; }
+
     }
 }
