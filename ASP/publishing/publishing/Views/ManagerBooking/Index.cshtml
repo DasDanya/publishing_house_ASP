@@ -1,0 +1,92 @@
+﻿@model IEnumerable<publishing.Models.Booking>
+
+<h1 style="margin-bottom: 10px;">Управление заказами</h1>
+
+<table class="table table-bordered table-hover" id="table_id">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Start)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+         <th>
+            @Html.DisplayNameFor(model => model.Cost)
+         </th>
+        <th>
+            Действие
+        </th>
+
+    </tr>
+    @foreach (var item in Model)
+    {
+        @if (item.Status != "Выполнен")
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Start)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cost)
+                </td>
+                <td>
+                    
+                    <form asp-action="ChooseEmployees">
+                        <div>                        
+                            <input type="hidden" name="bookingId" value="@item.Id" />
+                            <input type = "hidden" name="bookingStatus" value="@item.Status">
+                            <input type="submit" value="Выбрать" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        }
+    }
+</table>
+@*section Scripts{
+    <script src = "~/lib/jquery/dist/jquery.js"></script>
+
+<script>
+
+
+    //$(".st").each(function(n){
+    //        var value = $.trim($(this).text());
+    //    if(value == 'Выполняется')
+    //    {
+    //       $('.btn').val('1');
+    //    }
+    //    else if(value == 'Выполнен')
+    //    {
+    //       $('.btn').val('2');
+    //    }
+    //});
+    //var table = document.getElementById('table_id');
+       //var cells = table.getElementsById('status');
+
+    //for(var i = 0, row; row = table
+    //{
+        //alert(i);
+    //}
+    //$('#action_btn').hover(function(){
+    //   //var status = document.getElementById("status").innerHTML;
+    //   //switch(status){
+    //       //case 'Выполняется':
+    //       $('#action_btn').val("123");
+    //       //break;
+    //   //}
+    //});
+
+    //$('action_btn').unbind('mouseenter mouseleave')
+</script>
+}*@
+
+

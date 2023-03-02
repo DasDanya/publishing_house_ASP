@@ -29,6 +29,11 @@ a {
     text-decoration: none;
 }
 
+.check_box {
+    width:15px;
+    height:15px;
+}
+
 .form-control {
     margin-top: 5px;
     margin-bottom: 5px;
