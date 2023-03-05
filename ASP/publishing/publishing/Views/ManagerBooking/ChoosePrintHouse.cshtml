@@ -1,5 +1,9 @@
 ﻿@model IEnumerable<publishing.Models.PrintingHouse>
 
+@{
+    ViewData["Title"] = "Регистрация заказа";
+}
+
 <h1>Выбор типографии</h1>  
 
 <div class="form-group" style="margin-bottom: 10px;">
@@ -51,9 +55,16 @@
                 <form asp-action="ChooseDateOfComplete">
                 
                     <div>
+                        @{
+                            int[] employees = ViewBag.selectedEmployees;
+
+                            for (int i = 0; i < ViewBag.empLength; i++)
+                            {
+                                <input type="hidden" name="employees" value="@employees[i]"/>
+                            }
+                        }
                         <input type="hidden" name="bookingId" value="@ViewBag.bookingId" />
                         <input type="hidden" name="printHouseId" value="@item.Id" />
-                        <input type="hidden" name="selectedEmployees" value="@ViewBag.employees"/>
                         <input type="submit" value="Выбрать" class="btn btn-primary" />
                     </div>
                 </form>
