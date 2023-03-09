@@ -4,7 +4,7 @@
     ViewData["Title"] = "Регистрация заказа";
 }
 
-<h1>Выбор типографии</h1>  
+<h1>Выбор типографии</h1>
 
 <div class="form-group" style="margin-bottom: 10px;">
     <label class="control-label" style="font-size:20px;">Номер заказа:</label>
@@ -33,7 +33,7 @@
         </th>
 
     </tr>
-    @foreach (var item in Model.OrderBy(pr=> pr.Name))
+    @foreach (var item in Model.OrderBy(pr => pr.Name))
     {
         <tr>
             <td>
@@ -53,14 +53,14 @@
             </td>
             <td>
                 <form asp-action="ChooseDateOfComplete">
-                
+
                     <div>
                         @{
                             int[] employees = ViewBag.selectedEmployees;
 
                             for (int i = 0; i < ViewBag.empLength; i++)
                             {
-                                <input type="hidden" name="employees" value="@employees[i]"/>
+                                <input type="hidden" name="employees" value="@employees[i]" />
                             }
                         }
                         <input type="hidden" name="bookingId" value="@ViewBag.bookingId" />

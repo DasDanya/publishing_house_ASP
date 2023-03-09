@@ -39,6 +39,7 @@ a {
     margin-bottom: 5px;
 }
 
+
 /*ƒл€ выпадающего списка выбранных сотрудников*/
 .info {
     padding: 10px 25px;
@@ -80,6 +81,7 @@ a {
     user-select: none;
     font-weight: normal;
     cursor: pointer;
+    font-size: 18px;
 }
 
 .info__headline:hover {

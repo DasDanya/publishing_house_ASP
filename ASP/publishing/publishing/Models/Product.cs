@@ -34,9 +34,7 @@ namespace publishing.Models
 
         public int TypeProductId { get; set; }
         public TypeProduct? TypeProduct { get; set; }
-        public int BookingId { get; set; }
-        public Booking? Booking { get; set; }
-
+ 
         public virtual ICollection<ProductMaterial> ProductMaterials { get; set; }
 
         public Product()

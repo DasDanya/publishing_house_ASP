@@ -25,53 +25,57 @@
         </th>
 
     </tr>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Where(b=> b.Status != "Выполнен"))
     {
-        @if (item.Status != "Выполнен")
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Start)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Cost)
-                </td>
-                <td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Start)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
 
-                    <form asp-action="ChooseEmployees" id="ch">
-                        <div>
-                            <input type="hidden" name="bookingId" value="@item.Id" />
-                            <input type="hidden" name="bookingStatus" value="@item.Status">
-                            <input type="submit" value="Выбрать" class="btn btn-primary" onclick="Confirm(this)"/>
-                        </div>
-                    </form>
-                </td>
-            </tr>
-        }
+                <form asp-action="ChooseEmployees" id="ch">
+                    <div>
+                        <input type="hidden" name="bookingId" value="@item.Id" />
+                        <input type="hidden" name="bookingStatus" value="@item.Status">
+                        @{
+                            if (item.Status == "Выполняется")
+                            {
+                                <input type="submit" value="Выполнить" class="btn btn-primary" style="width:50%" onclick="Confirm(this)" />
+                            }
+                            else
+                            {
+                                <input type="submit" value="Зарегистрировать" style="width:50%" class="btn btn-primary"/>
+                            }
+                        }
+                     </div>
+                </form>
+            </td>
+        </tr>
+           
     }
 </table>
 
 @section Scripts
     {
     <script>
-        function  Confirm(element) {
+        function Confirm(element) {
             let table = document.querySelector('#tabl');
             var status = table.rows[element.closest('tr').rowIndex].cells[2].innerHTML;
-;
+            ;
             if (status.trim() == "Выполняется") {
-                if(!confirm("Вы подтверждаете выполнение заказа?")){
+                if (!confirm("Вы подтверждаете выполнение заказа?")) {
                     event.preventDefault();
                 }
             }
         }
-
     </script>
 }
-
-

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Регистрация заказа";
 }
 
-<h1>Выбор даты выполнения</h1>  
+<h1>Выбор даты выполнения</h1>
 
 <div class="form-group" style="margin-bottom: 10px;">
     <label class="control-label" style="font-size:20px;">Номер заказа:</label>
@@ -33,11 +33,11 @@
 </form>
 
 @section Scripts
-{
-<script>
+    {
+    <script>
 
-    function SetDate(){
-    
+        function SetDate() {
+
             var today = new Date();
             var dd = today.getDate();
             var mm = today.getMonth() + 1;
@@ -55,7 +55,7 @@
             max_date = max_yyyy + '-' + mm + '-' + dd;
             document.getElementById("datefield").setAttribute("min", today);
             document.getElementById("datefield").setAttribute("max", max_date);
-    }
-</script>
+        }
+    </script>
 
 }

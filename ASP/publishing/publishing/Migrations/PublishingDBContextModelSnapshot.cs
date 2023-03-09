@@ -33,13 +33,10 @@ namespace publishing.Migrations
                     b.Property<double>("Cost")
                         .HasColumnType("float");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("End")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PrintingHouseId")
+                    b.Property<int?>("PrintingHouseId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Start")
@@ -51,8 +48,6 @@ namespace publishing.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
 
                     b.HasIndex("PrintingHouseId");
 
@@ -82,6 +77,29 @@ namespace publishing.Migrations
                     b.ToTable("BookingEmployees");
                 });
 
+            modelBuilder.Entity("publishing.Models.BookingProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("BookingProducts");
+                });
+
             modelBuilder.Entity("publishing.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
@@ -107,6 +125,29 @@ namespace publishing.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("publishing.Models.CustomerProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CustomerProducts");
                 });
 
             modelBuilder.Entity("publishing.Models.Employee", b =>
@@ -243,9 +284,6 @@ namespace publishing.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
                     b.Property<double>("Cost")
                         .HasColumnType("float");
 
@@ -265,8 +303,6 @@ namespace publishing.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
 
                     b.HasIndex("TypeProductId");
 
@@ -322,19 +358,9 @@ namespace publishing.Migrations
 
             modelBuilder.Entity("publishing.Models.Booking", b =>
                 {
-                    b.HasOne("publishing.Models.Customer", "Customer")
-                        .WithMany("Bookings")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("publishing.Models.PrintingHouse", "PrintingHouse")
                         .WithMany("Bookings")
-                        .HasForeignKey("PrintingHouseId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
+                        .HasForeignKey("PrintingHouseId");
 
                     b.Navigation("PrintingHouse");
                 });
@@ -342,7 +368,7 @@ namespace publishing.Migrations
             modelBuilder.Entity("publishing.Models.BookingEmployee", b =>
                 {
                     b.HasOne("publishing.Models.Booking", "Booking")
-                        .WithMany("Bookings")
+                        .WithMany("BookingsEmployees")
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -358,21 +384,51 @@ namespace publishing.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("publishing.Models.Product", b =>
+            modelBuilder.Entity("publishing.Models.BookingProduct", b =>
                 {
                     b.HasOne("publishing.Models.Booking", "Booking")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("publishing.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("publishing.Models.CustomerProduct", b =>
+                {
+                    b.HasOne("publishing.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("publishing.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("publishing.Models.Product", b =>
+                {
                     b.HasOne("publishing.Models.TypeProduct", "TypeProduct")
                         .WithMany("Products")
                         .HasForeignKey("TypeProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Booking");
 
                     b.Navigation("TypeProduct");
                 });
@@ -398,14 +454,7 @@ namespace publishing.Migrations
 
             modelBuilder.Entity("publishing.Models.Booking", b =>
                 {
-                    b.Navigation("Bookings");
-
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("publishing.Models.Customer", b =>
-                {
-                    b.Navigation("Bookings");
+                    b.Navigation("BookingsEmployees");
                 });
 
             modelBuilder.Entity("publishing.Models.Employee", b =>

@@ -1,4 +1,4 @@
-﻿@model publishing.Models.PrintingHouse
+﻿@model publishing.Models.ViewModels.PrintingHouseDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,51 +11,101 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.PrintingHouse.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.PrintingHouse.Name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
+            @Html.DisplayNameFor(model => model.PrintingHouse.Phone)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
+            @Html.DisplayFor(model => model.PrintingHouse.Phone)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.PrintingHouse.Email)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
+            @Html.DisplayFor(model => model.PrintingHouse.Email)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.State)
+            @Html.DisplayNameFor(model => model.PrintingHouse.State)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.State)
+            @Html.DisplayFor(model => model.PrintingHouse.State)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
+            @Html.DisplayNameFor(model => model.PrintingHouse.City)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.City)
+            @Html.DisplayFor(model => model.PrintingHouse.City)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Street)
+            @Html.DisplayNameFor(model => model.PrintingHouse.Street)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Street)
+            @Html.DisplayFor(model => model.PrintingHouse.Street)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.House)
+            @Html.DisplayNameFor(model => model.PrintingHouse.House)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.House)
+            @Html.DisplayFor(model => model.PrintingHouse.House)
         </dd>
     </dl>
 </div>
+
+<h4>Заказы:</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Bookings.First().Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bookings.First().Start)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bookings.First().End)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bookings.First().Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Bookings.First().Cost)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Bookings) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Start)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.End)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Изменение данных о типографии</a> |
+    <a asp-action="Edit" asp-route-id="@Model.PrintingHouse.Id">Изменение данных о типографии</a> |
     <a asp-action="Index">Вернуться к списку типографий</a>
 </div>
 

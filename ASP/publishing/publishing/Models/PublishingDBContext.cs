@@ -25,5 +25,9 @@ namespace publishing.Models
 
         public DbSet<TypeProduct> TypeProducts { get; set; }
 
+        public DbSet<BookingProduct> BookingProducts { get; set; }
+
+        public DbSet<CustomerProduct> CustomerProducts { get; set; }
+
     }
 }

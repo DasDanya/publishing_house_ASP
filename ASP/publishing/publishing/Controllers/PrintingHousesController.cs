@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
+using publishing.Models.ViewModels;
 
 namespace publishing.Controllers
 {
@@ -41,7 +42,12 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            return View(printingHouse);
+            PrintingHouseDetailsViewModel viewModel = new PrintingHouseDetailsViewModel();
+            viewModel.PrintingHouse = printingHouse;
+            viewModel.Bookings = _context.Bookings.Where(b=> b.PrintingHouseId == printingHouse.Id);
+
+            //return View(printingHouse);
+            return View(viewModel);
         }
 
         // GET: PrintingHouses/Create
