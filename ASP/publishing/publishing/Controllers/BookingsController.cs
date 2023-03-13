@@ -25,7 +25,7 @@ namespace publishing.Controllers
             return View(await publishingDBContext.ToListAsync());
         }
 
-        // GET: Bookings/Details/5
+        // GET: Bookings/Detail
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Bookings == null)
@@ -163,5 +163,6 @@ namespace publishing.Controllers
         {
           return (_context.Bookings?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
     }
 }

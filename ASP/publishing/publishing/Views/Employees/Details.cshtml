@@ -10,6 +10,12 @@
 <div>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Surname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Surname)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
@@ -17,16 +23,16 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Surname)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Surname)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Middlename)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Middlename)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Birthday)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Birthday)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Type)
@@ -46,21 +52,84 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Birthday)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Birthday)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Visual)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Visual)
-        </dd>
     </dl>
 </div>
+
+<div class="container p-0" style="height:40px;">
+    <div class="row pb-3">
+        <div class="col-md-9">
+            @{
+                if (Model.Bookings.Count != 0){<h4>Заказы</h4>}
+                else{<h4>Заказы отсутствуют</h4>}
+            }
+         </div>
+        <div class="col-md-3 text-end">
+            <a asp-action="LinkEmployeeWithBooking" asp-route-id="@Model.Id" class="btn btn-info">Привязать к заказу</a>
+        </div>
+
+    </div>
+</div>
+
+@{
+    if (Model.Bookings.Count() != 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Bookings.First().Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Bookings.First().Start)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Bookings.First().End)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Bookings.First().Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Bookings.First().Cost)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Bookings)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Start)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.End)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Cost)
+                        </td>
+                        <td>
+                            <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                            <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                            @if (item.Status == "Выполняется")
+                            {
+                                <span>| </span>
+                                <a asp-action="UnpinOrder" asp-route-bookingId="@item.Id" asp-route-employeeId="@Model.Id" onclick="ConfirmAction('Вы подтверждаете открепление сотрудника @Model.Surname @Model.Name @Model.Middlename от заказа №@item.Id?')">Открепить</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Изменение данных о сотруднике</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Id">Изменение данных о сотруднике</a> |
     <a asp-action="Index">Вернуться к списку сотрудников</a>
 </div>

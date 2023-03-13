@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
-using publishing.Models.ViewModels;
+
 
 namespace publishing.Controllers
 {
@@ -35,19 +37,19 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var printingHouse = await _context.PrintingHouses
+            var printingHouse = await _context.PrintingHouses.Include(b=> b.Bookings)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (printingHouse == null)
             {
                 return NotFound();
             }
 
-            PrintingHouseDetailsViewModel viewModel = new PrintingHouseDetailsViewModel();
-            viewModel.PrintingHouse = printingHouse;
-            viewModel.Bookings = _context.Bookings.Where(b=> b.PrintingHouseId == printingHouse.Id);
+            //PrintingHouseDetailsViewModel viewModel = new PrintingHouseDetailsViewModel();
+            //viewModel.PrintingHouse = printingHouse;
+            //viewModel.Bookings = _context.Bookings.Where(b=> b.PrintingHouseId == printingHouse.Id);
 
-            //return View(printingHouse);
-            return View(viewModel);
+            return View(printingHouse);
+            //return View(viewModel);
         }
 
         // GET: PrintingHouses/Create
@@ -163,6 +165,51 @@ namespace publishing.Controllers
         private bool PrintingHouseExists(int id)
         {
             return (_context.PrintingHouses?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public IActionResult LinkPrintingHouseWithBooking(int? id) 
+        {
+            if(id == null)
+                return NotFound();
+
+            PrintingHouse printingHouse = _context.PrintingHouses.Find(id);
+            if (printingHouse == null)
+                return NotFound();
+
+            ViewBag.printHouseId = id;
+            return View(_context.Bookings.Where(b => b.PrintingHouseId == null && b.Status == "Выполняется"));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LinkPrintingHouseWithBooking(int? printHouseId, int? bookingId)
+        {
+            if (printHouseId == null || bookingId == null)
+                return NotFound();
+
+            Booking booking = _context.Bookings.Find(bookingId);
+            if (booking == null)
+                return NotFound();
+
+            booking.PrintingHouseId = printHouseId;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = printHouseId});
+        }
+
+        public async Task<IActionResult> UnpinOrder(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            Booking booking = _context.Bookings.Find(id);
+            if (booking == null)
+                return NotFound();
+
+            booking.PrintingHouseId = null;
+            await _context.SaveChangesAsync();
+
+            return Redirect(Request.Headers["Referer"].ToString());
+
         }
     }
 }

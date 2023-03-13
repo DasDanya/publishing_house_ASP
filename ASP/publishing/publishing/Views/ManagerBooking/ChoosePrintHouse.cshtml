@@ -58,7 +58,7 @@
                         @{
                             int[] employees = ViewBag.selectedEmployees;
 
-                            for (int i = 0; i < ViewBag.empLength; i++)
+                            for (int i = 0; i < employees.Length; i++)
                             {
                                 <input type="hidden" name="employees" value="@employees[i]" />
                             }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
 
+
 namespace publishing.Controllers
 {
     public class EmployeesController : Controller
@@ -34,9 +35,9 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var employee = await _context.Employees
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
+            var employee = await _context.Employees.Include(e=> e.Bookings).Where(e=> e.Id == id).FirstOrDefaultAsync();
+
+            if (employee == null) 
             {
                 return NotFound();
             }
@@ -157,6 +158,52 @@ namespace publishing.Controllers
         private bool EmployeeExists(int id)
         {
           return (_context.Employees?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public async Task<IActionResult> UnpinOrder(int? bookingId, int? employeeId)
+        {
+            if (bookingId == null || employeeId == null)
+                return NotFound();
+
+            Booking booking = _context.Bookings.Include(b => b.Employees).Where(b => b.Id == bookingId).First();
+            if (booking == null)
+                return NotFound();
+
+            booking.Employees.Remove(_context.Employees.Find(employeeId));
+            _context.SaveChanges();
+            
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        public IActionResult LinkEmployeeWithBooking(int? id)
+        {
+            if(id == null)
+                return NotFound();
+
+            Employee employee = _context.Employees.Include(e=> e.Bookings).Where(e => e.Id == id).First();
+            if(employee == null)
+                return NotFound();
+
+            ViewBag.employeeId = id;
+            return View(_context.Bookings.Where(b => b.Status == "Выполняется" && !employee.Bookings.Contains(b)));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LinkEmployeeWithBooking(int? employeeId, int? bookingId)
+        {
+            if (employeeId == null || bookingId == null)
+                return NotFound();
+
+            Booking booking = _context.Bookings.Find(bookingId);
+            Employee employee = _context.Employees.Find(employeeId);
+            if (employee == null || booking == null)
+                return NotFound();
+
+            booking.Employees.Add(employee);
+            employee.Bookings.Add(booking);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = employeeId });
         }
     }
 }

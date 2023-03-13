@@ -34,7 +34,7 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var typeProduct = await _context.TypeProducts
+            var typeProduct = await _context.TypeProducts.Include(tp=> tp.Products)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (typeProduct == null)
             {

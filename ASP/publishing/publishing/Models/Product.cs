@@ -36,10 +36,14 @@ namespace publishing.Models
         public TypeProduct? TypeProduct { get; set; }
  
         public virtual ICollection<ProductMaterial> ProductMaterials { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
+        public virtual ICollection<Booking> Bookings { get; set; }
 
         public Product()
         {
             ProductMaterials = new List<ProductMaterial>(); 
+            Customers = new List<Customer>();
+            Bookings = new List<Booking>();
         }
 
     }

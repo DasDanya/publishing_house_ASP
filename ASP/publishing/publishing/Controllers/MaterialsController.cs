@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
+using publishing.Models.ViewModels;
 
 namespace publishing.Controllers
 {
@@ -34,14 +35,25 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials
+            var material = await _context.Materials.Include(m=> m.ProductMaterials)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (material == null)
             {
                 return NotFound();
             }
 
-            return View(material);
+            MaterialDetailsViewModel model = new MaterialDetailsViewModel();
+            model.Material = material;
+
+
+            foreach (var pr in material.ProductMaterials)
+            {
+                model.Products.Add(_context.Products.Find(pr.ProductId));
+            }
+
+            return View(model);
+            //return View(material);
         }
 
         // GET: Materials/Create

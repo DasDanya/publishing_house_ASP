@@ -58,11 +58,11 @@ namespace publishing.Models
         [DisplayName("Фото сотрудника")]
         public string Visual { get; set;}
 
-        public virtual ICollection<BookingEmployee> BookingEmployees { get; set;}
-
+        //public virtual ICollection<BookingEmployee> BookingEmployees { get; set;}
+        public virtual ICollection<Booking> Bookings { get; set; }
         public Employee() 
         {
-            BookingEmployees = new List<BookingEmployee>(); 
+            Bookings = new List<Booking>();
         }
 
     }

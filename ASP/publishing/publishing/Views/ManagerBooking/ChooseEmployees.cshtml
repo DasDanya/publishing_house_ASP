@@ -61,23 +61,3 @@
         <input type="submit" value="Продолжить" class="btn btn-primary" />
     </div>
 </form>
-
-@section Scripts
-    {
-    <script>
-        function CheckBoxes() {
-            var boxes = document.getElementsByClassName('check_box');
-            var checked = false;
-            for (i = 0; i < boxes.length; i++) {
-                if (boxes[i].checked) {
-                    checked = true;
-                    break;
-                }
-            }
-            if (!checked) {
-                alert("Пожалуйста, выберите сотрудника(-ов) для регистрации заказа");
-                event.preventDefault();
-            }
-        }
-    </script>
-}

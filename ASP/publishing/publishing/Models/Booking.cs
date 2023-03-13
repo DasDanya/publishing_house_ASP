@@ -37,15 +37,16 @@ namespace publishing.Models
         public PrintingHouse? PrintingHouse { get; set; }
 
 
-        public virtual ICollection<BookingEmployee> BookingsEmployees { get; set; }
+        //public virtual ICollection<BookingEmployee> BookingsEmployees { get; set; }
+
+        public virtual ICollection<Employee> Employees { get; set; }
 
         //public virtual ICollection<Product> BookingsProducts { get; set; }
 
 
         public Booking() 
         { 
-            BookingsEmployees = new List<BookingEmployee>();
-            //BookingsProducts = new List<Product>();
+            Employees = new List<Employee>();
         }
     }
 }

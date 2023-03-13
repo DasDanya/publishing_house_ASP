@@ -26,5 +26,11 @@ namespace publishing.Models
         [RegularExpression(@"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}", ErrorMessage ="Введена неверная электронная почта")]
         public string Email { get; set; }
 
+        public virtual ICollection<Product> Products { get; set; }
+
+        public Customer()
+        {
+            Products = new List<Product>();
+        }
     }
 }

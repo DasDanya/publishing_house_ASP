@@ -136,6 +136,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Employees/LinkEmployeeWithBooking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXExpbmtFbXBsb3llZVdpdGhCb29raW5nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -202,6 +206,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/PrintingHouses/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbnRpbmdIb3VzZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/PrintingHouses/LinkPrintingHouseWithBooking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJpbnRpbmdIb3VzZXNcTGlua1ByaW50aW5nSG91c2VXaXRoQm9va2luZy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/ProductMaterials/Create.cshtml]

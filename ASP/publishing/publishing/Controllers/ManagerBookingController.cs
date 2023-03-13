@@ -15,11 +15,12 @@ namespace publishing.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Bookings.ToListAsync());
+            return View( _context.Bookings.Where(b => b.Status != "Выполнен"));
         }
 
+        [HttpPost]
         public async Task<IActionResult> ChooseEmployees(int? bookingId, string? bookingStatus)
         {
             if (bookingId == null || bookingStatus == null)
@@ -44,6 +45,7 @@ namespace publishing.Controllers
             return View(await _context.Employees.ToListAsync());
         }
 
+        [HttpPost]
         public async Task<IActionResult> ChoosePrintHouse(int? bookingId, int[]? selectedEmployees)
         {
             if (bookingId == null || selectedEmployees == null || selectedEmployees.Length == 0)
@@ -58,11 +60,11 @@ namespace publishing.Controllers
 
             ViewBag.bookingId = bookingId;
             ViewBag.selectedEmployees = selectedEmployees;
-            ViewBag.empLength = selectedEmployees.Length;
 
             return View(await _context.PrintingHouses.ToListAsync());
         }
 
+        [HttpPost]
         public async Task<IActionResult> ChooseDateOfComplete(int? bookingId, int? printHouseId, int[]? employees)
         {
             if (bookingId == null || printHouseId == null || employees == null || employees.Length == 0)
@@ -76,11 +78,11 @@ namespace publishing.Controllers
             ViewBag.printHouseId = printHouseId;
 
             ViewBag.employees = employees;
-            ViewBag.empLength = employees.Length;
 
             return View();
         }
 
+        [HttpPost]
         public async Task<IActionResult> Confirmation(int? bookingId, int? printHouseId, DateTime finishDate, int[]? employees)
         {
             if (bookingId == null || printHouseId == null || employees == null || employees.Length == 0)
@@ -96,7 +98,6 @@ namespace publishing.Controllers
             ViewBag.printHouseName = printHouse.Name;
 
             ViewBag.employees = selectedEmployees;
-            ViewBag.empLength = selectedEmployees.Length;
 
             ViewBag.bookingId = bookingId;
             ViewBag.finishDate = finishDate.ToShortDateString();
@@ -104,6 +105,7 @@ namespace publishing.Controllers
         }
 
 
+        [HttpPost]
         public async Task<IActionResult> ConfirmRegistration(int? bookingId, int? printHouseId, int[]? employees, string finishDate)
         {
             if (bookingId == null || printHouseId == null || employees == null || employees.Length == 0)
@@ -116,11 +118,15 @@ namespace publishing.Controllers
             booking.End = dateFinish;
             booking.PrintingHouseId = (int)printHouseId;
 
-            var bookingsEmployees = _context.Set<BookingEmployee>();
+            //var bookingsEmployees = _context.Set<BookingEmployee>();
 
             for (int i = 0; i < employees.Length; i++)
             {
-                bookingsEmployees.Add(new BookingEmployee { BookingId = (int)bookingId, EmployeeId = employees[i] });
+                Employee employee = (from e in _context.Employees where e.Id == employees[i] select e).Single();
+                booking.Employees.Add(employee);
+                employee.Bookings.Add(booking);
+
+                //bookingsEmployees.Add(new BookingEmployee { BookingId = (int)bookingId, EmployeeId = employees[i] });
             }
 
             _context.SaveChanges();

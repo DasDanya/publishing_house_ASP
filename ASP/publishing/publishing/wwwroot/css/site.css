@@ -88,3 +88,12 @@ a {
         text-decoration: underline;
 }
 /*Конец*/
+
+/*Для форм,используемые на страницах действий details*/
+.outer {
+    width:100%;
+    text-align: left;
+}
+.forms {
+    display:inline-block;
+}

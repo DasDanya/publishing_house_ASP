@@ -21,7 +21,7 @@
         @{
             int[] employees = ViewBag.employees;
 
-            for (int i = 0; i < ViewBag.empLength; i++)
+            for (int i = 0; i < employees.Length; i++)
             {
                 <input type="hidden" name="employees" value="@employees[i]" />
             }
@@ -31,31 +31,3 @@
         <input type="submit" value="Выбрать" class="btn btn-primary" />
     </div>
 </form>
-
-@section Scripts
-    {
-    <script>
-
-        function SetDate() {
-
-            var today = new Date();
-            var dd = today.getDate();
-            var mm = today.getMonth() + 1;
-            var min_yyyy = today.getFullYear();
-            var max_yyyy = today.getFullYear() + 10;
-            if (dd < 10) {
-                dd = '0' + dd;
-            }
-
-            if (mm < 10) {
-                mm = '0' + mm;
-            }
-
-            today = min_yyyy + '-' + mm + '-' + dd;
-            max_date = max_yyyy + '-' + mm + '-' + dd;
-            document.getElementById("datefield").setAttribute("min", today);
-            document.getElementById("datefield").setAttribute("max", max_date);
-        }
-    </script>
-
-}

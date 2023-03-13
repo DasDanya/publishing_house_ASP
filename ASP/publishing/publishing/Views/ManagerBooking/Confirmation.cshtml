@@ -28,7 +28,7 @@
                 <div class="info__body">
                     @{
                         Employee[] employees = ViewBag.employees;
-                        for (int i = 0; i < ViewBag.empLength; i++)
+                        for (int i = 0; i < employees.Length; i++)
                         {
                             <input type="hidden" name="employees" value="@employees[i].Id" />
                             string infoEmployee = $"{employees[i].Surname} {employees[i].Name} {employees[i].Middlename}: {employees[i].Type}";

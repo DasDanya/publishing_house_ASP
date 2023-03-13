@@ -25,7 +25,7 @@
         </th>
 
     </tr>
-    @foreach (var item in Model.Where(b=> b.Status != "Выполнен"))
+    @foreach (var item in Model)
     {
         <tr>
             <td>
@@ -42,7 +42,7 @@
             </td>
             <td>
 
-                <form asp-action="ChooseEmployees" id="ch">
+                <form asp-action="ChooseEmployees">
                     <div>
                         <input type="hidden" name="bookingId" value="@item.Id" />
                         <input type="hidden" name="bookingStatus" value="@item.Status">
@@ -63,19 +63,3 @@
            
     }
 </table>
-
-@section Scripts
-    {
-    <script>
-        function Confirm(element) {
-            let table = document.querySelector('#tabl');
-            var status = table.rows[element.closest('tr').rowIndex].cells[2].innerHTML;
-            ;
-            if (status.trim() == "Выполняется") {
-                if (!confirm("Вы подтверждаете выполнение заказа?")) {
-                    event.preventDefault();
-                }
-            }
-        }
-    </script>
-}

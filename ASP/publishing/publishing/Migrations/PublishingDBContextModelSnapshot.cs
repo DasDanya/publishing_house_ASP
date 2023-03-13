@@ -22,6 +22,21 @@ namespace publishing.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("BookingEmployee", b =>
+                {
+                    b.Property<int>("BookingsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EmployeesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("BookingsId", "EmployeesId");
+
+                    b.HasIndex("EmployeesId");
+
+                    b.ToTable("BookingEmployee");
+                });
+
             modelBuilder.Entity("publishing.Models.Booking", b =>
                 {
                     b.Property<int>("Id")
@@ -356,6 +371,21 @@ namespace publishing.Migrations
                     b.ToTable("TypeProducts");
                 });
 
+            modelBuilder.Entity("BookingEmployee", b =>
+                {
+                    b.HasOne("publishing.Models.Booking", null)
+                        .WithMany()
+                        .HasForeignKey("BookingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("publishing.Models.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("publishing.Models.Booking", b =>
                 {
                     b.HasOne("publishing.Models.PrintingHouse", "PrintingHouse")
@@ -368,13 +398,13 @@ namespace publishing.Migrations
             modelBuilder.Entity("publishing.Models.BookingEmployee", b =>
                 {
                     b.HasOne("publishing.Models.Booking", "Booking")
-                        .WithMany("BookingsEmployees")
+                        .WithMany()
                         .HasForeignKey("BookingId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("publishing.Models.Employee", "Employee")
-                        .WithMany("BookingEmployees")
+                        .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -450,16 +480,6 @@ namespace publishing.Migrations
                     b.Navigation("Material");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("publishing.Models.Booking", b =>
-                {
-                    b.Navigation("BookingsEmployees");
-                });
-
-            modelBuilder.Entity("publishing.Models.Employee", b =>
-                {
-                    b.Navigation("BookingEmployees");
                 });
 
             modelBuilder.Entity("publishing.Models.Material", b =>
