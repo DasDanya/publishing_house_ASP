@@ -17,17 +17,13 @@ namespace publishing.Models
         public DbSet<Employee> Employees { get; set; }
 
         public DbSet<Booking> Bookings { get; set; }
-        public DbSet<BookingEmployee> BookingEmployees { get; set; }
+
+        public DbSet<BookingProduct> BookingProducts { get; set; }
 
         public DbSet<Product> Products { get; set; }
 
         public DbSet<ProductMaterial> ProductMaterials { get; set; }
 
         public DbSet<TypeProduct> TypeProducts { get; set; }
-
-        public DbSet<BookingProduct> BookingProducts { get; set; }
-
-        public DbSet<CustomerProduct> CustomerProducts { get; set; }
-
     }
 }

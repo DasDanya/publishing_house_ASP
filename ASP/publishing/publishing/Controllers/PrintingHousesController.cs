@@ -181,16 +181,20 @@ namespace publishing.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LinkPrintingHouseWithBooking(int? printHouseId, int? bookingId)
+        public async Task<IActionResult> LinkPrintingHouseWithBooking(int? printHouseId, int[]? selectedBookings)
         {
-            if (printHouseId == null || bookingId == null)
+            if (printHouseId == null || selectedBookings == null)
                 return NotFound();
 
-            Booking booking = _context.Bookings.Find(bookingId);
-            if (booking == null)
-                return NotFound();
+            foreach (var bookingId in selectedBookings)
+            {
+                Booking booking = _context.Bookings.Find(bookingId);
+                if (booking == null)
+                    return NotFound();
 
-            booking.PrintingHouseId = printHouseId;
+                booking.PrintingHouseId = printHouseId;
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", new { id = printHouseId});

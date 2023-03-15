@@ -16,26 +16,6 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xDcmVhdGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xEZWxldGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xEZXRhaWxzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xFZGl0LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingEmployees/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ0VtcGxveWVlc1xJbmRleC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/BookingProducts/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ1Byb2R1Y3RzXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -74,26 +54,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcSW5kZXguY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/CustomerProducts/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJQcm9kdWN0c1xDcmVhdGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/CustomerProducts/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJQcm9kdWN0c1xEZWxldGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/CustomerProducts/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJQcm9kdWN0c1xEZXRhaWxzLmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/CustomerProducts/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJQcm9kdWN0c1xFZGl0LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/CustomerProducts/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJQcm9kdWN0c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Customers/Create.cshtml]

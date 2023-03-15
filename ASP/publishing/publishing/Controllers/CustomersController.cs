@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
+using publishing.Models.ViewModels;
 
 namespace publishing.Controllers
 {
@@ -34,14 +35,29 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var customer = await _context.Customers
+            var customer = await _context.Customers.Include(c => c.Products)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (customer == null)
             {
                 return NotFound();
             }
+            
+            CustomerDetailsViewModel model = new CustomerDetailsViewModel();
+            model.Customer = customer;
 
-            return View(customer);
+            var products = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p)).ToList();
+            if(products == null)
+                return NotFound();
+
+            foreach (var product in products)
+            {
+                //var bookingsProducts = _context.BookingProducts.Include(br => br.Booking).Where(bp => bp.ProductId == product.Id).ToList();
+                model.Bookings.AddRange(from bp in _context.BookingProducts.Include(bp => bp.Booking) where bp.ProductId == product.Id && !model.Bookings.Contains(bp.Booking) && bp.Booking !=null select bp.Booking);
+                model.Products.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Product) where bp.ProductId == product.Id && bp.Booking != null select bp.Product).Distinct());
+            }
+
+            return View(model);
         }
 
         // GET: Customers/Create

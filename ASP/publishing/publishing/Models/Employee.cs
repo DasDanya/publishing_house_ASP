@@ -59,7 +59,8 @@ namespace publishing.Models
         public string Visual { get; set;}
 
         //public virtual ICollection<BookingEmployee> BookingEmployees { get; set;}
-        public virtual ICollection<Booking> Bookings { get; set; }
+        
+        public virtual ICollection<Booking> Bookings { get; set;}
         public Employee() 
         {
             Bookings = new List<Booking>();

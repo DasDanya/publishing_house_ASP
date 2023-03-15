@@ -16,7 +16,7 @@ function Confirm(element) {
     }
 }
 
-function CheckBoxes() {
+function CheckBoxes(errorMessage) {
     var boxes = document.getElementsByClassName('check_box');
     var checked = false;
     for (i = 0; i < boxes.length; i++) {
@@ -26,7 +26,7 @@ function CheckBoxes() {
         }
     }
     if (!checked) {
-        alert("Пожалуйста, выберите сотрудника(-ов) для регистрации заказа");
+        alert(errorMessage);
         event.preventDefault();
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
+using publishing.Models.ViewModels;
 
 namespace publishing.Controllers
 {
@@ -41,7 +42,15 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            return View(typeProduct);
+            var products = ((from bp in _context.BookingProducts.Include(b => b.Product) where bp.BookingId != null select bp.Product).Distinct()).ToList();
+            if (products == null)
+                return NotFound();
+
+            TypeProductDetailsViewModel model = new TypeProductDetailsViewModel();
+            model.TypeProduct = typeProduct;
+            model.Products = _context.Products.Include(p => p.Customer).Where(p => typeProduct.Products.Contains(p) && products.Contains(p)).ToList();
+            //_context.Products.Include(p=> p.Customer).Where(p => typeProduct.Products.Contains(p)).ToList();
+            return View(model);
         }
 
         // GET: TypeProducts/Create

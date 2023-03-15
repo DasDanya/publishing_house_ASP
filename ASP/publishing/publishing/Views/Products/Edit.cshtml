@@ -5,8 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Изменение данных о продукции</h1>
+<h1>Edit</h1>
 
+<h4>Product</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -24,13 +25,8 @@
                 <span asp-validation-for="Visual" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Edition" class="control-label"></label>
-                <input asp-for="Edition" class="form-control" />
-                <span asp-validation-for="Edition" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Cost" class="control-label"></label>
-                <input asp-for="Cost" class="form-control" onkeydown="javascript: return event.keyCode == 69 ? false : true" />
+                <input asp-for="Cost" class="form-control" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" />
                 <span asp-validation-for="Cost" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -39,14 +35,19 @@
                 <span asp-validation-for="TypeProductId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Изменить" class="btn btn-primary" />
+                <label asp-for="Customer.Name" class="control-label"></label>
+                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
+                <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Вернуться к списку продукций</a>
+    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

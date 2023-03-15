@@ -5,9 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Информация о продукции</h1>
+<h1>Details</h1>
 
 <div>
+    <h4>Product</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -17,32 +18,26 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Visual)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Visual)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Edition)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Edition)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Cost)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Cost)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TypeProduct.Type)
+            @Html.DisplayNameFor(model => model.TypeProduct)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.TypeProduct.Type)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Customer.Name)
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Изменение данных о продукции</a> |
-    <a asp-action="Index">Вернуться к списку продукций</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
 </div>

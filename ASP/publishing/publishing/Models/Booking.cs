@@ -40,13 +40,15 @@ namespace publishing.Models
         //public virtual ICollection<BookingEmployee> BookingsEmployees { get; set; }
 
         public virtual ICollection<Employee> Employees { get; set; }
-
+        public virtual ICollection<BookingProduct> BookingProducts { get; set; }
         //public virtual ICollection<Product> BookingsProducts { get; set; }
 
 
         public Booking() 
         { 
             Employees = new List<Employee>();
+            BookingProducts = new List<BookingProduct>();
+
         }
     }
 }

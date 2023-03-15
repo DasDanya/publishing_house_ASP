@@ -17,7 +17,7 @@ namespace publishing.Models
 
         [Required(ErrorMessage = "Введите цвет материала")]
         [DataType(DataType.Text)]
-        [StringLength(15, MinimumLength = 6, ErrorMessage = "Длина строки не входит в заданный диапазон:[6,15]")]
+        [StringLength(15, MinimumLength = 6, ErrorMessage = "Длина строки не входит в заданный диапазон:[5,15]")]
         [DisplayName("Цвет материала")]
         [RegularExpression("\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*,\\s*(0|[1-9]\\d?|1\\d\\d?|2[0-4]\\d|25[0-5])%?\\s*$", ErrorMessage = "Введите цвет материала как RGB. Пример:255,11,103")]
         public string Color { get; set; }

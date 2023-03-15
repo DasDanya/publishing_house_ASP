@@ -21,7 +21,7 @@ namespace publishing.Controllers
         // GET: Bookings
         public async Task<IActionResult> Index()
         {
-            var publishingDBContext = _context.Bookings.Include(b => b.PrintingHouse);
+            var publishingDBContext = _context.Bookings.Include(b => b.PrintingHouse).Include(b => b.Employees);
             return View(await publishingDBContext.ToListAsync());
         }
 

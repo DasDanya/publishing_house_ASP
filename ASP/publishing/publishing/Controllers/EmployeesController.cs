@@ -189,18 +189,25 @@ namespace publishing.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LinkEmployeeWithBooking(int? employeeId, int? bookingId)
+        public async Task<IActionResult> LinkEmployeeWithBooking(int? employeeId, int[]? selectedBookings)
         {
-            if (employeeId == null || bookingId == null)
+            if (employeeId == null || selectedBookings == null)
                 return NotFound();
 
-            Booking booking = _context.Bookings.Find(bookingId);
             Employee employee = _context.Employees.Find(employeeId);
-            if (employee == null || booking == null)
+            if (employee == null)
                 return NotFound();
 
-            booking.Employees.Add(employee);
-            employee.Bookings.Add(booking);
+            foreach (var bookingId in selectedBookings)
+            {
+                Booking booking = _context.Bookings.Find(bookingId);
+                
+                if (booking == null)
+                    return NotFound();
+
+                booking.Employees.Add(employee);
+                employee.Bookings.Add(booking);
+            }
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", new { id = employeeId });

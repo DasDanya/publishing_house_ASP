@@ -6,7 +6,7 @@
 
 <h1>Выбор сотрудников</h1>
 
-<form asp-action="ChoosePrintHouse" class="form-group" onsubmit="CheckBoxes()">
+<form asp-action="ChoosePrintHouse" class="form-group" onsubmit="CheckBoxes('Пожалуйста, выберите сотрудника(-ов) для регистрации заказа')">
 
     <input type="hidden" name="bookingId" value=@ViewBag.bookingId />
     <div class="form-group" style="margin-bottom: 10px;">

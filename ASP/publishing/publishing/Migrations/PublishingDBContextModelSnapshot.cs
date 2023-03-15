@@ -69,29 +69,6 @@ namespace publishing.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("publishing.Models.BookingEmployee", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.ToTable("BookingEmployees");
-                });
-
             modelBuilder.Entity("publishing.Models.BookingProduct", b =>
                 {
                     b.Property<int>("Id")
@@ -100,7 +77,10 @@ namespace publishing.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookingId")
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Edition")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
@@ -140,29 +120,6 @@ namespace publishing.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
-                });
-
-            modelBuilder.Entity("publishing.Models.CustomerProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CustomerProducts");
                 });
 
             modelBuilder.Entity("publishing.Models.Employee", b =>
@@ -302,7 +259,7 @@ namespace publishing.Migrations
                     b.Property<double>("Cost")
                         .HasColumnType("float");
 
-                    b.Property<int>("Edition")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -318,6 +275,8 @@ namespace publishing.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("TypeProductId");
 
@@ -395,70 +354,38 @@ namespace publishing.Migrations
                     b.Navigation("PrintingHouse");
                 });
 
-            modelBuilder.Entity("publishing.Models.BookingEmployee", b =>
-                {
-                    b.HasOne("publishing.Models.Booking", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("publishing.Models.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("Employee");
-                });
-
             modelBuilder.Entity("publishing.Models.BookingProduct", b =>
                 {
                     b.HasOne("publishing.Models.Booking", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("BookingProducts")
+                        .HasForeignKey("BookingId");
 
                     b.HasOne("publishing.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("BookingProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Booking");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("publishing.Models.CustomerProduct", b =>
-                {
-                    b.HasOne("publishing.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("publishing.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
 
                     b.Navigation("Product");
                 });
 
             modelBuilder.Entity("publishing.Models.Product", b =>
                 {
+                    b.HasOne("publishing.Models.Customer", "Customer")
+                        .WithMany("Products")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("publishing.Models.TypeProduct", "TypeProduct")
                         .WithMany("Products")
                         .HasForeignKey("TypeProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Customer");
 
                     b.Navigation("TypeProduct");
                 });
@@ -482,6 +409,16 @@ namespace publishing.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("publishing.Models.Booking", b =>
+                {
+                    b.Navigation("BookingProducts");
+                });
+
+            modelBuilder.Entity("publishing.Models.Customer", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("publishing.Models.Material", b =>
                 {
                     b.Navigation("ProductMaterials");
@@ -494,6 +431,8 @@ namespace publishing.Migrations
 
             modelBuilder.Entity("publishing.Models.Product", b =>
                 {
+                    b.Navigation("BookingProducts");
+
                     b.Navigation("ProductMaterials");
                 });
 

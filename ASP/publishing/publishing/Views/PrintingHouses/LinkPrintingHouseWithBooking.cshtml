@@ -6,68 +6,71 @@
 }
 
 <h1>Привязка к заказу</h1>
-@{
-    if (Model.Count() != 0)
-    {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Id)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Start)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.End)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Status)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Cost)
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
+<form method="post" class="form-group" onsubmit="CheckBoxes('Пожалуйста, выберите заказ(-ы) для привязки к типографии')">
+    @{
+        if (Model.Count() != 0)
+        {
+            <table class="table table-hover table-bordered">
+                <thead>
                     <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Id)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Start)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.End)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Status)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Cost)
-                        </td>
-                        <td style="width:250px;"> 
-                            <div class="outer">
-                                <form asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id" class="forms">
-                                    <input type="submit" value="Подробнее" class="btn btn-primary" style="margin-top:0; margin-right:5px;">
-                                </form>
-                                <form method="post" class="forms">
-                                    <input type="hidden" name="printHouseId" value="@ViewBag.printHouseId">
-                                    <input type="hidden" name="bookingId" value="@item.Id">
-                                    <input type="submit" value="Привязать" class="btn btn-success" style="margin-top:0;">
-                                </form>
-                            </div>
-                        </td>
+                        <th>
+                            Выбрать
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Id)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Start)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.End)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Status)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Cost)
+                        </th>
+                        <th>Информация о заказе</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="check_box" name="selectedBookings" id="@item.Id" value="@item.Id">
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Start)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.End)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Status)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Cost)
+                            </td>
+                            <td style="width:250px;">
+                                <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Подробнее</a>
+                                <input type="hidden" name="printHouseId" value="@ViewBag.printHouseId">
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="form-group pt-3" style="margin-top: -15px;">
+                <input type="submit" value="Привязать" class="btn btn-success" />
+            </div>
+        }
+        else
+        {
+            <h4 style ="margin-top:7px;">Заказы отсутствуют</h4>    
+        }
     }
-    else
-    {
-        <h4 style ="margin-top:7px;">Заказы отсутствуют</h4>    
-    }
-}
+</form>

@@ -43,13 +43,16 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
+            var products = (from bp in _context.BookingProducts.Include(b => b.Product) where bp.BookingId != null select bp.Product).ToList();
+            if(products == null)
+                return NotFound();
+
             MaterialDetailsViewModel model = new MaterialDetailsViewModel();
             model.Material = material;
 
-
             foreach (var pr in material.ProductMaterials)
             {
-                model.Products.Add(_context.Products.Find(pr.ProductId));
+                model.Products.AddRange(_context.Products.Include(p =>p.Customer).Where(p=> p.Id == pr.ProductId && products.Contains(p)));
             }
 
             return View(model);

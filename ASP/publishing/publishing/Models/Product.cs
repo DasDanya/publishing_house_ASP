@@ -19,13 +19,6 @@ namespace publishing.Models
         [DisplayName("Фото")]
         public string Visual { get; set; }
 
-        [Required(ErrorMessage = "Введите тираж")]
-        [DisplayName("Тираж")]
-        [DataType(DataType.Text)]
-        [Range(typeof(int), "1", "1000000", ErrorMessage = "Тираж должен входить в диапазон: [1,1000000]")]
-        [RegularExpression(@"\d+", ErrorMessage = "Введите целое число")]
-        public int Edition { get; set; }
-
         [Required(ErrorMessage = "Введите стоимость продукции")]
         [DisplayName("Стоимость")]
         [DataType(DataType.Currency)]
@@ -34,16 +27,17 @@ namespace publishing.Models
 
         public int TypeProductId { get; set; }
         public TypeProduct? TypeProduct { get; set; }
+
+        public int CustomerId { get; set; }
+        public Customer? Customer { get; set; }
  
         public virtual ICollection<ProductMaterial> ProductMaterials { get; set; }
-        public virtual ICollection<Customer> Customers { get; set; }
-        public virtual ICollection<Booking> Bookings { get; set; }
+        public virtual ICollection<BookingProduct> BookingProducts { get; set; }
 
         public Product()
         {
             ProductMaterials = new List<ProductMaterial>(); 
-            Customers = new List<Customer>();
-            Bookings = new List<Booking>();
+            BookingProducts = new List<BookingProduct>();
         }
 
     }
