@@ -64,7 +64,7 @@
             }
          </div>
         <div class="col-md-3 text-end">
-            <a asp-action="LinkEmployeeWithBooking" asp-route-id="@Model.Id" class="btn btn-info">Привязать к заказу</a>
+            <a asp-action="LinkEmployeeWithBooking" asp-route-id="@Model.Id" class="btn btn-info" style="margin-top:5px;">Привязать к заказу</a>
         </div>
 
     </div>
@@ -95,7 +95,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Bookings)
+                @foreach (var item in Model.Bookings.OrderByDescending(b=> b.Id))
                 {
                     <tr>
                         <td>
@@ -120,7 +120,7 @@
                             @if (item.Status == "Выполняется")
                             {
                                 <span>| </span>
-                                <a asp-action="UnpinOrder" asp-route-bookingId="@item.Id" asp-route-employeeId="@Model.Id" onclick="ConfirmAction('Вы подтверждаете открепление сотрудника @Model.Surname @Model.Name @Model.Middlename от заказа №@item.Id?')">Открепить</a>
+                                <a  asp-controller = "Bookings" asp-action="UnpinEmployee" asp-route-bookingId="@item.Id" asp-route-employeeId="@Model.Id" onclick="ConfirmAction('Вы подтверждаете открепление сотрудника @Model.Surname @Model.Name @Model.Middlename от заказа №@item.Id? Если сотрудник является единственным, кто выполняет заказ, то действие будет отменено')">Открепить</a>
                             }
                         </td>
                     </tr>
@@ -129,7 +129,19 @@
         </table>
     }
 }
+
+@*//    if (ViewBag.errorMessage != null)
+//    {
+//        ViewData.Clear();
+//        <script type="text/javascript">
+//            window.onload = function () {
+//                alert("@ViewBag.errorMessage");
+//            };
+//        </script>
+//    }
+//}*@
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Изменение данных о сотруднике</a> |
     <a asp-action="Index">Вернуться к списку сотрудников</a>
 </div>
+

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
-
 
 namespace publishing.Controllers
 {
@@ -160,27 +160,13 @@ namespace publishing.Controllers
           return (_context.Employees?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        public async Task<IActionResult> UnpinOrder(int? bookingId, int? employeeId)
-        {
-            if (bookingId == null || employeeId == null)
-                return NotFound();
-
-            Booking booking = _context.Bookings.Include(b => b.Employees).Where(b => b.Id == bookingId).First();
-            if (booking == null)
-                return NotFound();
-
-            booking.Employees.Remove(_context.Employees.Find(employeeId));
-            _context.SaveChanges();
-            
-            return Redirect(Request.Headers["Referer"].ToString());
-        }
 
         public IActionResult LinkEmployeeWithBooking(int? id)
         {
             if(id == null)
                 return NotFound();
 
-            Employee employee = _context.Employees.Include(e=> e.Bookings).Where(e => e.Id == id).First();
+            Employee employee = _context.Employees.Include(e => e.Bookings).Single(e => e.Id == id);
             if(employee == null)
                 return NotFound();
 
@@ -206,7 +192,7 @@ namespace publishing.Controllers
                     return NotFound();
 
                 booking.Employees.Add(employee);
-                employee.Bookings.Add(booking);
+                //employee.Bookings.Add(booking);
             }
             await _context.SaveChangesAsync();
 

@@ -68,7 +68,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Products)
+                @foreach (var item in Model.Products.OrderBy(p=> p.Name))
                 {
                     <tr>
                         <td>

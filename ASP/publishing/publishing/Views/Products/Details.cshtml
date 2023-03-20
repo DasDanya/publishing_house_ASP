@@ -1,43 +1,210 @@
-﻿@model publishing.Models.Product
+﻿@model publishing.Models.ViewModels.ProductDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string product = $"\"{Model.Product.Name}\"";
 }
 
-<h1>Details</h1>
+<h1>Информация о продукции</h1>
 
 <div>
-    <h4>Product</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Product.Name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Product.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cost)
+            @Html.DisplayNameFor(model => model.Product.Cost)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cost)
+            @Html.DisplayFor(model => model.Product.Cost)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TypeProduct)
+            @Html.DisplayNameFor(model => model.Product.TypeProduct.Type)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TypeProduct.Type)
-        </dd>
+        <a asp-controller="TypeProducts" asp-action="Details" asp-route-id="@Model.Product.TypeProduct.Id" class="col-sm-10" style="cursor:pointer; color:inherit">
+            @Html.DisplayFor(model => model.Product.TypeProduct.Type)
+        </a>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
+            @Html.DisplayNameFor(model => model.Product.Customer.Name)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.Name)
-        </dd>
+        <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.Product.Customer.Id" class="col-sm-10" style="cursor:pointer; color:inherit">
+            @Html.DisplayFor(model => model.Product.Customer.Name)
+        </a>
     </dl>
 </div>
+
+<div class="container p-0" style="height:40px;">
+    <div class="row pb-3">
+        <div class="col-md-9">
+            @{
+                if (Model.BookingProducts.Count != 0)
+                {
+                    <h4 style="margin-top:3px;">Заказы</h4>
+                }
+                else
+                {
+                    <h4 style="margin-top:3px;">Заказы отсутствуют</h4>
+                }
+            }
+         </div>
+        <div class="col-md-3 text-end">
+            <a asp-action="LinkProductWithBooking" asp-route-customerId="@Model.Product.Customer.Id" asp-route-productId="@Model.Product.Id" class="btn btn-info" style="margin-top:5px;">Привязать к заказу</a>
+        </div>
+    </div>
+</div>
+
+@{
+    if (Model.BookingProducts.Count != 0)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BookingProducts.First().Booking.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BookingProducts.First().Booking.Start)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BookingProducts.First().Booking.End)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.BookingProducts.First().Booking.Status)
+                    </th>
+                    <th>
+                        Тираж 
+                    </th>
+                    <th>
+                        Стоимость в заказе
+                    </th>
+                     <th>
+                        @Html.DisplayNameFor(model => model.BookingProducts.First().Booking.Cost)
+                     </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.BookingProducts.OrderByDescending(bp => bp.Booking.Id))
+                {
+                    Model.Cost = Model.Product.Cost * item.Edition;
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Booking.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Booking.Start)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Booking.End)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Booking.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem=> item.Edition)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem=> Model.Cost)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Booking.Cost)
+                        </td>
+                        <td>
+                            <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Booking.Id">Изменить</a> |
+                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Booking.Id">Подробнее</a> |
+                            <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Booking.Id">Удалить</a>
+                            @{
+                                if (item.Booking.Status == "Ожидание")
+                                {
+                                    <span>| </span>                                   
+                                    <a asp-controller="Bookings" asp-action="UnpinProduct" asp-route-bookingId="@item.Booking.Id" asp-route-productId="@Model.Product.Id" onclick="ConfirmAction('Вы подтверждаете открепление продукции @product от заказа №@item.Booking.Id? Если продукция является единственной в заказе, то действие будет отменено')">Открепить</a>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+
+<div class="container p-0" style="height:40px;">
+    <div class="row pb-3">
+        <div class="col-md-9">
+            <h4 style="margin-top:3px;">Материалы</h4>
+        </div>
+    </div>
+</div>
+
+<table class="table" id="materials">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductMaterials.First().Material.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductMaterials.First().Material.Color)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductMaterials.First().Material.Size)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductMaterials.First().Material.Cost)
+            </th>
+            <th>
+                Количество
+            </th>
+            <th>
+                Стоимость в продукции
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ProductMaterials.OrderBy(m => m.Material.Type))
+        {
+            Model.Cost = item.CountMaterials * item.Material.Cost;
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Material.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Material.Color)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Material.Size)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Material.Cost)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CountMaterials)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Cost)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    @{
+                        if (!Model.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
+                        {
+                            <span>| </span>
+                            <a asp-action="UnpinMaterial" asp-route-productId ="@Model.Product.Id" asp-route-materialId="@item.Material.Id" onclick="ConfirmUnpinFromTable('materials', 'Вы подтверждаете открепление материала @item.Material.Type от продукции @product?','Действие отменено. Продукция создаётся с использованием как минимум одного материала')">Открепить</a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.Product.Id">Изменнение данных о продукции</a> |
+    <a asp-action="Index">Вернуться к списку продукций</a>
 </div>

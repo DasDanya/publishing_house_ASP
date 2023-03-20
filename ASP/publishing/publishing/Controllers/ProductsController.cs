@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
+using publishing.Models.ViewModels;
 
 namespace publishing.Controllers
 {
@@ -36,13 +37,22 @@ namespace publishing.Controllers
             var product = await _context.Products
                 .Include(p => p.Customer)
                 .Include(p => p.TypeProduct)
+                .Include(p=> p.ProductMaterials)
+                .Include(p=> p.BookingProducts)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            ProductDetailsViewModel model = new ProductDetailsViewModel();
+            model.Product = product;
+            model.ProductMaterials = _context.ProductMaterials.Include(pm => pm.Material).Where(pm => pm.ProductId == id).ToList();
+            model.BookingProducts = _context.BookingProducts.Include(bp => bp.Booking).Where(bp => bp.ProductId == id).ToList();
+
+
+            //return View(product);
+            return View(model);
         }
 
         // GET: Products/Create
@@ -168,6 +178,103 @@ namespace publishing.Controllers
         private bool ProductExists(int id)
         {
           return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public IActionResult LinkProductWithBooking(int? customerId, int? productId) 
+        {
+            if (customerId == null || productId == null)
+                return NotFound();
+
+            Customer customer = _context.Customers.Include(c=>c.Products).Single(c=> c.Id == customerId);
+            //Product product = _context.Products.Include(p => p.BookingProducts).Single(p => p.Id == productId);
+            if(customer == null) //|| product == null)
+                return NotFound();
+
+            //return NotFound(product.BookingProducts.Count);
+
+            var products = _context.Products.Where(p => customer.Products.Contains(p) && p.Id != productId).ToList();
+            if (products == null)
+                return NotFound();
+
+            //return NotFound(products.Count);
+
+            //List<Booking> bookings = new List<Booking>();
+
+            var productBookings = from bp in _context.BookingProducts.Include(bp => bp.Product).Include(bp => bp.Booking) where bp.ProductId == productId select bp.Booking;
+            var bookings = (from bp in _context.BookingProducts.Include(bp => bp.Product).Include(bp => bp.Booking) where products.Contains(bp.Product) && !productBookings.Contains(bp.Booking) && bp.Booking.Status == "Ожидание" select bp.Booking).ToList();
+
+            //foreach (var customerProduct in products)
+            //{
+            //    bookings.AddRange(from bp in _context.BookingProducts.Include(bp => bp.Booking) where bp.ProductId == customerProduct.Id && customerProduct.Id != productId && !bookings.Contains(bp.Booking) && bp.Booking.Status == "Ожидание" && !product.BookingProducts.Contains(bp) select bp.Booking);
+            //}
+
+            //foreach (var bookingProduct in product.BookingProducts)
+            //{
+            //    bookings.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Booking).Include(bp => bp.Product) where bp.Booking.Status == "Ожидание" && bookingProduct.BookingId != bp.BookingId && !bookings.Contains(bp.Booking) select bp.Booking));
+            //} 
+            //var bookings = (from bp in _context.BookingProducts.Include(bp=> bp.Booking).Include(bp=> bp.Product) where bp.Booking.Status == "Ожидание" &&  select bp.Booking).ToList();
+
+
+            //ViewData["bookings"] = new SelectList(bookings, "Id", "Id");
+            LinkProductWithBookingViewModel model = new LinkProductWithBookingViewModel();
+            model.Bookings = new SelectList(bookings.OrderBy(b=>b.Id), "Id", "Id");
+            model.productId = (int)productId;
+
+            return View(model);
+        
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LinkProductWithBooking(int? productId, int? bookingId, int? edition) 
+        {
+            if (productId == null || bookingId == null || edition == null)
+                return NotFound();
+
+            Product product = _context.Products.Find(productId);
+            Booking booking = _context.Bookings.Find(bookingId);
+            if (product == null || booking == null)
+                return NotFound();
+
+            //return NotFound($"bk status{booking.Status}, product name {product.Name}");
+            BookingProduct bookingProduct = new BookingProduct();
+            bookingProduct.Product = product;
+            bookingProduct.Booking = booking;
+            bookingProduct.BookingId = bookingId;
+            bookingProduct.ProductId = product.Id;
+            bookingProduct.Edition = (int)edition;
+            //_context.BookingProducts.Attach(bookingProduct);
+            _context.BookingProducts.Add(bookingProduct);
+            _context.SaveChanges();
+
+            CostController costController = new CostController(_context);
+            costController.SetCostBooking(booking);
+
+            return RedirectToAction("Details", new { id = productId });
+        }
+
+        public async Task<IActionResult> UnpinMaterial(int? productId, int? materialId)
+        {
+            if (productId == null || materialId == null)
+                return NotFound();
+
+            ProductMaterial productMaterial = _context.ProductMaterials.Single(pm=> pm.ProductId == productId && pm.MaterialId == materialId);
+            if (productMaterial == null) 
+                return NotFound();
+
+            _context.ProductMaterials.Remove(productMaterial);
+            _context.SaveChanges();
+
+            CostController costController = new CostController(_context);
+            costController.SetCostProduct(productId);
+
+            var bookings = (from bp in _context.BookingProducts.Include(bp => bp.Product).Include(bp => bp.Booking) where bp.ProductId == productId select bp.Booking).ToList();
+
+            foreach (var booking in bookings)
+            {
+                costController.SetCostBooking(booking);
+            }
+
+            return Redirect(Request.Headers["Referer"].ToString());
         }
     }
 }

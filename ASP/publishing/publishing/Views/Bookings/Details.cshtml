@@ -1,4 +1,4 @@
-﻿@model publishing.Models.Booking
+﻿@model publishing.Models.ViewModels.BookingDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,44 +11,220 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
+            @Html.DisplayNameFor(model => model.Booking.Id)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
+            @Html.DisplayFor(model => model.Booking.Id)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Start)
+            @Html.DisplayNameFor(model => model.Booking.Start)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Start)
+            @Html.DisplayFor(model => model.Booking.Start)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.End)
+            @Html.DisplayNameFor(model => model.Booking.End)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.End)
+            @Html.DisplayFor(model => model.Booking.End)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
+            @Html.DisplayNameFor(model => model.Booking.Status)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status)
+            @Html.DisplayFor(model => model.Booking.Status)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cost)
+            @Html.DisplayNameFor(model => model.Booking.Cost)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cost)
+            @Html.DisplayFor(model => model.Booking.Cost)
         </dd>
+         <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.BookingProducts.First().Product.Customer.Name)
+        </dt>
+        <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.BookingProducts.First().Product.Customer.Id" class="col-sm-10" style="cursor:pointer; color:inherit">
+            @Html.DisplayFor(model => model.BookingProducts.First().Product.Customer.Name)
+        </a>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PrintingHouse.Name)
+            @Html.DisplayNameFor(model => model.Booking.PrintingHouse.Name)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PrintingHouse.Name)
-        </dd>
+        @{
+            if (Model.Booking.PrintingHouse != null)
+            {
+                <a asp-controller ="PrintingHouses" asp-action="Details" asp-route-id="@Model.Booking.PrintingHouseId" class="col-sm-10" style="cursor:pointer; color:inherit">
+                    @Html.DisplayFor(model => model.Booking.PrintingHouse.Name)
+                </a>
+            }
+            else
+            {
+                <dd class="col-sm-10">Типография отсутствует</dd>
+            }
+        }
     </dl>
 </div>
+
+<div class="container p-0" style="height:40px;">
+    <div class="row pb-3">
+        <div class="col-md-9">
+            <h4>Продукция</h4>
+        </div>
+        @{
+            if (Model.Booking.Status == "Ожидание") { 
+                <div class="col-md-3 text-end">
+                    <a asp-action="LinkPrintingHouseWithBooking" asp-route-id="@Model.Booking.Id" class="btn btn-info" style="margin-top:5px;">Привязать к заказу</a>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<table class="table" id="products">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BookingProducts.First().Product.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BookingProducts.First().Product.Cost)
+            </th>
+@*            <th>
+                @Html.DisplayNameFor(model => model.BookingProducts.First().Product.Name)
+            </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.BookingProducts.First().Edition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cost)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.BookingProducts.OrderBy(b=>b.Product.Name))
+        {
+            Model.Cost = item.Product.Cost * item.Edition;
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Cost)
+                </td>
+@*                <td>
+                    @Html.DisplayFor(modelItem => item.Product.Customer.Name)
+                </td>*@
+                <td>
+                    @Html.DisplayFor(modelItem => item.Edition)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Cost)
+                </td>
+                <td>
+                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Product.Id">Изменить</a> |
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.Id">Подробнее</a> |
+                    <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Product.Id">Удалить</a>
+                    @if (Model.Booking.Status == "Ожидание")
+                    {
+                        <span>| </span>
+                        string product = $"\"{item.Product.Name}\"";
+                        <a asp-action="UnpinProduct" asp-route-bookingId="@Model.Booking.Id" asp-route-productId="@item.Product.Id" onclick="ConfirmUnpinFromTable('products', 'Вы подтверждаете открепление продукции @product от заказа №@Model.Booking.Id?','Действие отменено. В заказе должна присутствовать как минимум одна продукция')">Открепить</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="container p-0" style="height:40px;">
+    <div class="row pb-3">
+        <div class="col-md-9">
+            @{
+                if (Model.Booking.Employees.Count != 0)
+                {
+                    <h4 style="margin-top:3px;">Сотрудники</h4>
+                }
+                else
+                {
+                    <h4 style="margin-top:3px;">Сотрудники отсутствуют</h4>
+                }
+            }
+        </div>
+        @{
+            if (Model.Booking.Status == "Выполняется")
+            {
+                <div class="col-md-3 text-end">
+                    <a asp-action="LinkEmployeeWithBooking" asp-route-id="@Model.Booking.Id" class="btn btn-info" style="margin-top:5px;">Привязать сотрудников</a>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@{
+    if (Model.Booking.Employees.Count != 0)
+    {
+        <table class="table" id="employees">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Booking.Employees.First().Surname)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Booking.Employees.First().Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Booking.Employees.First().Middlename)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Booking.Employees.First().Birthday)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Booking.Employees.First().Type)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Booking.Employees.OrderBy(m => m.Surname))
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Surname)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Middlename)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Birthday)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Type)
+                        </td>
+                        <td>
+                            <a asp-controller="Employees" asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                            <a asp-controller="Employees" asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                            <a asp-controller="Employees" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                            @{
+                                if(Model.Booking.Status == "Выполняется")
+                                {
+                                    <span>| </span>
+                                    <a asp-action="UnpinEmployee" asp-route-bookingId="@Model.Booking.Id" asp-route-employeeId="@item.Id" onclick="ConfirmUnpinFromTable('employees', 'Вы подтверждаете открепление сотрудника @item.Surname @item.Name @item.Middlename от заказа №@Model.Booking.Id?','Действие отменено. Как минимум один сотрудник должен выполнять заказ')">Открепить</a>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+}
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Изменение данных о заказе</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.Booking.Id">Изменение данных о заказе</a> |
     <a asp-action="Index">Вернуться к списку заказов</a>
 </div>

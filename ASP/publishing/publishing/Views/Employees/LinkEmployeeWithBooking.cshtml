@@ -31,11 +31,13 @@
                         <th>
                             @Html.DisplayNameFor(model => model.Cost)
                         </th>
-                        <th>Информация о заказе</th>
+                        <th>
+                            Информация о заказе
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.OrderByDescending(m=> m.Id))
                     {
                         <tr>
                             <td>

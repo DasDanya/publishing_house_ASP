@@ -5,19 +5,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Список связей Заказ-Продукция</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Добавить связь</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Edition)
+                @Html.DisplayNameFor(model => model.Booking.Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Booking.Id)
+                @Html.DisplayNameFor(model => model.Edition)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Product.Name)
@@ -26,21 +26,21 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.OrderByDescending(m=> m.BookingId)) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Edition)
+                @Html.DisplayFor(modelItem => item.Booking.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Booking.Id)
+                @Html.DisplayFor(modelItem => item.Edition)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Product.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
             </td>
         </tr>
 }

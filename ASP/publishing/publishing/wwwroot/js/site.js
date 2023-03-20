@@ -16,6 +16,21 @@ function Confirm(element) {
     }
 }
 
+function ConfirmUnpinFromTable(tableId,message,errorMessage) {
+
+    var countRows = document.getElementById(tableId).rows.length - 1;
+    if (countRows == 1) {
+        event.preventDefault();
+        alert(errorMessage);
+    }
+    else
+    {
+        if (!confirm(message)) {
+            event.preventDefault();
+        }
+    }
+}
+
 function CheckBoxes(errorMessage) {
     var boxes = document.getElementsByClassName('check_box');
     var checked = false;
@@ -51,5 +66,17 @@ function SetDate() {
     document.getElementById("datefield").setAttribute("min", today);
     document.getElementById("datefield").setAttribute("max", max_date);
 }
+function searchBookingInSelectBox() {
+    var input = document.getElementById('numberBooking');
+    var selectBox = document.getElementById('selectBox');
 
+    var i = 0;
+    for (var option of selectBox.options) {
+        if (option.value.trim() === input.value.trim()) {
+            selectBox.selectedIndex = i;
+            break;
+        } 
+        i++;
+    }
+}
 
