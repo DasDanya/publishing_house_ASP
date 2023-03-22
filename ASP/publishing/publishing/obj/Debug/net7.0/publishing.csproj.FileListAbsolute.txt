@@ -548,3 +548,12 @@ C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\ob
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\obj\Debug\net7.0\publishing.pdb
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\obj\Debug\net7.0\publishing.genruntimeconfig.cache
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\obj\Debug\net7.0\ref\publishing.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.UI.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.Extensions.FileProviders.Embedded.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\obj\Debug\net7.0\publishing.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
