@@ -81,9 +81,15 @@
                             @Html.DisplayFor(modelItem => item.Customer.Name)
                         </td>
                         <td>
-                            <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                            <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                            @if (User.IsInRole("admin"))
+                            {
+                                <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
+                                <span>| </span>
+                                <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                                <span>| </span>
+                            }
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
+                            
                         </td>
                     </tr>
                 }
@@ -92,6 +98,10 @@
     }
 }
     <div>
-    <a asp-action="Edit" asp-route-id="@Model.Material.Id">Изменение данных о материале</a> |
+    @if (User.IsInRole("admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Material.Id">Изменение данных о материале</a>
+        <span>| </span>
+    }
     <a asp-action="Index">Вернуться к списку материалов</a>
 </div>

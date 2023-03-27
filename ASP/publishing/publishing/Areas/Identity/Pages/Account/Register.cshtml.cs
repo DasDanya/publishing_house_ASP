@@ -133,8 +133,7 @@ namespace publishing.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
-                ;
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             bool isPhoneAlreadyRegistered = _userManager.Users.Any(item => item.PhoneNumber == Input.Phone);
             bool isEmailAlreadyRegistered = _userManager.Users.Any(item => item.Email == Input.Email);
             if (ModelState.IsValid && !isPhoneAlreadyRegistered && !isEmailAlreadyRegistered)
@@ -161,10 +160,13 @@ namespace publishing.Areas.Identity.Pages.Account
                     if (!await _roleManager.RoleExistsAsync("customer"))
                         await _roleManager.CreateAsync(new IdentityRole("customer"));
 
-                    await _userManager.AddToRoleAsync(user, "manager");
-                    var userId = await _userManager.GetUserIdAsync(user);
+                    await _userManager.AddToRoleAsync(user, "customer");
 
+                    //var userId = await _userManager.GetUserIdAsync(user); мб надо
                     await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    _context.Customers.Add(new Customer(Input.Name, Input.Phone, Input.Email));
+                    _context.SaveChanges();
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using publishing.Models;
 
 namespace publishing.Controllers
 {
+    [Authorize(Roles ="admin,manager")]
     public class PrintingHousesController : Controller
     {
         private readonly PublishingDBContext _context;
@@ -53,6 +55,7 @@ namespace publishing.Controllers
         }
 
         // GET: PrintingHouses/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -75,6 +78,7 @@ namespace publishing.Controllers
         }
 
         // GET: PrintingHouses/Edit/5
+        [Authorize(Roles ="admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.PrintingHouses == null)
@@ -126,6 +130,7 @@ namespace publishing.Controllers
         }
 
         // GET: PrintingHouses/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.PrintingHouses == null)
@@ -213,7 +218,6 @@ namespace publishing.Controllers
             await _context.SaveChangesAsync();
 
             return Redirect(Request.Headers["Referer"].ToString());
-
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using publishing.Models;
@@ -6,6 +7,7 @@ using System.Linq;
 
 namespace publishing.Controllers
 {
+    [Authorize (Roles="manager")]
     public class ManagerBookingController : Controller
     {
         private readonly PublishingDBContext _context;
@@ -38,7 +40,8 @@ namespace publishing.Controllers
                 booking.Status = "Выполнен";
                 _context.SaveChanges();
 
-                return Redirect(Request.Headers["Referer"].ToString());
+                //return Redirect(Request.Headers["Referer"].ToString());
+                return RedirectToAction("Index");
             }
 
             ViewBag.bookingId = bookingId;

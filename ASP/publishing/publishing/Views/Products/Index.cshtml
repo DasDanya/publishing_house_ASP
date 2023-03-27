@@ -7,9 +7,6 @@
 
 <h1>Список продукций</h1>
 
-<p>
-    <a asp-action="Create">Добавить продукцию</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -44,9 +41,16 @@
                 @Html.DisplayFor(modelItem => item.Customer.Name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                @if (User.IsInRole("admin")) 
+                { 
+                    <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
+                    <span>| </span>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    <span>| </span>
+                }
+
+                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a>     
+               
             </td>
         </tr>
 }

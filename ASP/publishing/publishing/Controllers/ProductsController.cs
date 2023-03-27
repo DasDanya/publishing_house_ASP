@@ -2,24 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using publishing.Areas.Identity.Data;
 using publishing.Models;
 using publishing.Models.ViewModels;
 
 namespace publishing.Controllers
 {
+    [Authorize]
     public class ProductsController : Controller
     {
         private readonly PublishingDBContext _context;
-
-        public ProductsController(PublishingDBContext context)
+        private readonly UserManager<publishingUser> _userManager;
+        public ProductsController(PublishingDBContext context, UserManager<publishingUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Products
+        [Authorize(Roles ="admin,manager")]
         public async Task<IActionResult> Index()
         {
             var publishingDBContext = _context.Products.Include(p => p.Customer).Include(p => p.TypeProduct);
@@ -40,10 +46,14 @@ namespace publishing.Controllers
                 .Include(p=> p.ProductMaterials)
                 .Include(p=> p.BookingProducts)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            
             if (product == null)
             {
                 return NotFound();
             }
+
+            if (!IsCustomerProduct(product.Id))
+                return new StatusCodeResult(403);
 
             ProductDetailsViewModel model = new ProductDetailsViewModel();
             model.Product = product;
@@ -56,6 +66,7 @@ namespace publishing.Controllers
         }
 
         // GET: Products/Create
+        [Authorize(Roles="customer")]
         public IActionResult Create()
         {
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name");
@@ -82,6 +93,7 @@ namespace publishing.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize(Roles ="admin,customer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Products == null)
@@ -137,6 +149,7 @@ namespace publishing.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize(Roles ="admin,customer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Products == null)
@@ -152,6 +165,10 @@ namespace publishing.Controllers
             {
                 return NotFound();
             }
+
+
+            if (!IsCustomerProduct(product.Id))
+                return new StatusCodeResult(403);
 
             return View(product);
         }
@@ -180,6 +197,7 @@ namespace publishing.Controllers
           return (_context.Products?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
+        [Authorize(Roles ="customer")]
         public IActionResult LinkProductWithBooking(int? customerId, int? productId) 
         {
             if (customerId == null || productId == null)
@@ -252,6 +270,7 @@ namespace publishing.Controllers
             return RedirectToAction("Details", new { id = productId });
         }
 
+        [Authorize(Roles ="customer")]
         public async Task<IActionResult> UnpinMaterial(int? productId, int? materialId)
         {
             if (productId == null || materialId == null)
@@ -274,7 +293,33 @@ namespace publishing.Controllers
                 costController.SetCostBooking(booking);
             }
 
-            return Redirect(Request.Headers["Referer"].ToString());
+            return RedirectToAction("Details", new {id=productId});
+            //return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        private bool IsCustomerProduct(int productId) 
+        {
+            //var user =  _userManager.GetUserAsync(HttpContext.User);
+
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (_userManager.IsInRoleAsync(user.Result, "customer").Result)
+            {
+                var product = _context.Products.FirstOrDefault(p => p.Id == productId);
+                if (product == null) 
+                    return false;
+
+                var customer = _context.Customers.Include(c=>c.Products).FirstOrDefault(c => c.Email == user.Result.Email);
+                if (customer == null)
+                    return false;
+
+                if (customer.Products.Contains(product))
+                    return true;
+                else
+                    return false;
+
+            }
+            return true;
         }
     }
 }

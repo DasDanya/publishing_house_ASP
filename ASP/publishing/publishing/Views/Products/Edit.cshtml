@@ -1,4 +1,8 @@
-﻿@model publishing.Models.Product
+﻿@using Microsoft.AspNetCore.Identity
+@using publishing.Areas.Identity.Data
+
+@model publishing.Models.Product
+@inject UserManager<publishingUser> UserManager
 
 @{
     ViewData["Title"] = "Edit";
@@ -45,7 +49,14 @@
 </div>
 
 <div>
-    <a asp-action="Index">Вернуться к списку продукций</a>
+    @if (User.IsInRole("admin"))
+    {
+        <a asp-action="Index">Вернуться к списку продукций</a>
+    }
+    else
+    {
+        <a asp-controller="Customers" asp-action="CustomerProducts" asp-route-emailCustomer="@UserManager.GetUserName(User)">Вернуться к списку продукций</a>
+    }
 </div>
 
 @section Scripts {

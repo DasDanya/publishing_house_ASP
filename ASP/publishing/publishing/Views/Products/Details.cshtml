@@ -1,4 +1,8 @@
-﻿@model publishing.Models.ViewModels.ProductDetailsViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@using publishing.Areas.Identity.Data
+
+@model publishing.Models.ViewModels.ProductDetailsViewModel
+@inject UserManager<publishingUser> UserManager
 
 @{
     ViewData["Title"] = "Details";
@@ -23,18 +27,21 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Product.Cost)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.TypeProduct.Type)
-        </dt>
-        <a asp-controller="TypeProducts" asp-action="Details" asp-route-id="@Model.Product.TypeProduct.Id" class="col-sm-10" style="cursor:pointer; color:inherit">
-            @Html.DisplayFor(model => model.Product.TypeProduct.Type)
-        </a>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.Customer.Name)
-        </dt>
-        <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.Product.Customer.Id" class="col-sm-10" style="cursor:pointer; color:inherit">
-            @Html.DisplayFor(model => model.Product.Customer.Name)
-        </a>
+        @if (!User.IsInRole("customer"))
+        {
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Product.TypeProduct.Type)
+            </dt>
+            <a asp-controller="TypeProducts" asp-action="Details" asp-route-id="@Model.Product.TypeProduct.Id" class="col-sm-10" style="cursor:pointer; color:inherit">
+                @Html.DisplayFor(model => model.Product.TypeProduct.Type)
+            </a>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Product.Customer.Name)
+            </dt>
+            <a asp-controller="Customers" asp-action="Details" asp-route-id="@Model.Product.Customer.Id" class="col-sm-10" style="cursor:pointer; color:inherit">
+                @Html.DisplayFor(model => model.Product.Customer.Name)
+            </a>
+        }
     </dl>
 </div>
 
@@ -51,10 +58,13 @@
                     <h4 style="margin-top:3px;">Заказы отсутствуют</h4>
                 }
             }
-         </div>
-        <div class="col-md-3 text-end">
-            <a asp-action="LinkProductWithBooking" asp-route-customerId="@Model.Product.Customer.Id" asp-route-productId="@Model.Product.Id" class="btn btn-info" style="margin-top:5px;">Привязать к заказу</a>
         </div>
+        @if (User.IsInRole("customer"))
+        {
+            <div class="col-md-3 text-end">
+                <a asp-action="LinkProductWithBooking" asp-route-customerId="@Model.Product.Customer.Id" asp-route-productId="@Model.Product.Id" class="btn btn-info" style="margin-top:5px;">Привязать к заказу</a>
+            </div>
+        }
     </div>
 </div>
 
@@ -82,9 +92,9 @@
                     <th>
                         Стоимость в заказе
                     </th>
-                     <th>
+                    <th>
                         @Html.DisplayNameFor(model => model.BookingProducts.First().Booking.Cost)
-                     </th>
+                    </th>
                     <th></th>
                 </tr>
             </thead>
@@ -115,16 +125,21 @@
                             @Html.DisplayFor(modelItem => item.Booking.Cost)
                         </td>
                         <td>
-                            <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Booking.Id">Изменить</a> |
-                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Booking.Id">Подробнее</a> |
-                            <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Booking.Id">Удалить</a>
-                            @{
-                                if (item.Booking.Status == "Ожидание")
-                                {
-                                    <span>| </span>                                   
-                                    <a asp-controller="Bookings" asp-action="UnpinProduct" asp-route-bookingId="@item.Booking.Id" asp-route-productId="@Model.Product.Id" onclick="ConfirmAction('Вы подтверждаете открепление продукции @product от заказа №@item.Booking.Id? Если продукция является единственной в заказе, то действие будет отменено')">Открепить</a>
-                                }
+                            @if (!User.IsInRole("manager"))
+                            {
+                                <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Booking.Id">Изменить</a>
+                                <span>| </span>
+                                <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Booking.Id">Удалить</a>
+                                <span>| </span>
                             }
+                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Booking.Id">Подробнее</a>
+
+                            @if (item.Booking.Status == "Ожидание" && User.IsInRole("customer"))
+                            {
+                                <span>| </span>
+                                <a asp-controller="Bookings" asp-action="UnpinProduct" asp-route-bookingId="@item.Booking.Id" asp-route-productId="@Model.Product.Id" onclick="ConfirmAction('Вы подтверждаете открепление продукции @product от заказа №@item.Booking.Id? Если продукция является единственной в заказе, то действие будет отменено')">Открепить</a>
+                            }
+
                         </td>
                     </tr>
                 }
@@ -138,6 +153,12 @@
         <div class="col-md-9">
             <h4 style="margin-top:3px;">Материалы</h4>
         </div>
+        @if (User.IsInRole("customer") && !Model.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
+        {
+            <div class="col-md-3 text-end">
+                <a asp-action="LinkProductWithBooking" asp-route-customerId="@Model.Product.Customer.Id" asp-route-productId="@Model.Product.Id" class="btn btn-info" style="margin-top:5px;">Привязать материалы</a>
+            </div>
+        }
     </div>
 </div>
 
@@ -189,22 +210,39 @@
                     @Html.DisplayFor(modelItem => Model.Cost)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-                    @{
-                        if (!Model.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
-                        {
-                            <span>| </span>
-                            <a asp-action="UnpinMaterial" asp-route-productId ="@Model.Product.Id" asp-route-materialId="@item.Material.Id" onclick="ConfirmUnpinFromTable('materials', 'Вы подтверждаете открепление материала @item.Material.Type от продукции @product?','Действие отменено. Продукция создаётся с использованием как минимум одного материала')">Открепить</a>
-                        }
+                    @if (User.IsInRole("admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a>   
+                        <span>| </span>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                        <span>| </span>
                     }
+                    @if (!User.IsInRole("customer"))
+                    {
+                        <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
+                    }
+                    @if (!Model.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание") && User.IsInRole("customer"))
+                    {                       
+                        <a asp-action="UnpinMaterial" asp-route-productId ="@Model.Product.Id" asp-route-materialId="@item.Material.Id" onclick="ConfirmUnpinFromTable('materials', 'Вы подтверждаете открепление материала @item.Material.Type от продукции @product?','Действие отменено. Продукция создаётся с использованием как минимум одного материала')">Открепить</a>
+                    }
+
                 </td>
             </tr>
         }
     </tbody>
 </table>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Product.Id">Изменнение данных о продукции</a> |
-    <a asp-action="Index">Вернуться к списку продукций</a>
+    @if (!User.IsInRole("manager"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Product.Id">Изменнение данных о продукции</a>
+        <span>| </span>
+    }
+    @if (!User.IsInRole("customer"))
+    {
+        <a asp-action="Index">Вернуться к списку продукций</a>
+    }
+    else
+    {
+        <a asp-controller="Customers" asp-action="CustomerProducts" asp-route-emailCustomer="@UserManager.GetUserName(User)">Вернуться к списку продукций</a>
+    }
 </div>

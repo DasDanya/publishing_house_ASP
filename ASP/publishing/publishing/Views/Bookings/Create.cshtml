@@ -1,4 +1,8 @@
-﻿@model publishing.Models.Booking
+﻿@using Microsoft.AspNetCore.Identity
+@using publishing.Areas.Identity.Data
+
+@model publishing.Models.Booking
+@inject UserManager<publishingUser> UserManager
 
 @{
     ViewData["Title"] = "Create";
@@ -44,7 +48,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Вернуться к списку заказов</a>
+    <a asp-controller="Customers" asp-action="CustomerBookings" asp-route-emailCustomer="@UserManager.GetUserName(User)">Вернуться к списку заказов</a>
 </div>
 
 @section Scripts {

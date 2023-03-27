@@ -32,5 +32,13 @@ namespace publishing.Models
         {
             Products = new List<Product>();
         }
+
+        public Customer(string name, string phone, string email)
+        {
+            Name = name;
+            Phone = phone;
+            Email = email;
+            Products = new List<Product>();
+        }
     }
 }

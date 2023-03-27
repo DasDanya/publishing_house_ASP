@@ -19,31 +19,21 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
+                    <ul class="navbar-nav">
+@*                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Конфиденциальность</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Таблицы</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="https://localhost:7187/Bookings">Заказы</a></li>
-                                <li><a class="dropdown-item" href="https://localhost:7187/Customers">Заказчики</a></li>
-                                <li><a class="dropdown-item" href="https://localhost:7187/Materials">Материалы</a></li>
-                                <li><a class="dropdown-item" href="https://localhost:7187/Products">Продукции</a></li>
-                                <li><a class="dropdown-item" href="https://localhost:7187/Employees">Сотрудники</a></li>
-                                <li><a class="dropdown-item" href="https://localhost:7187/PrintingHouses">Типографии</a></li>
-                                <li><a class="dropdown-item" href="https://localhost:7187/TypeProducts">Типы продукции</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="https://localhost:7187/BookingProducts">Заказы-Продукции</a></li>
-                                <li><a class="dropdown-item" href="https://localhost:7187/ProductMaterials">Продукции-Материалы</a></li>
-                            </ul>
-                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="https://localhost:7187/ManagerBooking">Управление заказами</a>
-                        </li>
+                        </li>*@
+                        @if (User.IsInRole("manager"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="ManagerBooking" asp-action="Index" class="nav-link text-dark">Управление заказами</a>
+                            </li>
+                        }
+
+
                     </ul>
                 </div>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">

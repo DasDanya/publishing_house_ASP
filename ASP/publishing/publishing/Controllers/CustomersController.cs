@@ -2,24 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using publishing.Areas.Identity.Data;
 using publishing.Models;
 using publishing.Models.ViewModels;
 
 namespace publishing.Controllers
 {
+    [Authorize]
     public class CustomersController : Controller
     {
         private readonly PublishingDBContext _context;
+        private readonly UserManager<publishingUser> _userManager;
 
-        public CustomersController(PublishingDBContext context)
+        public CustomersController(PublishingDBContext context, UserManager<publishingUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Customers
+        [Authorize(Roles ="manager,admin")]
         public async Task<IActionResult> Index()
         {
               return _context.Customers != null ? 
@@ -28,6 +35,7 @@ namespace publishing.Controllers
         }
 
         // GET: Customers/Details/5
+        [Authorize(Roles ="manager,admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Customers == null)
@@ -46,21 +54,26 @@ namespace publishing.Controllers
             CustomerDetailsViewModel model = new CustomerDetailsViewModel();
             model.Customer = customer;
 
-            var products = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p)).ToList();
-            if(products == null)
-                return NotFound();
+            //var products = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p)).ToList();
+            //if(products == null)
+            //    return NotFound();
 
-            foreach (var product in products)
-            {
-                //var bookingsProducts = _context.BookingProducts.Include(br => br.Booking).Where(bp => bp.ProductId == product.Id).ToList();
-                model.Bookings.AddRange(from bp in _context.BookingProducts.Include(bp => bp.Booking) where bp.ProductId == product.Id && !model.Bookings.Contains(bp.Booking) && bp.Booking !=null select bp.Booking);
-                model.Products.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Product) where bp.ProductId == product.Id && bp.Booking != null select bp.Product).Distinct());
-            }
+            model.Bookings = GetBookings(customer);
+            model.Products = GetProducts(customer);
+            //model.Bookings.AddRange(from bp in _context.BookingProducts.Include(bp => bp.Booking).Include(bp => bp.Product) where products.Contains(bp.Product) && !model.Bookings.Contains(bp.Booking) && bp.Booking != null select bp.Booking);
+            //model.Products.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Product) where products.Contains(bp.Product) && bp.Booking != null select bp.Product).Distinct());
+
+            //foreach (var product in products)
+            //{
+            //    model.Bookings.AddRange(from bp in _context.BookingProducts.Include(bp => bp.Booking) where bp.ProductId == product.Id && !model.Bookings.Contains(bp.Booking) && bp.Booking != null select bp.Booking);
+            //    model.Products.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Product) where bp.ProductId == product.Id && bp.Booking != null select bp.Product).Distinct());
+            //}
 
             return View(model);
         }
 
         // GET: Customers/Create
+        [Authorize(Roles ="admin")]
         public IActionResult Create()
         {
             return View();
@@ -83,6 +96,7 @@ namespace publishing.Controllers
         }
 
         // GET: Customers/Edit/5
+        [Authorize(Roles ="admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Customers == null)
@@ -134,6 +148,7 @@ namespace publishing.Controllers
         }
 
         // GET: Customers/Delete/5
+        [Authorize(Roles ="admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Customers == null)
@@ -173,6 +188,70 @@ namespace publishing.Controllers
         private bool CustomerExists(int id)
         {
           return (_context.Customers?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        private List<Booking> GetBookings(Customer customer) 
+        {
+            List<Booking> bookings = new List<Booking>();
+            var customerProducts = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p)).ToList();
+            if (customerProducts != null) 
+            {
+                bookings.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Booking).Include(bp => bp.Product) where customerProducts.Contains(bp.Product) && bp.Booking != null select bp.Booking).Distinct());
+            }
+
+            return bookings;
+        }
+
+        private List<Product> GetProducts(Customer customer) 
+        {
+            List<Product> products = new List<Product>();
+            var customerProducts = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p)).ToList();
+            if (customerProducts != null)
+            {
+                products.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Product) where customerProducts.Contains(bp.Product) && bp.Booking != null select bp.Product).Distinct());
+            }
+            return products;
+        }
+
+        [Authorize(Roles = "customer")]
+        public async Task<IActionResult> CustomerBookings(string emailCustomer)
+        {
+            var customer = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Email == emailCustomer);
+            if (customer == null)
+                return NotFound();
+
+            if(!IsCustomerEmail(emailCustomer))
+                return new StatusCodeResult(403);
+
+            //return NotFound($"{customer.Name}, {customer.Email}, {customer.Phone}, {customer.Products}");
+            return View(GetBookings(customer));
+        }
+
+        [Authorize(Roles="customer")]
+        public async Task<IActionResult> CustomerProducts(string emailCustomer)
+        {
+            var customer = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Email == emailCustomer);
+            if (customer == null)
+                return NotFound();
+
+            if (!IsCustomerEmail(emailCustomer))
+                return new StatusCodeResult(403);
+
+            return View(GetProducts(customer));
+        }
+
+        private bool IsCustomerEmail(string email)
+        {
+            //var user =  _userManager.GetUserAsync(HttpContext.User);
+
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            //var user = await _userManager.GetUserAsync(HttpContext.User);
+            if (_userManager.IsInRoleAsync(user.Result, "customer").Result)
+            {
+                if (email == user.Result.Email)
+                    return true;
+            }
+            return false;
         }
     }
 }

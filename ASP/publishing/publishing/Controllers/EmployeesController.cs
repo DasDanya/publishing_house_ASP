@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +11,7 @@ using publishing.Models;
 
 namespace publishing.Controllers
 {
+    [Authorize(Roles ="manager,admin")]
     public class EmployeesController : Controller
     {
         private readonly PublishingDBContext _context;
@@ -46,6 +48,7 @@ namespace publishing.Controllers
         }
 
         // GET: Employees/Create
+        [Authorize(Roles ="admin")]
         public IActionResult Create()
         {
             return View();
@@ -68,6 +71,7 @@ namespace publishing.Controllers
         }
 
         // GET: Employees/Edit/5
+        [Authorize(Roles ="admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Employees == null)
@@ -119,6 +123,7 @@ namespace publishing.Controllers
         }
 
         // GET: Employees/Delete/5
+        [Authorize(Roles ="admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Employees == null)

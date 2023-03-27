@@ -86,9 +86,15 @@
                             @Html.DisplayFor(modelItem => item.Cost)
                         </td>
                         <td>
-                            <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                            <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                            @if (User.IsInRole("admin"))
+                            {
+                                <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
+                                <span>| </span>
+                                <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                                <span>| </span>
+
+                            }
+                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id"> Подробнее </a>
                         </td>
                     </tr>
                 }
@@ -145,9 +151,14 @@
                             @Html.DisplayFor(modelItem => item.TypeProduct.Type)
                         </td>
                         <td>
-                            <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                            <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                            @if (User.IsInRole("admin"))
+                            {
+                                <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id">Изменить</a> 
+                                <span>| </span>
+                                <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                                <span>| </span>
+                            }
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Подробнее</a>         
                         </td>
                     </tr>
                 }
@@ -156,6 +167,10 @@
     }
 }
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Customer.Id">Изменение данных о заказчике</a> |
+    @if (User.IsInRole("admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Customer.Id">Изменение данных о заказчике</a>
+        <span>| </span>
+    }
     <a asp-action="Index">Вернуться к списку заказчиков</a>
 </div>
