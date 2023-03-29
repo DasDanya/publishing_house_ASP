@@ -557,3 +557,7 @@ C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bi
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\obj\Debug\net7.0\publishing.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.OpenApi.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Swashbuckle.AspNetCore.SwaggerUI.dll

@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\publishing.bundle.scp.css"
     },
     {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\bel.jpg",
+      "PackagePath": "staticwebassets\\bel.jpg"
+    },
+    {
       "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },

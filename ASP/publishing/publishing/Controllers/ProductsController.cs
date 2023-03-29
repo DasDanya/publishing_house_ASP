@@ -28,7 +28,8 @@ namespace publishing.Controllers
         [Authorize(Roles ="admin,manager")]
         public async Task<IActionResult> Index()
         {
-            var publishingDBContext = _context.Products.Include(p => p.Customer).Include(p => p.TypeProduct);
+            var publishingDBContext = _context.Products.Include(p => p.Customer).Include(p => p.TypeProduct).Include(p => p.BookingProducts).Where(p => p.BookingProducts.Count > 0);
+            
             return View(await publishingDBContext.ToListAsync());
         }
 
@@ -66,7 +67,7 @@ namespace publishing.Controllers
         }
 
         // GET: Products/Create
-        [Authorize(Roles="customer")]
+        [Authorize(Roles="customer,admin")]
         public IActionResult Create()
         {
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name");

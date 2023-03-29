@@ -1,0 +1,72 @@
+﻿@using publishing.Models.ViewModels;
+
+@model CartViewModel 
+
+@{
+    ViewData["Title"] = "Корзина продукций";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h1>Корзина продукций</h1>*@
+
+@if (Model.CartItems.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Название
+                </th>
+                <th>
+                    Количество
+                </th>
+                <th>
+
+                </th>
+                <th>
+                    Стоимость
+                </th>
+                <th>
+                    Общая стоимость
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems.OrderBy(c => c.Product.Name))
+            {
+                <tr>
+                    <td>
+                        @item.Product.Name
+                    </td>
+                    <td>
+                        @item.Quantity
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-action="Add" asp-route-id="@item.Product.Id">+</a>
+                        <a class="btn btn-info btn-sm" asp-action="Decrease" asp-route-id="@item.Product.Id">-</a>
+                        <a class="btn btn-danger btn-sm" asp-action="Remove" asp-route-id="@item.Product.Id">Удалить</a>
+                    </td>
+                    <td>
+                        @item.Product.Cost₽
+                    </td>
+                    <td>
+                        @Model.CartItems.Where(c=>c.Product.Id == item.Product.Id).Sum(c=>c.Quantity * c.Product.Cost)₽
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td class="text-right" colspan="4">Стоимость продукций: @Model.GrandTotal₽</td>
+            </tr>
+            <tr>
+                <td class="text-right" colspan="4">
+                    <a class="btn btn-danger" asp-action="Clear">Очистить корзину</a>
+                    <a class="btn btn-primary" href="#">Чекаем</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
+else
+{
+    <h3 class="display-4 text-center">Ваша корзина пуста</h3>
+}

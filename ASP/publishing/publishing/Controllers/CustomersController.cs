@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using publishing.Areas.Identity.Data;
 using publishing.Models;
 using publishing.Models.ViewModels;
+using publishing.Infrastructure;
 
 namespace publishing.Controllers
 {
@@ -26,16 +27,16 @@ namespace publishing.Controllers
         }
 
         // GET: Customers
-        [Authorize(Roles ="manager,admin")]
+        [Authorize(Roles = "manager,admin")]
         public async Task<IActionResult> Index()
         {
-              return _context.Customers != null ? 
-                          View(await _context.Customers.ToListAsync()) :
-                          Problem("Entity set 'PublishingDBContext.Customers'  is null.");
+            return _context.Customers != null ?
+                        View(await _context.Customers.ToListAsync()) :
+                        Problem("Entity set 'PublishingDBContext.Customers'  is null.");
         }
 
         // GET: Customers/Details/5
-        [Authorize(Roles ="manager,admin")]
+        [Authorize(Roles = "manager,admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Customers == null)
@@ -50,7 +51,7 @@ namespace publishing.Controllers
             {
                 return NotFound();
             }
-            
+
             CustomerDetailsViewModel model = new CustomerDetailsViewModel();
             model.Customer = customer;
 
@@ -59,7 +60,7 @@ namespace publishing.Controllers
             //    return NotFound();
 
             model.Bookings = GetBookings(customer);
-            model.Products = GetProducts(customer);
+            model.Products = GetProducts(customer,true);
             //model.Bookings.AddRange(from bp in _context.BookingProducts.Include(bp => bp.Booking).Include(bp => bp.Product) where products.Contains(bp.Product) && !model.Bookings.Contains(bp.Booking) && bp.Booking != null select bp.Booking);
             //model.Products.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Product) where products.Contains(bp.Product) && bp.Booking != null select bp.Product).Distinct());
 
@@ -73,7 +74,7 @@ namespace publishing.Controllers
         }
 
         // GET: Customers/Create
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -96,7 +97,7 @@ namespace publishing.Controllers
         }
 
         // GET: Customers/Edit/5
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Customers == null)
@@ -148,7 +149,7 @@ namespace publishing.Controllers
         }
 
         // GET: Customers/Delete/5
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Customers == null)
@@ -180,21 +181,21 @@ namespace publishing.Controllers
             {
                 _context.Customers.Remove(customer);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CustomerExists(int id)
         {
-          return (_context.Customers?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Customers?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        private List<Booking> GetBookings(Customer customer) 
+        private List<Booking> GetBookings(Customer customer)
         {
             List<Booking> bookings = new List<Booking>();
             var customerProducts = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p)).ToList();
-            if (customerProducts != null) 
+            if (customerProducts != null)
             {
                 bookings.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Booking).Include(bp => bp.Product) where customerProducts.Contains(bp.Product) && bp.Booking != null select bp.Booking).Distinct());
             }
@@ -202,13 +203,17 @@ namespace publishing.Controllers
             return bookings;
         }
 
-        private List<Product> GetProducts(Customer customer) 
+        private List<Product> GetProducts(Customer customer,bool InBooking)
         {
             List<Product> products = new List<Product>();
             var customerProducts = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p)).ToList();
             if (customerProducts != null)
             {
-                products.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Product) where customerProducts.Contains(bp.Product) && bp.Booking != null select bp.Product).Distinct());
+                if (InBooking)
+                    products.AddRange((from bp in _context.BookingProducts.Include(bp => bp.Product) where customerProducts.Contains(bp.Product) && bp.Booking != null select bp.Product).Distinct());
+
+                else
+                    products = customerProducts;
             }
             return products;
         }
@@ -220,14 +225,14 @@ namespace publishing.Controllers
             if (customer == null)
                 return NotFound();
 
-            if(!IsCustomerEmail(emailCustomer))
+            if (!IsCustomerEmail(emailCustomer))
                 return new StatusCodeResult(403);
 
             //return NotFound($"{customer.Name}, {customer.Email}, {customer.Phone}, {customer.Products}");
             return View(GetBookings(customer));
         }
 
-        [Authorize(Roles="customer")]
+        [Authorize(Roles = "customer")]
         public async Task<IActionResult> CustomerProducts(string emailCustomer)
         {
             var customer = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Email == emailCustomer);
@@ -237,7 +242,7 @@ namespace publishing.Controllers
             if (!IsCustomerEmail(emailCustomer))
                 return new StatusCodeResult(403);
 
-            return View(GetProducts(customer));
+            return View(GetProducts(customer, false));
         }
 
         private bool IsCustomerEmail(string email)
@@ -252,6 +257,68 @@ namespace publishing.Controllers
                     return true;
             }
             return false;
+        }
+
+        public IActionResult SelectProducts(int? bookingId, string typeProduct = "", int p = 1)
+        {
+            if (bookingId == null)
+                return NotFound();
+
+            int pageSize = 3;
+            ViewBag.pageNumber = p;
+            ViewBag.pageRange = pageSize;
+            ViewBag.typeProduct = typeProduct;
+            ViewBag.bookingId = bookingId;
+
+            // Корзина
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
+            SmallCartViewModel smallCartModel;
+
+            if (cart == null || cart.Count == 0)
+                smallCartModel = null;
+            else
+            {
+                smallCartModel = new()
+                {
+                    NumberOfItems = cart.Sum(x => x.Quantity),
+                    TotalAmount = cart.Sum(x => x.Quantity * x.Product.Cost)
+                };
+            }
+            ViewBag.smallCartModel = smallCartModel;
+            //Конец корзины
+
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            var customer = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Email == user.Result.Email);
+            if (customer == null)
+                return NotFound();
+
+            var customerProducts = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p));
+            List<string> typesProducts = new List<string>();
+            foreach (var product in customerProducts) 
+            { 
+                if(!typesProducts.Contains(product.TypeProduct.Type))
+                    typesProducts.Add(product.TypeProduct.Type);
+            }
+            ViewBag.typeProducts = typesProducts;
+
+            if (typeProduct == "")
+            {
+                ViewBag.totalPages = (int)Math.Ceiling((decimal)customer.Products.Count / pageSize);
+                return View(customer.Products.OrderBy(p => p.Name).Skip((p - 1) * pageSize).Take(pageSize).ToList());
+            }
+
+            //TypeProduct type = _context.TypeProducts.FirstOrDefault(tp => tp.Type == typeProduct);
+            //if(type == null)
+            //    return Redirect(Request.Headers["Referer"].ToString());
+
+            var productsByType = _context.Products.Include(p => p.TypeProduct).Where(p => p.TypeProduct.Type == typeProduct && customer.Products.Contains(p)).ToList();
+            if(productsByType.Count == 0)
+                return Redirect(Request.Headers["Referer"].ToString());
+
+            ViewBag.totalPages = (int)Math.Ceiling((decimal)productsByType.Count / pageSize);
+
+            return View(productsByType.OrderBy(p => p.Name).Skip((p - 1) * pageSize).Take(pageSize).ToList());
+
         }
     }
 }

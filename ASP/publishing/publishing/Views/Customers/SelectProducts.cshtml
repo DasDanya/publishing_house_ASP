@@ -1,0 +1,136 @@
+﻿@model IEnumerable<publishing.Models.Product>
+@using publishing.Models.ViewModels;
+@{
+    ViewData["Title"] = "Выбор продукций";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var typeProductURL = Context.Request.Query["typeProduct"].ToString();
+}
+
+
+@*<h1>Выбор продукций</h1>*@
+<h4>@ViewBag.check</h4>
+<div class="container p-0" style="height:40px;">
+    <div class="row pb-3">
+        <div class="col-md-9">
+            <h1>Выбор продукций</h1>
+        </div>
+        <div>
+            <a asp-action="" class="btn btn-info" style="margin-top:3px;">Добавить продукцию</a>
+        </div>
+    </div>
+</div>
+
+<div style="display:flex; margin-top:70px;">
+    <div class="left-menu" style="width:22%;margin-right:40px;">
+        <div class="list-group" id="menu">
+            @*//<li class="list-group-item list-group-item-action active" id="itemMenu">*@
+            @if (typeProductURL == "")
+            {
+                <a class="list-group-item" asp-action="SelectProducts" asp-route-bookingId="@ViewBag.bookingId" style="background-color:#0dcaf0;">Все продукции</a>
+            }
+            else
+            {
+                <a class="list-group-item" asp-action="SelectProducts" asp-route-bookingId="@ViewBag.bookingId">Все продукции</a>
+            }
+            @*</li>*@
+            @foreach(string typeProduct in ViewBag.typeProducts)
+            {
+                //<li class="list-group-item list-group-item-action">
+                @if (typeProduct != typeProductURL)
+                {
+                    <a class="list-group-item" asp-action="SelectProducts" asp-route-bookingId="@ViewBag.bookingId" asp-route-typeProduct="@typeProduct">@typeProduct</a>
+                }
+                else
+                {
+                    <a class="list-group-item" asp-action="SelectProducts" asp-route-bookingId="@ViewBag.bookingId" asp-route-typeProduct="@typeProduct" style="background-color:#0dcaf0;">@typeProduct</a>
+                }
+                //</li>
+            }
+        </div>
+        <div class="bg-success mt-3 p-3 text-white" style="margin-top:7px;">
+            @if (ViewBag.smallCartModel != null)
+            {
+                SmallCartViewModel smartCartModel = ViewBag.smallCartModel;
+                <p>Количество продукций: <span class="badge badge-primary">@smartCartModel.NumberOfItems</span></p>
+                <p>Общая стоимость: <b>@smartCartModel.TotalAmount ₽</b></p>
+                <a href="" class="btn btn-primary mb-2">Просмотр корзины</a>
+                <a href="" class="btn btn-danger">Очистить корзину</a>
+            }
+            else
+            {
+                <p class="lead m-0">Ваша корзина пуста</p>    
+            }
+        </div>
+    </div>
+
+    <div class="row" style="width:74%;">
+        @foreach(var product in Model)
+        {
+            <div class="col-4">
+                <img src="~/bel.jpg" class="img-fluid" alt=""></img>
+                <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" style="cursor:pointer;color:inherit;"><h4 style="margin-bottom:0;">@product.Name</h4></a>
+                <p style="margin:0;">Тип: @product.TypeProduct.Type</p>
+                <p style="margin-bottom:7px;">Стоимость: @Convert.ToDecimal(product.Cost)₽</p>
+                <p><a class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id" style="margin-top:0;">Добавить в корзину</a></p>
+            </div>      
+        }
+
+        @if (ViewBag.totalPages > 1)
+        {
+            <div class="d-flex w-100 justify-content-center">
+                <pagination page-count="@ViewBag.totalPages" 
+                        page-target="@ViewBag.typeProduct"
+                        page-number="@ViewBag.pageNumber" 
+                        page-range="@ViewBag.pageRange"
+                        page-id="@ViewBag.bookingId">
+                        
+                </pagination>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts{
+<script>
+  
+            //var ul = document.getElementById("");
+
+            //function Check()
+            //{
+            //    var listItems = document.querySelector('#menu > a');
+
+            //    for (li of listItems) {
+            //        li.addEventListener('click', function () {
+            //            if (this.classList.contains('active')) {
+            //                this.classList.remove("active");
+            //            } else {
+            //                this.classList.add("active");
+            //            }
+            //        })
+            //    }
+            //}
+  
+          //$(document).ready(function() {
+          //  $('li').click(function(event) {
+          //      $(this).toggleClass('active');
+          //  });
+          // });//end doc ready
+
+        //    $('#menu li').click(function (event) {
+        //    $('#menu li').removeClass('selected');
+        //    $(this).addClass('selected');
+        //});
+
+//let old;
+ 
+//document.querySelector('#menu').addEventListener('click',e => {
+//        if (old) old.style.background = '';
+//        old = e.target;
+//        e.target.style.background = 'red'; 
+//});
+
+        //$("#menu a").on("click", function () {
+        //    $(this).addClass("active");
+        //});
+</script>
+}

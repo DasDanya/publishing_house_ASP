@@ -88,3 +88,30 @@ a {
         text-decoration: underline;
 }
 /*Конец*/
+
+/*Для ul в составлении заказа*/
+/*#typeProducts>li>a:focus,
+#typeProducts>li>a:hover {
+    background-color: red;
+}
+#typeProducts > li > a::after {
+    background: red;
+    transition: all .2s ease-in-out;
+    transform: scaleX(0);
+}
+#typeProducts>li>a:hover:after {
+    transform: scaleX(1);
+}*/
+
+/*#menu li {
+ padding:0;
+}
+.active {
+    background-color:red;
+}*/
+/*/*#menu li > a {
+    display:block;
+    padding:0;
+    margin:0;
+}*/
+/*Конец*/

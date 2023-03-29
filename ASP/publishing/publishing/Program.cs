@@ -19,6 +19,13 @@ builder.Services.AddDbContext<PublishingDBContext>(options =>
 builder.Services.AddDbContext<publishingContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("PublishingDB")));
 
+// Для корзины
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddIdentity<publishingUser, IdentityRole>(options => 
     options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<publishingContext>();
@@ -28,8 +35,12 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
     opt.LoginPath = new PathString("/Identity/Account/Login");
 });
+                                                                                                                                            
 
 var app = builder.Build();
+
+// Для корзины
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -50,6 +61,11 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "customers",
+    pattern: "/customers/{typeProduct?}",
+    defaults:new {controller="Customers",action="SelectProducts"});
 
 app.MapRazorPages();
 app.Run();
