@@ -28,7 +28,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddIdentity<publishingUser, IdentityRole>(options => 
-    options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<publishingContext>();
+options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<publishingContext>();
 
 builder.Services.ConfigureApplicationCookie(opt =>
 {

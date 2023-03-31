@@ -13,10 +13,10 @@ namespace publishing.Models
         [DisplayName("Дата приёма")]
         public DateTime Start { get; set; }
         
-        [Required(ErrorMessage = "Введите дату выполнения")]
+
         [DataType(DataType.Date)]
         [DisplayName("Дата выполнения")]
-        public DateTime End { get; set; }
+        public DateTime? End { get; set; }
 
         [Required(ErrorMessage = "Введите статус заказа")]
         [DataType(DataType.Text)]

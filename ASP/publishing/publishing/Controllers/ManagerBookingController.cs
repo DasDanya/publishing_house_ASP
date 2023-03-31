@@ -34,7 +34,7 @@ namespace publishing.Controllers
 
             if (bookingStatus == "Выполняется")
             {
-                if(booking.End.Date < DateTime.Now.Date)
+                if(booking.End.Value.Date < DateTime.Now.Date)
                     booking.End = DateTime.Now.Date;
 
                 booking.Status = "Выполнен";

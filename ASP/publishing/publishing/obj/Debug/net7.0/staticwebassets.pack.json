@@ -9,6 +9,10 @@
       "PackagePath": "staticwebassets\\bel.jpg"
     },
     {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\cap.jpg",
+      "PackagePath": "staticwebassets\\cap.jpg"
+    },
+    {
       "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
@@ -247,6 +251,10 @@
     {
       "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\sanych.jpg",
+      "PackagePath": "staticwebassets\\sanych.jpg"
     },
     {
       "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.publishing.props",

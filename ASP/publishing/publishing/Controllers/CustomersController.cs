@@ -270,23 +270,6 @@ namespace publishing.Controllers
             ViewBag.typeProduct = typeProduct;
             ViewBag.bookingId = bookingId;
 
-            // Корзина
-            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
-            SmallCartViewModel smallCartModel;
-
-            if (cart == null || cart.Count == 0)
-                smallCartModel = null;
-            else
-            {
-                smallCartModel = new()
-                {
-                    NumberOfItems = cart.Sum(x => x.Quantity),
-                    TotalAmount = cart.Sum(x => x.Quantity * x.Product.Cost)
-                };
-            }
-            ViewBag.smallCartModel = smallCartModel;
-            //Конец корзины
-
             var user = _userManager.GetUserAsync(HttpContext.User);
             var customer = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Email == user.Result.Email);
             if (customer == null)
@@ -300,6 +283,35 @@ namespace publishing.Controllers
                     typesProducts.Add(product.TypeProduct.Type);
             }
             ViewBag.typeProducts = typesProducts;
+
+            // Корзина
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>($"{user.Result.Email}_Cart");
+            SmallCartViewModel smallCartModel = null;
+
+            if (cart != null && cart.Count > 0) 
+            {
+                //var customerCart = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Products.Contains(cart.First().Product));
+                //if (customerCart == null)
+                //    return NotFound();
+
+                //if (customerCart.Email != user.Result.Email) 
+                //{
+                //    //Очистка Json
+                //    HttpContext.Session.Remove("Cart");
+                //}
+                //else
+                //{
+                smallCartModel = new()
+                {
+                        NumberOfItems = cart.Sum(x => x.Quantity),
+                        TotalAmount = cart.Sum(x => x.Quantity * x.Product.Cost)
+                    
+                };
+            }          
+                //smallCartModel = null;            
+           
+            ViewBag.smallCartModel = smallCartModel;
+            //Конец корзины
 
             if (typeProduct == "")
             {

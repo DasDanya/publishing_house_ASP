@@ -4,11 +4,10 @@
     ViewData["Title"] = "Выбор продукций";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var typeProductURL = Context.Request.Query["typeProduct"].ToString();
+    int bookingId = int.Parse(Context.Request.Query["bookingId"].ToString());
 }
 
-
 @*<h1>Выбор продукций</h1>*@
-<h4>@ViewBag.check</h4>
 <div class="container p-0" style="height:40px;">
     <div class="row pb-3">
         <div class="col-md-9">
@@ -51,14 +50,15 @@
             @if (ViewBag.smallCartModel != null)
             {
                 SmallCartViewModel smartCartModel = ViewBag.smallCartModel;
-                <p>Количество продукций: <span class="badge badge-primary">@smartCartModel.NumberOfItems</span></p>
-                <p>Общая стоимость: <b>@smartCartModel.TotalAmount ₽</b></p>
-                <a href="" class="btn btn-primary mb-2">Просмотр корзины</a>
-                <a href="" class="btn btn-danger">Очистить корзину</a>
+                <h4>Корзина</h4>
+                <p style="margin:0">Количество продукций: <b>@smartCartModel.NumberOfItems</b></p>
+                <p style="margin:0">Общая стоимость: <b>@Math.Round(smartCartModel.TotalAmount,2)₽</b></p>
+                <a asp-controller="Cart" asp-action="Index" asp-route-bookingId="@bookingId" class="btn btn-primary">Просмотр</a>
+                <a asp-controller="Cart" asp-action="Clear" class="btn btn-primary" style="background-color:red;border-color:red">Очистить</a>
             }
             else
             {
-                <p class="lead m-0">Ваша корзина пуста</p>    
+                <p class="m-0">Ваша корзина пуста</p>    
             }
         </div>
     </div>
@@ -67,7 +67,7 @@
         @foreach(var product in Model)
         {
             <div class="col-4">
-                <img src="~/bel.jpg" class="img-fluid" alt=""></img>
+                <img src="~/sanych.jpg" class="img-fluid" alt=""></img>
                 <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" style="cursor:pointer;color:inherit;"><h4 style="margin-bottom:0;">@product.Name</h4></a>
                 <p style="margin:0;">Тип: @product.TypeProduct.Type</p>
                 <p style="margin-bottom:7px;">Стоимость: @Convert.ToDecimal(product.Cost)₽</p>
