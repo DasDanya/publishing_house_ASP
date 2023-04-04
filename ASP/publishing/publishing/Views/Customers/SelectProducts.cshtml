@@ -4,7 +4,6 @@
     ViewData["Title"] = "Выбор продукций";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var typeProductURL = Context.Request.Query["typeProduct"].ToString();
-    int bookingId = int.Parse(Context.Request.Query["bookingId"].ToString());
 }
 
 @*<h1>Выбор продукций</h1>*@
@@ -14,14 +13,14 @@
             <h1>Выбор продукций</h1>
         </div>
         <div>
-            <a asp-action="" class="btn btn-info" style="margin-top:3px;">Добавить продукцию</a>
+            <a asp-controller="Products" asp-action="Create" class="btn btn-info" style="margin-top:3px;">Добавить продукцию</a>
         </div>
     </div>
 </div>
 
 <div style="display:flex; margin-top:70px;">
     <div class="left-menu" style="width:22%;margin-right:40px;">
-        <div class="list-group" id="menu">
+        <div class="list-group" id="menu" style="border-radius:5px;">
             @*//<li class="list-group-item list-group-item-action active" id="itemMenu">*@
             @if (typeProductURL == "")
             {
@@ -46,15 +45,15 @@
                 //</li>
             }
         </div>
-        <div class="bg-success mt-3 p-3 text-white" style="margin-top:7px;">
+        <div class="bg-success mt-3 p-3 text-white" style="margin-top:7px; border-radius:5px;">
             @if (ViewBag.smallCartModel != null)
             {
                 SmallCartViewModel smartCartModel = ViewBag.smallCartModel;
                 <h4>Корзина</h4>
                 <p style="margin:0">Количество продукций: <b>@smartCartModel.NumberOfItems</b></p>
                 <p style="margin:0">Общая стоимость: <b>@Math.Round(smartCartModel.TotalAmount,2)₽</b></p>
-                <a asp-controller="Cart" asp-action="Index" asp-route-bookingId="@bookingId" class="btn btn-primary">Просмотр</a>
-                <a asp-controller="Cart" asp-action="Clear" class="btn btn-primary" style="background-color:red;border-color:red">Очистить</a>
+                <a asp-controller="Cart" asp-action="Index"  class="btn btn-primary">Просмотр</a>
+                <a asp-controller="Cart" asp-action="Clear" asp-route-type="product" class="btn btn-primary" style="background-color:red;border-color:red">Очистить</a>
             }
             else
             {
@@ -71,7 +70,7 @@
                 <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" style="cursor:pointer;color:inherit;"><h4 style="margin-bottom:0;">@product.Name</h4></a>
                 <p style="margin:0;">Тип: @product.TypeProduct.Type</p>
                 <p style="margin-bottom:7px;">Стоимость: @Convert.ToDecimal(product.Cost)₽</p>
-                <p><a class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id" style="margin-top:0;">Добавить в корзину</a></p>
+                <p><a class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@product.Id" asp-route-type="product" style="margin-top:0;">Добавить в корзину</a></p>
             </div>      
         }
 
@@ -81,9 +80,7 @@
                 <pagination page-count="@ViewBag.totalPages" 
                         page-target="@ViewBag.typeProduct"
                         page-number="@ViewBag.pageNumber" 
-                        page-range="@ViewBag.pageRange"
-                        page-id="@ViewBag.bookingId">
-                        
+                        page-range="@ViewBag.pageRange">
                 </pagination>
             </div>
         }

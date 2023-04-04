@@ -7,6 +7,13 @@
 
 <h1>Список заказов</h1>
 
+@if (User.IsInRole("manager"))
+{
+    <p>
+        <a asp-controller="ManagerBooking" asp-action="Index">Управление заказами</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>

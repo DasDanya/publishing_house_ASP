@@ -5,10 +5,10 @@
 @{
     ViewData["Title"] = "Корзина продукций";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int bookingId = int.Parse(Context.Request.Query["bookingId"].ToString());
+    int bookingId = ViewBag.bookingId;
     double grandTotal = Math.Round(Model.GrandTotal, 2);
     string nameButtonPrimary = bookingId == -1 ? "Создать" : "Добавить";
-    string message = bookingId == -1 ? "Вы подтверждаете создание заказа?" : $"Вы подтверждаете добавление продукции(-ий) к заказу №{bookingId}";
+    string message = bookingId == -1 ? "Вы подтверждаете создание заказа?" : $"Вы подтверждаете добавление продукции(-ий) к заказу №{bookingId}?";
 }
 
 @*<h1>Корзина продукций</h1>*@
@@ -57,9 +57,9 @@
                             @Math.Round(Model.CartItems.Where(c=>c.Product.Id == item.Product.Id).Sum(c=>c.Quantity * c.Product.Cost),2)₽
                         </td>
                          <td>
-                            <a class="btn btn-primary m-0" asp-action="Add" asp-route-id="@item.Product.Id">+</a>
-                            <a class="btn btn-primary m-0" asp-action="Decrease" asp-route-id="@item.Product.Id" style="background-color:#0dcaf0; border-color:#0dcaf0;">-</a>
-                            <a class="btn btn-primary m-0" asp-action="Remove" asp-route-id="@item.Product.Id" style="background-color:red;border-color:red;">Удалить</a>
+                            <a class="btn btn-primary m-0" asp-action="Add" asp-route-id="@item.Product.Id" asp-route-type="product">+</a>
+                            <a class="btn btn-primary m-0" asp-action="Decrease" asp-route-id="@item.Product.Id" asp-route-type="product" style="background-color:#0dcaf0; border-color:#0dcaf0;">-</a>
+                            <a class="btn btn-primary m-0" asp-action="Remove" asp-route-id="@item.Product.Id" asp-route-type="product" style="background-color:red;border-color:red;">Удалить</a>
                         </td>
                     </tr>
                 }
@@ -80,7 +80,7 @@
         @*<p class="text-right">Стоимость продукций: @Model.GrandTotal₽</p>    *@
         <div style="display:inline">
             <input type="submit" class="btn btn-primary" value="@nameButtonPrimary" onclick="ConfirmAction('@message')">
-            <a class="btn btn-primary" asp-action="Clear" style="background-color:red;border-color:red;">Очистить корзину</a>
+            <a class="btn btn-primary" asp-action="Clear" asp-route-type="product" style="background-color:red;border-color:red;">Очистить корзину</a>
         </div>
     </form>
            

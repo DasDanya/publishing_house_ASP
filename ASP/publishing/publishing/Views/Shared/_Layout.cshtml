@@ -26,7 +26,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Конфиденциальность</a>
                         </li>*@
-                        @if (User.IsInRole("manager"))
+                       @* @if (User.IsInRole("manager"))
                         {
                             <li class="nav-item">
                                 <a asp-controller="ManagerBooking" asp-action="Index" class="nav-link text-dark">Управление заказами</a>
@@ -37,8 +37,7 @@
                             <li class="nav-item">
                                 <a asp-controller="Customers" asp-action="SelectProducts" asp-route-bookingId="-1" class="nav-link text-dark">Создать заказ</a>
                             </li>
-                        }
-
+                        }*@
                     </ul>
                 </div>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">

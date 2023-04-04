@@ -8,7 +8,7 @@
 <h1>Список заказов</h1>
 
 <p>
-    <a asp-controller = "Bookings" asp-action="Create">Добавить заказ</a>
+    <a asp-action="TransitionToSelectProducts" asp-route-bookingId="-1">Создать заказ</a>
 </p>
 @{
     if (Model.Count() > 0)

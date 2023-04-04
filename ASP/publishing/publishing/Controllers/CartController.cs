@@ -5,14 +5,22 @@ using publishing.Models;
 using publishing.Models.ViewModels;
 using publishing.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Authorization;
 
 namespace publishing.Controllers
 {
+    [Authorize(Roles ="customer")]
     public class CartController : Controller
     {
         private readonly PublishingDBContext _context;
         private readonly UserManager<publishingUser> _userManager;
-        private string NameCart { get { return $"{_userManager.GetUserAsync(HttpContext.User).Result.Email}_Cart"; } }
+        private string JsonProduct { get { return $"{_userManager.GetUserAsync(HttpContext.User).Result.Email}_Product"; } }
+        private string JsonMaterial { get { return $"{_userManager.GetUserAsync(HttpContext.User).Result.Email}_Material"; } }
+
+        private string NameProduct { get { return $"ProductBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}"; } }
+
+        private string NameBooking { get { return $"BookingBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}";} }
 
         public CartController(PublishingDBContext context, UserManager<publishingUser> userManager)
         {
@@ -20,12 +28,15 @@ namespace publishing.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(int? bookingId)
+        public IActionResult Index()
         {
-            if (bookingId == null)
+            int bookingId = HttpContext.Session.GetJson<int>(NameBooking);
+            if (bookingId == 0)
                 return NotFound();
 
-            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(NameCart) ?? new List<CartItem>();
+            ViewBag.bookingId = bookingId;
+
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(JsonProduct) ?? new List<CartItem>();
             CartViewModel smallCartModel = new()
             {
                 CartItems = cart,
@@ -34,71 +45,141 @@ namespace publishing.Controllers
             return View(smallCartModel);
         }
 
-        public async Task<IActionResult> Add(int id)
+        public IActionResult IndexMaterials()
         {
-            Product product = _context.Products.FirstOrDefault(p => p.Id == id);
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(JsonMaterial) ?? new List<CartItem>();
+            Product product = HttpContext.Session.GetJson<Product>(NameProduct);
             if (product == null)
                 return NotFound();
 
-            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(NameCart) ?? new List<CartItem>();
-            CartItem cartItem = cart.Where(c => c.Product.Id == id).FirstOrDefault();
-            if (cartItem == null)
-                cart.Add(new CartItem(product));
-            else
-                cartItem.Quantity += 1;
+            ViewBag.product = product;
 
-            HttpContext.Session.SetJson(NameCart, cart);
+            CartViewModel smallCartModel = new()
+            {
+                CartItems = cart,
+                GrandTotal = cart.Sum(x => x.Quantity * x.Material.Cost)
+            };
+            return View(smallCartModel);
+        }
+
+        public async Task<IActionResult> Add(int id, string type)
+        {
+            if (type == "product")
+            {
+                Product product = _context.Products.FirstOrDefault(p => p.Id == id);
+                if (product == null)
+                    return NotFound();
+
+                List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(JsonProduct) ?? new List<CartItem>();
+                CartItem cartItem = cart.Where(c => c.Product.Id == id).FirstOrDefault();
+                if (cartItem == null)
+                    cart.Add(new CartItem(product));
+                else
+                    cartItem.Quantity += 1;
+
+                HttpContext.Session.SetJson(JsonProduct, cart);
+            }
+            if (type == "material") 
+            {
+                Material material = _context.Materials.FirstOrDefault(p => p.Id == id);
+                if (material == null)
+                    return NotFound();
+
+                List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(JsonMaterial) ?? new List<CartItem>();
+                CartItem cartItem = cart.Where(c => c.Material.Id == id).FirstOrDefault();
+                if (cartItem == null)
+                    cart.Add(new CartItem(material));
+                else
+                    cartItem.Quantity += 1;
+
+                HttpContext.Session.SetJson(JsonMaterial, cart);                
+            }
 
             return Redirect(Request.Headers["Referer"].ToString());
 
         }
 
-        public async Task<IActionResult> Decrease(int id)
+        public async Task<IActionResult> Decrease(int id,string type)
         {
-            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(NameCart);
-            CartItem cartItem = cart.Where(c => c.Product.Id == id).FirstOrDefault();
+            if (type == "product")
+            {
+                List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(JsonProduct);
+                CartItem cartItem = cart.Where(c => c.Product.Id == id).FirstOrDefault();
 
-            if (cartItem.Quantity > 1)
-                --cartItem.Quantity;
-            else
+                if (cartItem.Quantity > 1)
+                    --cartItem.Quantity;
+                else
+                    cart.RemoveAll(p => p.Product.Id == id);
+
+                if (cart.Count == 0)
+                    HttpContext.Session.Remove(JsonProduct);
+                else
+                    HttpContext.Session.SetJson(JsonProduct, cart);
+            }
+            if (type == "material") 
+            {
+                List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(JsonMaterial);
+                CartItem cartItem = cart.Where(c => c.Material.Id == id).FirstOrDefault();
+
+                if (cartItem.Quantity > 1)
+                    --cartItem.Quantity;
+                else
+                    cart.RemoveAll(p => p.Material.Id == id);
+
+                if (cart.Count == 0)
+                    HttpContext.Session.Remove(JsonMaterial);
+                else
+                    HttpContext.Session.SetJson(JsonMaterial, cart);
+            }
+
+
+            return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        public async Task<IActionResult> Remove(int id,string type)
+        {
+            if (type == "product")
+            {
+                List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(JsonProduct);
                 cart.RemoveAll(p => p.Product.Id == id);
 
-            if (cart.Count == 0)
-                HttpContext.Session.Remove(NameCart);
-            else
-                HttpContext.Session.SetJson(NameCart, cart);
+                if (cart.Count == 0)
+                    HttpContext.Session.Remove(JsonProduct);
+                else
+                    HttpContext.Session.SetJson(JsonProduct, cart);
+            }
+            if (type == "material") 
+            {
+                List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(JsonMaterial);
+                cart.RemoveAll(p => p.Material.Id == id);
 
-
+                if (cart.Count == 0)
+                    HttpContext.Session.Remove(JsonMaterial);
+                else
+                    HttpContext.Session.SetJson(JsonMaterial, cart);
+            }
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
-        public async Task<IActionResult> Remove(int id)
+        public IActionResult Clear(string type)
         {
-            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>(NameCart);
-            cart.RemoveAll(p => p.Product.Id == id);
+            if (type == "product")
+                HttpContext.Session.Remove(JsonProduct);
+            if(type== "material")
+                HttpContext.Session.Remove(JsonMaterial);
 
-            if (cart.Count == 0)
-                HttpContext.Session.Remove(NameCart);
-            else
-                HttpContext.Session.SetJson(NameCart, cart);
-
-
-            return Redirect(Request.Headers["Referer"].ToString());
-        }
-
-        public IActionResult Clear()
-        {
-            HttpContext.Session.Remove(NameCart);
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetBooking(int? bookingId, double? grandTotal)
+        public async Task<IActionResult> SetBooking(double? grandTotal)
         {
-            if (bookingId == null || grandTotal == null)
+            int bookingId = HttpContext.Session.GetJson<int>(NameBooking);
+ 
+            if (bookingId == 0 || grandTotal == null)
                 return NotFound();
 
-            List<CartItem> cartItems = HttpContext.Session.GetJson<List<CartItem>>(NameCart);
+            List<CartItem> cartItems = HttpContext.Session.GetJson<List<CartItem>>(JsonProduct);
 
             if (bookingId == -1)
             {
@@ -152,9 +233,91 @@ namespace publishing.Controllers
                 }
             }
 
-            HttpContext.Session.Remove(NameCart);
+            HttpContext.Session.Remove(JsonProduct);
+            HttpContext.Session.Remove(NameBooking);
             _context.SaveChanges();
             return RedirectToAction("CustomerBookings", "Customers", new {emailCustomer = _userManager.GetUserAsync(HttpContext.User).Result.Email});
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetProduct(double? totalCost) 
+        {
+            if (totalCost == null)
+                return NotFound();
+
+            List<CartItem> cartItems = HttpContext.Session.GetJson<List<CartItem>>(JsonMaterial);
+            Product product = HttpContext.Session.GetJson<Product>(NameProduct);
+            if (product == null)
+                return NotFound();
+
+            var userEmail = _userManager.GetUserAsync(HttpContext.User).Result.Email;
+            //return NotFound($"{product.TypeProduct.Type}, {product.TypeProductId}");
+
+
+            if (product.Id == 0)
+            {
+                product.Cost = totalCost.Value;
+              
+                Customer customer = _context.Customers.First(c => c.Email == userEmail);
+                product.Customer = customer;
+                product.CustomerId = customer.Id;
+
+                _context.Entry(product).State = EntityState.Added;
+                //_context.Products.Add(product);
+                _context.SaveChanges();
+
+                Product lastProduct = _context.Products.Include(b => b.ProductMaterials).OrderByDescending(b => b.Id).First();
+                foreach (var cartItem in cartItems)
+                {
+                    ProductMaterial productMaterial = new ProductMaterial();
+                    productMaterial.Material = _context.Materials.First(m => m.Id == cartItem.Material.Id);
+                    productMaterial.MaterialId = cartItem.Material.Id;
+                    productMaterial.Product = lastProduct;
+                    productMaterial.ProductId = lastProduct.Id;
+                    productMaterial.CountMaterials = cartItem.Quantity;
+
+                    _context.ProductMaterials.Add(productMaterial);
+                }
+            }
+            else
+            {
+                //Product existProduct = _context.Products.Find(product.Id);
+                product.Cost += totalCost.Value;
+
+                foreach (var cartItem in cartItems)
+                {
+                    ProductMaterial existProductMaterial = _context.ProductMaterials.FirstOrDefault(bp => bp.ProductId == product.Id && bp.MaterialId == cartItem.Material.Id);
+                    if (existProductMaterial != null)
+                    {
+                        existProductMaterial.CountMaterials += cartItem.Quantity;
+                    }
+                    else
+                    {
+                        ProductMaterial productMaterial = new ProductMaterial();
+                        productMaterial.Material = _context.Materials.First(m => m.Id == cartItem.Material.Id);
+                        productMaterial.MaterialId = cartItem.Material.Id;
+                        //productMaterial.Product = existProduct;
+                        productMaterial.ProductId = product.Id;
+                        productMaterial.CountMaterials = cartItem.Quantity;
+
+                        _context.ProductMaterials.Add(productMaterial);
+                    }
+                }
+
+                _context.Entry(product).State = EntityState.Modified;
+            }
+
+            _context.SaveChanges();
+            HttpContext.Session.Remove(JsonMaterial);
+            HttpContext.Session.Remove(NameProduct);
+
+            CostController costController = new CostController(_context);
+            costController.SetCostBookings(product.Id);
+
+            //CostController costController = new CostController(_context);
+            //costController.SetCostProduct(product.Id);
+            
+            return RedirectToAction("CustomerProducts", "Customers", new { emailCustomer = userEmail});
         }
     }
 }

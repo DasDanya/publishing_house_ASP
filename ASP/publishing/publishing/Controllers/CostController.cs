@@ -13,6 +13,22 @@ namespace publishing.Controllers
             _context = context;
         }
 
+        public void SetCostBookings(int productId) 
+        {
+            var bookings = _context.BookingProducts.Include(b=>b.Booking).Where(bp => bp.ProductId == productId).ToList();
+            if (bookings.Count == 0)
+                return;
+            else 
+            { 
+                foreach (var book in bookings) 
+                {
+                    
+                    SetCostBooking(book.Booking);
+                }
+            }
+        }
+
+
         public void SetCostBooking(Booking? booking) {
             
             double cost = 0;

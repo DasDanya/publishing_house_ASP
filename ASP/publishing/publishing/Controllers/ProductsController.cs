@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Areas.Identity.Data;
+using publishing.Infrastructure;
 using publishing.Models;
 using publishing.Models.ViewModels;
 
@@ -70,7 +71,7 @@ namespace publishing.Controllers
         [Authorize(Roles="customer,admin")]
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name");
+            //ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name");
             ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type");
             return View();
         }
@@ -79,18 +80,71 @@ namespace publishing.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Visual,Cost,TypeProductId,CustomerId")] Product product)
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Name,Visual,TypeProductId")] Product product)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+                product.TypeProduct = _context.TypeProducts.Find(product.TypeProductId);          
+                HttpContext.Session.SetJson($"ProductBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}", product);
+                //return RedirectToAction("SelectMaterials");
+                return Redirect("SelectMaterials");
+                //_context.Add(product);
+                //await _context.SaveChangesAsync();
+                //return RedirectToAction(nameof(Index));
+            //}
+            //ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", product.CustomerId);
+            //ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type", product.TypeProductId);
+            //return View(product);
+        }
+
+        
+        public async Task<IActionResult> TransitionToSelectMaterials(int productId) 
+        {
+            Product product = _context.Products.Include(p=>p.TypeProduct).FirstOrDefault(p=>p.Id == productId);
+            if (product == null)
+                return NotFound();
+
+            HttpContext.Session.SetJson($"ProductBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}", product);
+            return Redirect("SelectMaterials");
+        }
+
+        [Authorize(Roles ="customer")]
+        public IActionResult SelectMaterials()
+        {
+            Product product = HttpContext.Session.GetJson<Product>($"ProductBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}");
+            if (product == null)
+                return NotFound();
+
+            ViewBag.product = product;
+            // Корзина
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>($"{_userManager.GetUserAsync(HttpContext.User).Result.Email}_Material");
+            SmallCartViewModel smallCartModel = null;
+
+            if (cart != null && cart.Count > 0)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                //var customerCart = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Products.Contains(cart.First().Product));
+                //if (customerCart == null)
+                //    return NotFound();
+
+                //if (customerCart.Email != user.Result.Email) 
+                //{
+                //    //Очистка Json
+                //    HttpContext.Session.Remove("Cart");
+                //}
+                //else
+                //{
+                smallCartModel = new()
+                {
+                    NumberOfItems = cart.Sum(x => x.Quantity),
+                    TotalAmount = cart.Sum(x => x.Quantity * x.Material.Cost)
+
+                };
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", product.CustomerId);
-            ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type", product.TypeProductId);
-            return View(product);
+            //smallCartModel = null;            
+
+            ViewBag.smallCartModel = smallCartModel;
+            return View(_context.Materials.ToList());
         }
 
         // GET: Products/Edit/5
@@ -220,7 +274,7 @@ namespace publishing.Controllers
             //List<Booking> bookings = new List<Booking>();
 
             var productBookings = from bp in _context.BookingProducts.Include(bp => bp.Product).Include(bp => bp.Booking) where bp.ProductId == productId select bp.Booking;
-            var bookings = (from bp in _context.BookingProducts.Include(bp => bp.Product).Include(bp => bp.Booking) where products.Contains(bp.Product) && !productBookings.Contains(bp.Booking) && bp.Booking.Status == "Ожидание" select bp.Booking).ToList();
+            var bookings = (from bp in _context.BookingProducts.Include(bp => bp.Product).Include(bp => bp.Booking) where products.Contains(bp.Product) && !productBookings.Contains(bp.Booking) && bp.Booking.Status == "Ожидание" select bp.Booking).Distinct().ToList();
 
             //foreach (var customerProduct in products)
             //{

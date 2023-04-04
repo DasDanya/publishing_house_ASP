@@ -7,7 +7,9 @@ namespace publishing.Infrastructure
         public static void SetJson(this ISession session, string key, object value)
         {
             
-            session.SetString(key, JsonConvert.SerializeObject(value));
+            session.SetString(key, JsonConvert.SerializeObject(value,new JsonSerializerSettings {ReferenceLoopHandling=ReferenceLoopHandling.Ignore}));
+            
+
 
         }
 

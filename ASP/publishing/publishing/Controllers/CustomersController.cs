@@ -259,16 +259,35 @@ namespace publishing.Controllers
             return false;
         }
 
-        public IActionResult SelectProducts(int? bookingId, string typeProduct = "", int p = 1)
+
+        public IActionResult TransitionToSelectProducts(int bookingId)
         {
-            if (bookingId == null)
+            HttpContext.Session.SetJson($"BookingBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}", bookingId);
+            return Redirect("SelectProducts");
+        }
+
+
+        [Authorize(Roles = "customer")]
+        public IActionResult SelectProducts(string typeProduct = "", int p = 1)
+        {
+            //if (bookingId == null)
+            //    return NotFound();
+            int bookingId = HttpContext.Session.GetJson<int>($"BookingBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}");
+            if (bookingId == 0)
                 return NotFound();
+
+            //if (bookingId != -1)
+            //{
+            //    BookingsController bookingsController = new BookingsController();
+            //    if (!bookingsController.IsUserBooking(bookingId.Value))
+            //        return new StatusCodeResult(403);
+            //}
 
             int pageSize = 3;
             ViewBag.pageNumber = p;
             ViewBag.pageRange = pageSize;
             ViewBag.typeProduct = typeProduct;
-            ViewBag.bookingId = bookingId;
+            //ViewBag.bookingId = bookingId;
 
             var user = _userManager.GetUserAsync(HttpContext.User);
             var customer = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Email == user.Result.Email);
@@ -277,18 +296,18 @@ namespace publishing.Controllers
 
             var customerProducts = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p));
             List<string> typesProducts = new List<string>();
-            foreach (var product in customerProducts) 
-            { 
-                if(!typesProducts.Contains(product.TypeProduct.Type))
+            foreach (var product in customerProducts)
+            {
+                if (!typesProducts.Contains(product.TypeProduct.Type))
                     typesProducts.Add(product.TypeProduct.Type);
             }
             ViewBag.typeProducts = typesProducts;
 
             // Корзина
-            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>($"{user.Result.Email}_Cart");
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>($"{user.Result.Email}_Product");
             SmallCartViewModel smallCartModel = null;
 
-            if (cart != null && cart.Count > 0) 
+            if (cart != null && cart.Count > 0)
             {
                 //var customerCart = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Products.Contains(cart.First().Product));
                 //if (customerCart == null)
@@ -303,13 +322,13 @@ namespace publishing.Controllers
                 //{
                 smallCartModel = new()
                 {
-                        NumberOfItems = cart.Sum(x => x.Quantity),
-                        TotalAmount = cart.Sum(x => x.Quantity * x.Product.Cost)
-                    
+                    NumberOfItems = cart.Sum(x => x.Quantity),
+                    TotalAmount = cart.Sum(x => x.Quantity * x.Product.Cost)
+
                 };
-            }          
-                //smallCartModel = null;            
-           
+            }
+            //smallCartModel = null;            
+
             ViewBag.smallCartModel = smallCartModel;
             //Конец корзины
 
@@ -324,7 +343,7 @@ namespace publishing.Controllers
             //    return Redirect(Request.Headers["Referer"].ToString());
 
             var productsByType = _context.Products.Include(p => p.TypeProduct).Where(p => p.TypeProduct.Type == typeProduct && customer.Products.Contains(p)).ToList();
-            if(productsByType.Count == 0)
+            if (productsByType.Count == 0)
                 return Redirect(Request.Headers["Referer"].ToString());
 
             ViewBag.totalPages = (int)Math.Ceiling((decimal)productsByType.Count / pageSize);

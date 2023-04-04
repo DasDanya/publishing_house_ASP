@@ -22,16 +22,10 @@
             @Html.DisplayFor(model => model.Product.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Product.Cost)
+          @Html.DisplayNameFor(model => model.Product.TypeProduct.Type)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Product.Cost)
-        </dd>
         @if (!User.IsInRole("customer"))
         {
-            <dt class = "col-sm-2">
-                @Html.DisplayNameFor(model => model.Product.TypeProduct.Type)
-            </dt>
             <a asp-controller="TypeProducts" asp-action="Details" asp-route-id="@Model.Product.TypeProduct.Id" class="col-sm-10" style="cursor:pointer; color:inherit">
                 @Html.DisplayFor(model => model.Product.TypeProduct.Type)
             </a>
@@ -42,6 +36,18 @@
                 @Html.DisplayFor(model => model.Product.Customer.Name)
             </a>
         }
+        else
+        {
+            <dd class="col-sm-10">
+                @Html.DisplayFor( model => model.Product.TypeProduct.Type)
+            </dd>
+        }
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Product.Cost)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Product.Cost)
+        </dd>
     </dl>
 </div>
 
@@ -148,7 +154,7 @@
     }
 }
 
-<div class="container p-0" style="height:40px;">
+<div class="container p-0" style="height:40px; margin-top:10px;">
     <div class="row pb-3">
         <div class="col-md-9">
             <h4 style="margin-top:3px;">Материалы</h4>
@@ -156,7 +162,7 @@
         @if (User.IsInRole("customer") && !Model.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
         {
             <div class="col-md-3 text-end">
-                <a asp-action="LinkProductWithBooking" asp-route-customerId="@Model.Product.Customer.Id" asp-route-productId="@Model.Product.Id" class="btn btn-info" style="margin-top:5px;">Привязать материалы</a>
+                <a asp-action="TransitionToSelectMaterials" asp-route-productId="@Model.Product.Id" class="btn btn-info" style="margin-top:5px;">Добавить материалы</a>
             </div>
         }
     </div>

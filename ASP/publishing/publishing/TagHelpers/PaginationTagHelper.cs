@@ -19,7 +19,6 @@ namespace publishing.TagHelpers
         public string PageFirst { get; set; }
         public string PageLast { get; set; }
         public string PageTarget { get; set; }
-        public int PageId { get; set; }
         private string AddPageContent()
         {
             if (PageRange == 0)
@@ -47,7 +46,7 @@ namespace publishing.TagHelpers
 
             if (PageNumber != 1)
             {
-                content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?bookingId={PageId}'>{PageFirst}</a></li>");
+                content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?'>{PageFirst}</a></li>");
             }
 
 
@@ -60,7 +59,7 @@ namespace publishing.TagHelpers
                         continue;
                     }
                     var active = currentPage == PageNumber ? "active" : "";
-                    content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?bookingId={PageId}&&p={currentPage}'>{currentPage}</a></li>");
+                    content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?p={currentPage}'>{currentPage}</a></li>");
                 }
             }
             else if (PageNumber > PageRange && PageNumber < PageCount - PageRange)
@@ -72,7 +71,7 @@ namespace publishing.TagHelpers
                         continue;
                     }
                     var active = currentPage == PageNumber ? "active" : "";
-                    content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?bookingId={PageId}&&p={currentPage}'>{currentPage}</a></li>");
+                    content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?p={currentPage}'>{currentPage}</a></li>");
                 }
             }
             else
@@ -84,13 +83,13 @@ namespace publishing.TagHelpers
                         continue;
                     }
                     var active = currentPage == PageNumber ? "active" : "";
-                    content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?bookingId={PageId}&&p={currentPage}'>{currentPage}</a></li>");
+                    content.Append($"<li class='page-item {active}'><a class='page-link'href='{PageTarget}?p={currentPage}'>{currentPage}</a></li>");
                 }
             }
 
             if (PageNumber != PageCount)
             {
-                content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?bookingId={PageId}&&p={PageCount}'>{PageLast}</a></li>");
+                content.Append($"<li class='page-item'><a class='page-link' href='{PageTarget}?p={PageCount}'>{PageLast}</a></li>");
             }
 
 

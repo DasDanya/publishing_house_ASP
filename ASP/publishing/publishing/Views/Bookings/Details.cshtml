@@ -78,7 +78,7 @@
         @if (Model.Booking.Status == "Ожидание" && User.IsInRole("customer"))
         {
             <div class="col-md-3 text-end">
-                <a asp-controller="Customers" asp-action="SelectProducts" asp-route-bookingId="@Model.Booking.Id" class="btn btn-info" style="margin-top:5px;">Добавить продукцию</a>
+                <a asp-controller="Customers" asp-action="TransitionToSelectProducts" asp-route-bookingId="@Model.Booking.Id" class="btn btn-info" style="margin-top:5px;">Добавить продукцию</a>
             </div>
         }
     </div>

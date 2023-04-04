@@ -303,13 +303,12 @@ namespace publishing.Controllers
             return RedirectToAction("Details", new { id = bookingId });
         }
 
-        private bool IsUserBooking(int bookingId) 
+        public bool IsUserBooking(int bookingId)
         {
             //var user =  _userManager.GetUserAsync(HttpContext.User);
-
             var user = _userManager.GetUserAsync(HttpContext.User);
             //var user = await _userManager.GetUserAsync(HttpContext.User);
-            if ( _userManager.IsInRoleAsync(user.Result, "customer").Result)
+            if (_userManager.IsInRoleAsync(user.Result, "customer").Result)
             {
                 var product = _context.BookingProducts.Where(bp => bp.BookingId == bookingId).Select(bp => bp.Product).First();
                 var customerProduct = _context.Products.Include(p => p.Customer).Single(p => p.Id == product.Id);
