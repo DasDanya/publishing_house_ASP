@@ -56,7 +56,9 @@ namespace publishing.Models
         [RegularExpression(@"^[1-9]\d*(?: ?(?:[А-Га-г]|[/] ?\d+))?$", ErrorMessage = "Неправильный ввод номера дома. Пример 23A, 23, 23/2")]
         public string House { get; set; }
 
-
+        [Required(ErrorMessage = "Введите дополнительную инфомацию")]
+        [DisplayName("Дополнительная информация")]
+        public string Description { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
 
         public PrintingHouse() 

@@ -58,6 +58,10 @@ namespace publishing.Models
         [DisplayName("Фото сотрудника")]
         public string Visual { get; set;}
 
+        [Required(ErrorMessage = "Введите дополнительную инфомацию")]
+        [DisplayName("Дополнительная информация")]
+        public string Description { get; set; }
+
         //public virtual ICollection<BookingEmployee> BookingEmployees { get; set;}
         
         public virtual ICollection<Booking> Bookings { get; set;}

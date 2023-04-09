@@ -54,6 +54,11 @@
                 <span asp-validation-for="Visual" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Description" class="control-label" style="margin-bottom:5px;"></label>
+                <textarea asp-for="Description" id="summernote" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Изменить" class="btn btn-primary" />
             </div>
         </form>
@@ -65,5 +70,12 @@
 </div>
 
 @section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                height: 200
+            });
+        });
+    </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

@@ -303,7 +303,7 @@ namespace publishing.Controllers
             return RedirectToAction("Details", new { id = bookingId });
         }
 
-        public bool IsUserBooking(int bookingId)
+        private bool IsUserBooking(int bookingId)
         {
             //var user =  _userManager.GetUserAsync(HttpContext.User);
             var user = _userManager.GetUserAsync(HttpContext.User);

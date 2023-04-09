@@ -16,6 +16,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Cost"/>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -26,20 +27,25 @@
                 <input asp-for="Visual" class="form-control" />
                 <span asp-validation-for="Visual" class="text-danger"></span>
             </div>
-            <div class="form-group">
+@*            <div class="form-group">
                 <label asp-for="Cost" class="control-label"></label>
                 <input asp-for="Cost" class="form-control" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true" />
                 <span asp-validation-for="Cost" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="TypeProduct.Type" class="control-label"></label>
                 <select asp-for="TypeProductId" class="form-control" asp-items="ViewBag.TypeProductId"></select>
                 <span asp-validation-for="TypeProductId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+@*            <div class="form-group">
                 <label asp-for="Customer.Name" class="control-label"></label>
                 <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
                 <span asp-validation-for="CustomerId" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="Description" class="control-label" style="margin-bottom:5px;"></label>
+                <textarea asp-for="Description" id="summernote" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Изменить" class="btn btn-primary" />
@@ -60,5 +66,13 @@
 </div>
 
 @section Scripts {
+     <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                height: 200,
+                placeholder: 'Введите описание'
+            });
+        });
+    </script>       
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

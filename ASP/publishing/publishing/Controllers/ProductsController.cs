@@ -81,10 +81,10 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Visual,TypeProductId")] Product product)
+        public async Task<IActionResult> Create([Bind("Name,Visual,Description,TypeProductId")] Product product)
         {
-            //if (ModelState.IsValid)
-            //{
+            if (ModelState.IsValid)
+            {
                 product.TypeProduct = _context.TypeProducts.Find(product.TypeProductId);          
                 HttpContext.Session.SetJson($"ProductBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}", product);
                 //return RedirectToAction("SelectMaterials");
@@ -92,10 +92,11 @@ namespace publishing.Controllers
                 //_context.Add(product);
                 //await _context.SaveChangesAsync();
                 //return RedirectToAction(nameof(Index));
-            //}
+            }
             //ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", product.CustomerId);
-            //ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type", product.TypeProductId);
+            ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type", product.TypeProductId);
             //return View(product);
+            return View();
         }
 
         
@@ -171,7 +172,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Visual,Cost,TypeProductId,CustomerId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Visual,Cost,Description,TypeProductId")] Product product)
         {
             if (id != product.Id)
             {
@@ -182,6 +183,8 @@ namespace publishing.Controllers
             {
                 try
                 {
+                    Customer customer = _context.Customers.First(c => c.Email == _userManager.GetUserAsync(HttpContext.User).Result.Email);
+                    product.CustomerId = customer.Id;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
@@ -198,7 +201,6 @@ namespace publishing.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", product.CustomerId);
             ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type", product.TypeProductId);
             return View(product);
         }
