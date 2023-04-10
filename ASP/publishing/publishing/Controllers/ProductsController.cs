@@ -30,7 +30,6 @@ namespace publishing.Controllers
         public async Task<IActionResult> Index()
         {
             var publishingDBContext = _context.Products.Include(p => p.Customer).Include(p => p.TypeProduct).Include(p => p.BookingProducts).Where(p => p.BookingProducts.Count > 0);
-            
             return View(await publishingDBContext.ToListAsync());
         }
 
@@ -157,11 +156,20 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = _context.Products.Include(p => p.BookingProducts).ThenInclude(bp => bp.Booking).FirstOrDefault(p => p.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
+
+            if(product.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
+                return new StatusCodeResult(403);
+
+
+             if (!IsCustomerProduct(product.Id))
+                return new StatusCodeResult(403);
+            
+
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", product.CustomerId);
             ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type", product.TypeProductId);
             return View(product);
@@ -172,7 +180,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Visual,Cost,Description,TypeProductId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Visual,Cost,Description,TypeProductId,CustomerId")] Product product)
         {
             if (id != product.Id)
             {
@@ -183,8 +191,8 @@ namespace publishing.Controllers
             {
                 try
                 {
-                    Customer customer = _context.Customers.First(c => c.Email == _userManager.GetUserAsync(HttpContext.User).Result.Email);
-                    product.CustomerId = customer.Id;
+                    //Customer customer = _context.Customers.First(c => c.Email == _userManager.GetUserAsync(HttpContext.User).Result.Email);
+                    //product.CustomerId = customer.Id;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
@@ -199,7 +207,8 @@ namespace publishing.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction("CustomerProducts", "Customers", new { emailCustomer = _userManager.GetUserAsync(HttpContext.User).Result.Email });
             }
             ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type", product.TypeProductId);
             return View(product);
@@ -217,12 +226,16 @@ namespace publishing.Controllers
             var product = await _context.Products
                 .Include(p => p.Customer)
                 .Include(p => p.TypeProduct)
+                .Include(p=>p.BookingProducts)
+                .ThenInclude(bp=>bp.Booking)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
 
+            if (product.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
+                return new StatusCodeResult(403);
 
             if (!IsCustomerProduct(product.Id))
                 return new StatusCodeResult(403);
@@ -259,6 +272,9 @@ namespace publishing.Controllers
         {
             if (customerId == null || productId == null)
                 return NotFound();
+
+            if (!IsCustomerProduct(productId.Value))
+                return new StatusCodeResult(403);
 
             Customer customer = _context.Customers.Include(c=>c.Products).Single(c=> c.Id == customerId);
             //Product product = _context.Products.Include(p => p.BookingProducts).Single(p => p.Id == productId);
@@ -332,6 +348,9 @@ namespace publishing.Controllers
         {
             if (productId == null || materialId == null)
                 return NotFound();
+
+            if (!IsCustomerProduct(productId.Value))
+                return new StatusCodeResult(403);
 
             ProductMaterial productMaterial = _context.ProductMaterials.Single(pm=> pm.ProductId == productId && pm.MaterialId == materialId);
             if (productMaterial == null) 

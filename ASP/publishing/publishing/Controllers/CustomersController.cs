@@ -206,7 +206,7 @@ namespace publishing.Controllers
         private List<Product> GetProducts(Customer customer,bool InBooking)
         {
             List<Product> products = new List<Product>();
-            var customerProducts = _context.Products.Include(p => p.TypeProduct).Where(p => customer.Products.Contains(p)).ToList();
+            var customerProducts = _context.Products.Include(p => p.TypeProduct).Include(p=>p.BookingProducts).ThenInclude(bp=>bp.Booking).Where(p => customer.Products.Contains(p)).ToList();
             if (customerProducts != null)
             {
                 if (InBooking)

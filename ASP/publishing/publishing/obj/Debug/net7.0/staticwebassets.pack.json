@@ -21,6 +21,38 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\images\\Home\\Polukrovki.jpg",
+      "PackagePath": "staticwebassets\\images\\Home\\Polukrovki.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\images\\Home\\drakon.jpg",
+      "PackagePath": "staticwebassets\\images\\Home\\drakon.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\images\\Home\\istorik.jpg",
+      "PackagePath": "staticwebassets\\images\\Home\\istorik.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\images\\Home\\krakatuk.jpg",
+      "PackagePath": "staticwebassets\\images\\Home\\krakatuk.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\images\\Home\\orbita.jpg",
+      "PackagePath": "staticwebassets\\images\\Home\\orbita.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\images\\Home\\train.jpg",
+      "PackagePath": "staticwebassets\\images\\Home\\train.jpg"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\images\\Home\\train1.png",
+      "PackagePath": "staticwebassets\\images\\Home\\train1.png"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\images\\Home\\women.jpg",
+      "PackagePath": "staticwebassets\\images\\Home\\women.jpg"
+    },
+    {
       "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

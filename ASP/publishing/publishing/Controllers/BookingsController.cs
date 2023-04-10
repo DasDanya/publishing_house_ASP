@@ -117,6 +117,9 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
+            if(booking.Status != "Ожидание")
+                return new StatusCodeResult(403);
+
             if (!IsUserBooking(booking.Id))
                 return new StatusCodeResult(403);
 
@@ -183,6 +186,11 @@ namespace publishing.Controllers
             //    if (!IsUserBooking(booking.Id, user.Email))
             //        return new StatusCodeResult(403);
             //}
+
+
+            if (booking.Status != "Ожидание")
+                return new StatusCodeResult(403);
+
             if (!IsUserBooking(booking.Id))
                 return new StatusCodeResult(403);
 

@@ -54,8 +54,13 @@
                             @Html.DisplayFor(modelItem => item.Cost)
                         </td>
                         <td>
-                            <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |                          
-                            <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Id">Удалить</a> |
+                            @if (item.Status == "Ожидание")
+                            {
+                                <a asp-controller="Customers" asp-action="TransitionToSelectProducts" asp-route-bookingId="@item.Id">Изменить</a>
+                                <span>| </span>
+                                <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Id">Удалить</a> 
+                                <span>| </span>
+                            }
                             <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
                         </td>
                     </tr>

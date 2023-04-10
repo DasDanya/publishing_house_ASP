@@ -10,13 +10,18 @@
 }
 
 <h1>Изменение данных о продукции</h1>
-<hr />
+@*<hr />*@
+<p>
+    <a asp-action="TransitionToSelectMaterials" asp-route-productId="@Model.Id">Выбрать материалы</a>
+</p>
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Cost"/>
+            <input type ="hidden" asp-for="CustomerId">
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
