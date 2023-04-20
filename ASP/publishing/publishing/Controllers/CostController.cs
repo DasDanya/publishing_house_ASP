@@ -51,15 +51,15 @@ namespace publishing.Controllers
 
         }
 
-        public void SetCostProduct(int? id) 
+        public void SetCostProduct(int? productId) 
         {
             double cost = 0;
-            if (id != null)
+            if (productId != null)
             {
-                Product product = _context.Products.Include(p=>p.TypeProduct).Single(p=> p.Id == id);
+                Product product = _context.Products.Include(p=>p.TypeProduct).Single(p=> p.Id == productId);
                 if (product != null) 
                 {
-                    var productMaterials = _context.ProductMaterials.Include(pm => pm.Material).Include(pm => pm.Product).Where(pm => pm.ProductId == id).ToList();
+                    var productMaterials = _context.ProductMaterials.Include(pm => pm.Material).Include(pm => pm.Product).Where(pm => pm.ProductId == productId).ToList();
                     if (productMaterials.Count > 0) 
                     {
                         foreach (var productMaterial in productMaterials)

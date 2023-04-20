@@ -66,6 +66,7 @@ function SetDate() {
     document.getElementById("datefield").setAttribute("min", today);
     document.getElementById("datefield").setAttribute("max", max_date);
 }
+
 function searchBookingInSelectBox() {
     var input = document.getElementById('numberBooking');
     var selectBox = document.getElementById('selectBox');
@@ -80,3 +81,30 @@ function searchBookingInSelectBox() {
     }
 }
 
+function selectedFile()
+{
+    var photo = document.getElementById("photo");
+    if (!photo.value)
+    {
+        alert('Необходимо выбрать изображение');
+        event.preventDefault();
+    }
+
+}
+
+function SelectedFileWithRadio()
+{
+    var photo = document.getElementById('photo');
+    var radios = document.getElementsByName('radioForPhoto');
+    for (var i = 0; i < radios.length; i++) {
+        if (radios[i].checked)
+        {
+            if (!photo.value)
+            {
+                alert('Необходимо выбрать изображение');
+                event.preventDefault();
+                break;
+            }
+        }
+    }
+}

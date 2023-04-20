@@ -7,6 +7,8 @@ using publishing.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using System.Drawing;
 
 namespace publishing.Controllers
 {
@@ -15,6 +17,7 @@ namespace publishing.Controllers
     {
         private readonly PublishingDBContext _context;
         private readonly UserManager<publishingUser> _userManager;
+        private readonly IWebHostEnvironment _appEnvironment;
         private string JsonProduct { get { return $"{_userManager.GetUserAsync(HttpContext.User).Result.Email}_Product"; } }
         private string JsonMaterial { get { return $"{_userManager.GetUserAsync(HttpContext.User).Result.Email}_Material"; } }
 
@@ -22,10 +25,13 @@ namespace publishing.Controllers
 
         private string NameBooking { get { return $"BookingBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}";} }
 
-        public CartController(PublishingDBContext context, UserManager<publishingUser> userManager)
+        private string NameVisualProducts { get { return $"Visual_Products_{_userManager.GetUserAsync(HttpContext.User).Result.Email}"; } }
+
+        public CartController(PublishingDBContext context, UserManager<publishingUser> userManager, IWebHostEnvironment appEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _appEnvironment = appEnvironment;
         }
 
         public IActionResult Index()
@@ -278,6 +284,18 @@ namespace publishing.Controllers
 
                     _context.ProductMaterials.Add(productMaterial);
                 }
+
+                List<VisualProduct> visualProducts = HttpContext.Session.GetJson<List<VisualProduct>>(NameVisualProducts);
+                if (visualProducts.Count != 0) 
+                {
+                    foreach (var visualProduct in visualProducts)
+                    {
+                        visualProduct.ProductId = lastProduct.Id;
+                        visualProduct.Product = lastProduct;
+                        
+                        _context.Entry(visualProduct).State = EntityState.Added;
+                    }
+                }
             }
             else
             {
@@ -310,8 +328,10 @@ namespace publishing.Controllers
             _context.SaveChanges();
             HttpContext.Session.Remove(JsonMaterial);
             HttpContext.Session.Remove(NameProduct);
+            HttpContext.Session.Remove(NameVisualProducts);
 
             CostController costController = new CostController(_context);
+            //costController.SetCostProduct(product.Id);
             costController.SetCostBookings(product.Id);
 
             //CostController costController = new CostController(_context);

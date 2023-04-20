@@ -11,22 +11,17 @@ namespace publishing.Models
         [Required(ErrorMessage = "Введите название продукции")]
         [DataType(DataType.Text)]
         [StringLength(50, MinimumLength = 1, ErrorMessage = "Длина строки не входит в заданный диапазон:[1,50]")]
-        [DisplayName("Название")]
+        [DisplayName("Название продукции")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Выберите фото продукции")]
-        [DataType(DataType.ImageUrl)]
-        [DisplayName("Фото")]
-        public string Visual { get; set; }
-
         //[Required(ErrorMessage = "Введите стоимость продукции")]
-        [DisplayName("Стоимость")]
+        [DisplayName("Стоимость продукции")]
         [DataType(DataType.Currency)]
         //[Range(typeof(double), "1", "10000", ErrorMessage = "Стоимость должна входить в диапазон: [1,10000]")]
         public double Cost { get; set; }
 
         [Required(ErrorMessage = "Введите описание продукции")]
-        [DisplayName("Описание")]
+        [DisplayName("Описание продукции")]
         public string Description { get; set; }
 
         public int TypeProductId { get; set; }

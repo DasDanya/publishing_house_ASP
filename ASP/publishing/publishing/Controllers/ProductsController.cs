@@ -19,10 +19,12 @@ namespace publishing.Controllers
     {
         private readonly PublishingDBContext _context;
         private readonly UserManager<publishingUser> _userManager;
-        public ProductsController(PublishingDBContext context, UserManager<publishingUser> userManager)
+        private readonly IWebHostEnvironment _appEnvironment;
+        public ProductsController(PublishingDBContext context, UserManager<publishingUser> userManager, IWebHostEnvironment appEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Products
@@ -61,6 +63,8 @@ namespace publishing.Controllers
             model.ProductMaterials = _context.ProductMaterials.Include(pm => pm.Material).Where(pm => pm.ProductId == id).ToList();
             model.BookingProducts = _context.BookingProducts.Include(bp => bp.Booking).Where(bp => bp.ProductId == id).ToList();
 
+            List<byte[]> visualProducts = (from vp in _context.VisualProducts where vp.ProductId == product.Id select vp.Photo).ToList();
+            ViewBag.visualProducts = visualProducts;
 
             //return View(product);
             return View(model);
@@ -80,12 +84,31 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Visual,Description,TypeProductId")] Product product)
+        public async Task<IActionResult> Create([Bind("Name,Description,TypeProductId")] Product product, IFormFile[] photo)
         {
             if (ModelState.IsValid)
-            {
-                product.TypeProduct = _context.TypeProducts.Find(product.TypeProductId);          
+            {              
+                product.TypeProduct = _context.TypeProducts.Find(product.TypeProductId);
+
+                List<VisualProduct> visualProducts = new List<VisualProduct>();
+
+                foreach (var item in photo)
+                {
+                    if (!CorrectExtensions(item.FileName))
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Файл для изображения должен иметь одно из следующих расширений: .jpg, .jpeg, .png, .tif, .bmp" });
+                    else 
+                    {                       
+                        VisualProduct visualProduct = new VisualProduct();
+                        using (var stream = item.OpenReadStream())
+                        {
+                            visualProduct.Photo = new byte[item.Length];
+                            stream.Read(visualProduct.Photo, 0, (int)item.Length);
+                        }
+                        visualProducts.Add(visualProduct);
+                    }
+                }          
                 HttpContext.Session.SetJson($"ProductBy_{_userManager.GetUserAsync(HttpContext.User).Result.Email}", product);
+                HttpContext.Session.SetJson($"Visual_Products_{_userManager.GetUserAsync(HttpContext.User).Result.Email}", visualProducts);
                 //return RedirectToAction("SelectMaterials");
                 return Redirect("SelectMaterials");
                 //_context.Add(product);
@@ -162,7 +185,10 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            if(product.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
+            List<byte[]> visualProducts = (from vp in _context.VisualProducts where vp.ProductId == product.Id select vp.Photo).ToList();
+            ViewBag.visualProducts = visualProducts;
+
+            if (product.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
                 return new StatusCodeResult(403);
 
 
@@ -180,7 +206,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Visual,Cost,Description,TypeProductId,CustomerId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Cost,Description,TypeProductId,CustomerId")] Product product, IFormFile[]? photo, string? radioForPhoto)
         {
             if (id != product.Id)
             {
@@ -195,6 +221,39 @@ namespace publishing.Controllers
                     //product.CustomerId = customer.Id;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
+
+                    CostController costController = new CostController(_context);
+                    costController.SetCostProduct(product.Id);
+                    costController.SetCostBookings(product.Id);
+
+                    if (photo != null && photo.Count() > 0 && radioForPhoto != null)
+                    {
+                        foreach (var item in photo)
+                        {
+                            if (!CorrectExtensions(item.FileName))
+                                return RedirectToAction("Index", "Error", new { errorMessage = "Файл для изображения должен иметь одно из следующих расширений: .jpg, .jpeg, .png, .tif, .bmp" });
+                        }
+
+                        if (radioForPhoto == "overwrite")
+                        {
+                            _context.VisualProducts.RemoveRange(_context.VisualProducts.Where(vp => vp.ProductId == product.Id));
+                        }
+
+                        foreach (var item in photo)
+                        {
+                            VisualProduct visualProduct = new VisualProduct();
+                            using (var stream = item.OpenReadStream())
+                            {
+                                visualProduct.Photo = new byte[item.Length];
+                                stream.Read(visualProduct.Photo, 0, (int)item.Length);
+                                visualProduct.Product = product;
+                                visualProduct.ProductId = product.Id;
+                                _context.VisualProducts.Add(visualProduct);
+                            }
+                        }
+
+                        _context.SaveChanges();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -234,6 +293,9 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
+            List<byte[]> visualProducts = (from vp in _context.VisualProducts where vp.ProductId == product.Id select vp.Photo).ToList();
+            ViewBag.visualProducts = visualProducts;
+
             if (product.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
                 return new StatusCodeResult(403);
 
@@ -241,6 +303,7 @@ namespace publishing.Controllers
                 return new StatusCodeResult(403);
 
             return View(product);
+            
         }
 
         // POST: Products/Delete/5
@@ -259,7 +322,8 @@ namespace publishing.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction("CustomerProducts", "Customers", new { emailCustomer = _userManager.GetUserAsync(HttpContext.User).Result.Email });
         }
 
         private bool ProductExists(int id)
@@ -396,6 +460,19 @@ namespace publishing.Controllers
 
             }
             return true;
+        }
+
+        private bool CorrectExtensions(string filename) 
+        {
+            string[] extensions = { ".jpg", ".jpeg", ".png", ".bmp" };
+
+            string extension = Path.GetExtension(filename);
+
+            if (extensions.Contains(extension))
+                return true;
+            else
+                return false;
+
         }
     }
 }

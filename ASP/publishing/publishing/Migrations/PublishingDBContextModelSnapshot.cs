@@ -166,7 +166,6 @@ namespace publishing.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Visual")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -282,10 +281,6 @@ namespace publishing.Migrations
                     b.Property<int>("TypeProductId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Visual")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -340,6 +335,28 @@ namespace publishing.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TypeProducts");
+                });
+
+            modelBuilder.Entity("publishing.Models.VisualProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<byte[]>("Photo")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("VisualProducts");
                 });
 
             modelBuilder.Entity("BookingEmployee", b =>
@@ -417,6 +434,17 @@ namespace publishing.Migrations
                         .IsRequired();
 
                     b.Navigation("Material");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("publishing.Models.VisualProduct", b =>
+                {
+                    b.HasOne("publishing.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });

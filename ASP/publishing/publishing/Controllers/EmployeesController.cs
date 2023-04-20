@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using publishing.Models;
 
 namespace publishing.Controllers
@@ -15,10 +17,12 @@ namespace publishing.Controllers
     public class EmployeesController : Controller
     {
         private readonly PublishingDBContext _context;
+        private readonly IWebHostEnvironment _appEnvironment;
 
-        public EmployeesController(PublishingDBContext context)
+        public EmployeesController(PublishingDBContext context, IWebHostEnvironment appEnvironment)
         {
             _context = context;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Employees
@@ -44,6 +48,16 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
+            if (!employee.Visual.IsNullOrEmpty())
+            {
+                byte[] photodata = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + employee.Visual);
+                ViewBag.Photodata = photodata;
+            }
+            else
+            {
+                ViewBag.Photodata = null;
+            }
+
             return View(employee);
         }
 
@@ -59,13 +73,40 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Middlename,Type,Phone,Email,Birthday,Visual,Description")] Employee employee)
+        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Middlename,Type,Phone,Email,Birthday,Description")] Employee employee, IFormFile photo)
         {
             if (ModelState.IsValid)
             {
+                if (photo != null)
+                {
+                    string extension = Path.GetExtension(photo.FileName);
+                    string[] extensions = { ".jpg", ".jpeg", ".png", ".bmp"};
+                    if (!extensions.Contains(extension))
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Файл для изображения должен иметь одно из следующих расширений: .jpg, .jpeg, .png, .tif, .bmp"});
+
+                    Random random = new Random();
+                    string path = "/Files/" + $"{employee.Surname}_{employee.Name}_{random.Next(1, int.MaxValue - 1)}{extension}";
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(fileStream);
+                    }
+                    employee.Visual = path;
+                }
                 _context.Add(employee);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+            }
+            else 
+            {
+                string erorrs = "";
+                foreach (var item in ModelState)
+                {
+                    foreach (var error in item.Value.Errors)
+                    {
+                        erorrs += error.ErrorMessage + "\t";
+                    }
+                }
+                return NotFound(erorrs);
             }
             return View(employee);
         }
@@ -84,6 +125,17 @@ namespace publishing.Controllers
             {
                 return NotFound();
             }
+
+            if (!employee.Visual.IsNullOrEmpty())
+            {
+                byte[] photodata = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + employee.Visual);
+                ViewBag.Photodata = photodata;
+            }
+            else
+            {
+                ViewBag.Photodata = null;
+            }
+
             return View(employee);
         }
 
@@ -92,7 +144,7 @@ namespace publishing.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Middlename,Type,Phone,Email,Birthday,Visual,Description")] Employee employee)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Middlename,Type,Phone,Email,Birthday,Visual,Description")] Employee employee, IFormFile? photo)
         {
             if (id != employee.Id)
             {
@@ -101,6 +153,27 @@ namespace publishing.Controllers
 
             if (ModelState.IsValid)
             {
+                if (photo != null)
+                {
+                    string extension = Path.GetExtension(photo.FileName);
+                    string[] extensions = { ".jpg", ".jpeg", ".png", ".bmp" };
+                    if (!extensions.Contains(extension))
+                        return RedirectToAction("Index", "Error", new { errorMessage = "Файл для изображения должен иметь одно из следующих расширений: .jpg, .jpeg, .png, .tif, .bmp" });
+
+                    Random random = new Random();
+                    string path = "/Files/" + $"{employee.Surname}_{employee.Name}_{random.Next(1, int.MaxValue - 1)}{extension}";
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(fileStream);
+                    }
+
+                    if (!employee.Visual.IsNullOrEmpty())
+                    {
+                        System.IO.File.Delete(_appEnvironment.WebRootPath + employee.Visual);
+                    }
+
+                    employee.Visual = path;
+                }
                 try
                 {
                     _context.Update(employee);
@@ -138,6 +211,16 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
+            if (!employee.Visual.IsNullOrEmpty())
+            {
+                byte[] photodata = System.IO.File.ReadAllBytes(_appEnvironment.WebRootPath + employee.Visual);
+                ViewBag.Photodata = photodata;
+            }
+            else
+            {
+                ViewBag.Photodata = null;
+            }
+
             return View(employee);
         }
 
@@ -153,6 +236,11 @@ namespace publishing.Controllers
             var employee = await _context.Employees.FindAsync(id);
             if (employee != null)
             {
+                if (!employee.Visual.IsNullOrEmpty())
+                {
+                    System.IO.File.Delete(_appEnvironment.WebRootPath + employee.Visual);
+                }
+
                 _context.Employees.Remove(employee);
             }
             

@@ -53,12 +53,11 @@ namespace publishing.Models
         [DisplayName("Дата рождения")]
         public DateTime Birthday { get; set; }
 
-        [Required(ErrorMessage = "Выберите фото сотрудника")]
         [DataType(DataType.ImageUrl)]
         [DisplayName("Фото сотрудника")]
-        public string Visual { get; set;}
+        public string? Visual { get; set;}
 
-        [Required(ErrorMessage = "Введите дополнительную инфомацию")]
+        //[Required(ErrorMessage = "Введите дополнительную инфомацию")]
         [DisplayName("Дополнительная информация")]
         public string Description { get; set; }
 
