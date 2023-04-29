@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using publishing.Infrastructure;
 using publishing.Models;
 using System.Linq;
 
@@ -34,11 +35,17 @@ namespace publishing.Controllers
 
             if (bookingStatus == "Выполняется")
             {
-                if(booking.End.Value.Date < DateTime.Now.Date)
+                if(booking.End.Value.Date > DateTime.Now.Date)
                     booking.End = DateTime.Now.Date;
 
                 booking.Status = "Выполнен";
                 _context.SaveChanges();
+
+                Customer customer = GetCustomerBooking(bookingId.Value);
+                string subject = $"Выполнение заказа №{bookingId.Value}";
+                string message = $"Уважаемый(-ая) {customer.Name}! Ваш заказ успешно выполен!<br>С уважением, \"Издательство\".";
+                EmailSender emailSender = new EmailSender();
+                emailSender.SendEmail(customer.Email, subject, message);
 
                 //return Redirect(Request.Headers["Referer"].ToString());
                 return RedirectToAction("Index");
@@ -133,8 +140,25 @@ namespace publishing.Controllers
             }
 
             _context.SaveChanges();
+
+            Customer customer = GetCustomerBooking(bookingId.Value);
+            string subject = $"Успешная регистрация заказа №{bookingId.Value}";
+            string message = $"Уважаемый(-ая) {customer.Name}! Ваш заказ успешно зарегистрирован! Ориентировочное время выполнения: {finishDate}.<br>С уважением, \"Издательство\".";
+            EmailSender emailSender = new EmailSender();
+            emailSender.SendEmail(customer.Email, subject, message);
+
             return Redirect("~/ManagerBooking/Index");
 
+        }
+
+        private Customer GetCustomerBooking(int bookingId) 
+        {
+            var product = (from bp in _context.BookingProducts.Include(bp => bp.Product).ThenInclude(p => p.Customer) where bp.BookingId == bookingId select bp.Product).First();
+
+            if (product != null)
+                return product.Customer;
+            else
+                return null;
         }
     }
 }

@@ -335,6 +335,7 @@ namespace publishing.Controllers
             if (typeProduct == "")
             {
                 ViewBag.totalPages = (int)Math.Ceiling((decimal)customer.Products.Count / pageSize);
+                ViewBag.productsPhoto = GetVisualProducts(customer.Products.ToList());
                 return View(customer.Products.OrderBy(p => p.Name).Skip((p - 1) * pageSize).Take(pageSize).ToList());
             }
 
@@ -346,10 +347,27 @@ namespace publishing.Controllers
             if (productsByType.Count == 0)
                 return Redirect(Request.Headers["Referer"].ToString());
 
+                ViewBag.productsPhoto = GetVisualProducts(productsByType);
+
             ViewBag.totalPages = (int)Math.Ceiling((decimal)productsByType.Count / pageSize);
 
             return View(productsByType.OrderBy(p => p.Name).Skip((p - 1) * pageSize).Take(pageSize).ToList());
+            
+        }
 
+        private List<VisualProduct> GetVisualProducts(List<Product> products) 
+        {
+            List<VisualProduct> productsPhoto = new List<VisualProduct>();
+
+            if (products != null && products.Count > 0)
+            {
+                foreach (var product in products)
+                {
+                    productsPhoto.AddRange((from vp in _context.VisualProducts where vp.ProductId == product.Id select vp));
+                }
+            }
+
+            return productsPhoto;
         }
     }
 }
