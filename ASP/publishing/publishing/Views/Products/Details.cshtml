@@ -5,7 +5,7 @@
 @inject UserManager<publishingUser> UserManager
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Просмотр продукции";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string product = $"\"{Model.Product.Name}\"";
 }
@@ -166,17 +166,19 @@
                             @Html.DisplayFor(modelItem => item.Booking.Cost)
                         </td>
                         <td>
-                            @if (!User.IsInRole("manager"))
+                            @if (!User.IsInRole("customer") && item.Booking.Status == "Выполняется")
                             {
                                 <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Booking.Id">Изменить</a>
-                                <span>| </span>
-                                <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Booking.Id">Удалить</a>
                                 <span>| </span>
                             }
                             <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Booking.Id">Подробнее</a>
 
                             @if (item.Booking.Status == "Ожидание" && User.IsInRole("customer"))
                             {
+                                <span>| </span>
+                                <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Booking.Id">Изменить</a>
+                                <span>| </span>
+                                <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Booking.Id">Удалить</a>
                                 <span>| </span>
                                 <a asp-controller="Bookings" asp-action="UnpinProduct" asp-route-bookingId="@item.Booking.Id" asp-route-productId="@Model.Product.Id" onclick="ConfirmAction('Вы подтверждаете открепление продукции @product от заказа №@item.Booking.Id? Если продукция является единственной в заказе, то действие будет отменено')">Открепить</a>
                             }
@@ -251,7 +253,7 @@
                     @Html.DisplayFor(modelItem => Model.Cost)
                 </td>
                 <td>
-                    @if (User.IsInRole("admin"))
+                    @if (User.IsInRole("admin") && Model.ProductMaterials.Count == 0)
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a>   
                         <span>| </span>
@@ -273,7 +275,7 @@
     </tbody>
 </table>
 <div>
-    @if (!User.IsInRole("manager"))
+    @if (!Model.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание") && User.IsInRole("customer"))
     {
         <a asp-action="Edit" asp-route-id="@Model.Product.Id">Изменнение данных о продукции</a>
         <span>| </span>

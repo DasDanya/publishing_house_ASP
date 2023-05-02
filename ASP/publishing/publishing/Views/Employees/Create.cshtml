@@ -1,7 +1,7 @@
 ﻿@model publishing.Models.Employee
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Добавление сотрудника";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -29,7 +29,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Birthday" class="control-label"></label>
-                <input asp-for="Birthday" class="form-control" />
+                <input asp-for="Birthday" class="form-control" id="datefield" min="1930-01-01" onfocus="SetMaxDate()"/>
                 <span asp-validation-for="Birthday" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -57,9 +57,10 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Добавить" class="btn btn-primary" onclick="selectedFile()"/>
+                <input type="submit" value="Добавить" class="btn btn-primary" onclick="selectedFile()" />
             </div>
         </form>
+        <p> <span style="color:#FFCC00;">Внимание!</span> Если введенный номер телефона или email существует в базе данных, то действие будет отменено</p>
     </div>
 </div>
 

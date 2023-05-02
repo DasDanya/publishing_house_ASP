@@ -1,7 +1,7 @@
 ﻿@model publishing.Models.PrintingHouse
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Просмотр типографии";
     Layout = "~/Views/Shared/_Layout.cshtml";
     string address = $"{Model.City}, {Model.Street}, {Model.House}";
 }
@@ -94,12 +94,13 @@
           <div class="col-md-9">
                 @{
                     if (Model.Bookings.Count() != 0){<h4>Заказы</h4>}
-                    else{<h4>Заказы отсутствуют</h4>}
+                else{<h4>Заказы отсутствуют</h4>
                 }
-          </div>
+            }
+        </div>
         <div class="col-md-3 text-end">
             <a asp-action="LinkPrintingHouseWithBooking" asp-route-id="@Model.Id" class="btn btn-info" style="margin-top:5px;">Привязать к заказу</a>
-        </div>
+        </div> 
     </div>
  </div>
    
@@ -147,20 +148,15 @@
                             @Html.DisplayFor(modelItem => item.Cost)
                         </td>
                         <td>
-                            @if (User.IsInRole("admin"))
+                            @if (item.Status == "Выполняется")
                             {
                                 <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Id">Изменить</a> 
                                 <span>| </span>
-                                <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-                                <span>| </span>
-                            }
-                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
-                            @if (item.Status == "Выполняется")
-                            {
-                                <span>| </span>
                                 string namePrintingHouse = $"\"{Model.Name}\"";
                                 <a asp-action="UnpinOrder" asp-route-id="@item.Id" onclick="ConfirmAction('Вы подтверждаете открепление типографии @namePrintingHouse от заказа №@item.Id?')">Открепить</a>
+                                <span>| </span>
                             }
+                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id">Подробнее</a>                          
                         </td>
                     </tr>
                 }
@@ -182,7 +178,9 @@
     <script>
         $(document).ready(function() {
         $('#summernote').summernote({
-            height:150
+            height:150,
+            disableDragAndDrop: true,
+            disableResizeEditor: true
         });
             $('#summernote').summernote('disable');
         });

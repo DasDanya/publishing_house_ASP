@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Areas.Identity.Data;
 using publishing.Infrastructure;
+using publishing.Migrations;
 using publishing.Models;
 using publishing.Models.ViewModels;
 
@@ -71,7 +72,7 @@ namespace publishing.Controllers
         }
 
         // GET: Products/Create
-        [Authorize(Roles="customer,admin")]
+        [Authorize(Roles="customer")]
         public IActionResult Create()
         {
             //ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name");
@@ -121,7 +122,6 @@ namespace publishing.Controllers
             return View();
         }
 
-        
         public async Task<IActionResult> TransitionToSelectMaterials(int productId) 
         {
             Product product = _context.Products.Include(p=>p.TypeProduct).FirstOrDefault(p=>p.Id == productId);
@@ -171,7 +171,7 @@ namespace publishing.Controllers
         }
 
         // GET: Products/Edit/5
-        [Authorize(Roles ="admin,customer")]
+        [Authorize(Roles ="customer")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Products == null)
@@ -185,16 +185,15 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            List<byte[]> visualProducts = (from vp in _context.VisualProducts where vp.ProductId == product.Id select vp.Photo).ToList();
-            ViewBag.visualProducts = visualProducts;
-
             if (product.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
                 return new StatusCodeResult(403);
 
 
-             if (!IsCustomerProduct(product.Id))
+            if (!IsCustomerProduct(product.Id))
                 return new StatusCodeResult(403);
-            
+
+            List<byte[]> visualProducts = (from vp in _context.VisualProducts where vp.ProductId == product.Id select vp.Photo).ToList();
+            ViewBag.visualProducts = visualProducts;
 
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Name", product.CustomerId);
             ViewData["TypeProductId"] = new SelectList(_context.TypeProducts, "Id", "Type", product.TypeProductId);
@@ -274,7 +273,7 @@ namespace publishing.Controllers
         }
 
         // GET: Products/Delete/5
-        [Authorize(Roles ="admin,customer")]
+        [Authorize(Roles ="customer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Products == null)
@@ -293,14 +292,14 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            List<byte[]> visualProducts = (from vp in _context.VisualProducts where vp.ProductId == product.Id select vp.Photo).ToList();
-            ViewBag.visualProducts = visualProducts;
-
             if (product.BookingProducts.Any(bp => bp.Booking.Status != "Ожидание"))
                 return new StatusCodeResult(403);
 
             if (!IsCustomerProduct(product.Id))
                 return new StatusCodeResult(403);
+
+            List<byte[]> visualProducts = (from vp in _context.VisualProducts where vp.ProductId == product.Id select vp.Photo).ToList();
+            ViewBag.visualProducts = visualProducts;
 
             return View(product);
             
@@ -315,13 +314,37 @@ namespace publishing.Controllers
             {
                 return Problem("Entity set 'PublishingDBContext.Products'  is null.");
             }
-            var product = await _context.Products.FindAsync(id);
+            var product = _context.Products.FirstOrDefault(p=> p.Id == id);
+            List<Booking> productBookings = new List<Booking>();
             if (product != null)
             {
+                bool isOneProductInBooking = false;
+                foreach (var bookingProduct in product.BookingProducts)
+                {
+                    if (bookingProduct.Booking.BookingProducts.Count == 1)
+                    {
+                        isOneProductInBooking = true;
+                        break;
+                    }
+                }
+
+                if (isOneProductInBooking)
+                    return RedirectToAction("Delete", new { id });
+
+                productBookings = (from bp in _context.BookingProducts.Include(bp => bp.Booking) where bp.ProductId == id select bp.Booking).ToList();
                 _context.Products.Remove(product);
             }
             
             await _context.SaveChangesAsync();
+            if (productBookings.Count > 0)
+            {
+                CostController costController = new CostController(_context);
+                foreach (var booking in productBookings)
+                {
+                    costController.SetCostBooking(booking);
+                }
+            }
+
             //return RedirectToAction(nameof(Index));
             return RedirectToAction("CustomerProducts", "Customers", new { emailCustomer = _userManager.GetUserAsync(HttpContext.User).Result.Email });
         }

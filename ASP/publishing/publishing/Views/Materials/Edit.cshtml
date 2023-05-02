@@ -1,7 +1,7 @@
 ﻿@model publishing.Models.Material
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Изменение данных о материале";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -35,7 +35,7 @@
                 <span asp-validation-for="Cost" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Изменить" class="btn btn-primary" />
+                <input type="submit" value="Изменить" class="btn btn-primary" onclick="ConfirmAction('Вы подтверждаете изменение материала? Если измененный материал существует в базе данных, то действие будет отменено')" />
             </div>
         </form>
     </div>

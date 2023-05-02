@@ -1,11 +1,35 @@
 ﻿@model publishing.Models.PrintingHouse
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Удаление типографии";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    string address = $"{Model.City}, {Model.Street}, {Model.House}";
 }
 
 <h1>Удаление типографии</h1>
+<script src="https://api-maps.yandex.ru/2.1/?apikey=094078ac-b2f8-43b8-a414-702a2e9f3ea8&lang=ru_RU" type="text/javascript"></script>
+<script type="text/javascript">
+    function init() {
+        var myMap = new ymaps.Map('map', {
+            center: [55.74, 37.58],
+            zoom: 13,
+            controls: []
+        });
+
+
+        var searchControl = new ymaps.control.SearchControl({
+            options: {
+                provider: 'yandex#search'
+            }
+        });
+
+        myMap.controls.add(searchControl);
+
+        searchControl.search('@Html.Raw(address)');
+    }
+    ymaps.ready(init);
+
+</script>
 
 <h3>Вы уверены,что хотите удалить эту типографию?</h3>
 <div>
@@ -53,7 +77,8 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.House)
         </dd>
-        <dt style="margin-bottom:10px;">
+        <dt id="map" style="height:500px; width:100%;"></dt>
+        <dt style="margin-bottom:10px; margin-top:10px;">
             @Html.DisplayNameFor(model => model.Description)
         </dt>
         <dd>
@@ -72,7 +97,9 @@
     <script>
         $(document).ready(function () {
             $('#summernote').summernote({
-                height: 150
+                height: 150,
+                disableDragAndDrop: true,
+                disableResizeEditor: true
             });
             $('#summernote').summernote('disable');
         });

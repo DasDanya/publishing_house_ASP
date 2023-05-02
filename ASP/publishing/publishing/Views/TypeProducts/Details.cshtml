@@ -1,7 +1,7 @@
 ﻿@model publishing.Models.ViewModels.TypeProductDetailsViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Просмотр типа продукции";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -68,13 +68,6 @@
                             @Html.DisplayFor(modelItem => item.Customer.Name)
                         </td>
                         <td>
-                            @if (User.IsInRole("admin"))
-                            {
-                                <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
-                                <span>| </span>
-                                <a asp-controller="Products" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-                                <span>| </span>
-                            }
                             <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
                         </td>
                     </tr>
@@ -86,7 +79,7 @@
     }
 }
 <div>
-    @if (User.IsInRole("admin"))
+    @if (User.IsInRole("admin") && Model.TypeProduct.Products.Count == 0)
     {
         <a asp-action="Edit" asp-route-id="@Model.TypeProduct.Id">Изменение данных о типе продукции</a>
         <span>| </span>

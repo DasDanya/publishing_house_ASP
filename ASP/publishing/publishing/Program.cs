@@ -64,7 +64,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "customers",
     pattern: "/customers/{typeProduct?}",
-    defaults:new {controller="Customers",action="SelectProducts"});
+    defaults: new { controller = "Customers", action = "SelectProducts" });
 
 app.MapRazorPages();
 app.Run();

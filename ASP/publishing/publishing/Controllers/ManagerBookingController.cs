@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace publishing.Controllers
 {
-    [Authorize (Roles="manager")]
+    [Authorize (Roles="manager,admin")]
     public class ManagerBookingController : Controller
     {
         private readonly PublishingDBContext _context;

@@ -1,11 +1,11 @@
 ﻿@model publishing.Models.TypeProduct
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Добавление типа продукции";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Добавить тип продукции</h1>
+<h1>Добавление типа продукции</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -22,7 +22,7 @@
                 <span asp-validation-for="Margin" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Добавить" class="btn btn-primary" />
+                <input type="submit" value="Добавить" class="btn btn-primary" onclick="ConfirmAction('Вы подтверждаете создание типа печатной продукции? Если введенный тип существует в базе данных, то действие будет отменено')" />
             </div>
         </form>
     </div>

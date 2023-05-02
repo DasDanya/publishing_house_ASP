@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Выбор продукций";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var typeProductURL = Context.Request.Query["typeProduct"].ToString();
     int indexProduct = 0;
 }
 
@@ -23,7 +22,7 @@
     <div class="left-menu" style="width:22%;margin-right:40px;">
         <div class="list-group" id="menu" style="border-radius:5px;">
             @*//<li class="list-group-item list-group-item-action active" id="itemMenu">*@
-            @if (typeProductURL == "")
+            @if (ViewBag.typeProduct == "")
             {
                 <a class="list-group-item" asp-action="SelectProducts" asp-route-bookingId="@ViewBag.bookingId" style="background-color:#0dcaf0;">Все продукции</a>
             }
@@ -35,7 +34,7 @@
             @foreach(string typeProduct in ViewBag.typeProducts)
             {
                 //<li class="list-group-item list-group-item-action">
-                @if (typeProduct != typeProductURL)
+                @if (typeProduct != ViewBag.typeProduct)
                 {
                     <a class="list-group-item" asp-action="SelectProducts" asp-route-bookingId="@ViewBag.bookingId" asp-route-typeProduct="@typeProduct">@typeProduct</a>
                 }
@@ -113,55 +112,10 @@
             <div class="d-flex w-100 justify-content-center">
                 <pagination page-count="@ViewBag.totalPages" 
                         page-target="@ViewBag.typeProduct"
-                        page-number="@ViewBag.pageNumber" 
+                        page-number="@ViewBag.pageNumber"
                         page-range="@ViewBag.pageRange">
                 </pagination>
             </div>
         }
     </div>
 </div>
-
-@section Scripts{
-<script>
-  
-            //var ul = document.getElementById("");
-
-            //function Check()
-            //{
-            //    var listItems = document.querySelector('#menu > a');
-
-            //    for (li of listItems) {
-            //        li.addEventListener('click', function () {
-            //            if (this.classList.contains('active')) {
-            //                this.classList.remove("active");
-            //            } else {
-            //                this.classList.add("active");
-            //            }
-            //        })
-            //    }
-            //}
-  
-          //$(document).ready(function() {
-          //  $('li').click(function(event) {
-          //      $(this).toggleClass('active');
-          //  });
-          // });//end doc ready
-
-        //    $('#menu li').click(function (event) {
-        //    $('#menu li').removeClass('selected');
-        //    $(this).addClass('selected');
-        //});
-
-//let old;
- 
-//document.querySelector('#menu').addEventListener('click',e => {
-//        if (old) old.style.background = '';
-//        old = e.target;
-//        e.target.style.background = 'red'; 
-//});
-
-        //$("#menu a").on("click", function () {
-        //    $(this).addClass("active");
-        //});
-</script>
-}

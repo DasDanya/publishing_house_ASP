@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<publishing.Models.Material>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Список материалов";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -47,13 +47,13 @@
                 @Html.DisplayFor(modelItem => item.Cost)
             </td>
             <td>
-                   @if (User.IsInRole("admin")) 
+                   @if (User.IsInRole("admin") && item.ProductMaterials.Count == 0) 
                    { 
                         <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
                         <span>| </span>
                         <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
                         <span>| </span>
-                    }
+                   }
                     <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a>  
             </td>
         </tr>

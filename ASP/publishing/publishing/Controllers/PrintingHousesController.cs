@@ -70,6 +70,9 @@ namespace publishing.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!UniqueAddress(printingHouse,"create"))
+                    return RedirectToAction("Create");
+
                 _context.Add(printingHouse);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -108,6 +111,9 @@ namespace publishing.Controllers
 
             if (ModelState.IsValid)
             {
+                if (!UniqueAddress(printingHouse, "edit"))
+                    return RedirectToAction("Edit", new {id});
+
                 try
                 {
                     _context.Update(printingHouse);
@@ -157,9 +163,23 @@ namespace publishing.Controllers
             {
                 return Problem("Entity set 'PublishingDBContext.PrintingHouses'  is null.");
             }
-            var printingHouse = await _context.PrintingHouses.FindAsync(id);
+
+            //var bookings = _context.Bookings.Where(b => b.PrintingHouseId == id).ToList();
+
+            //foreach (var booking in bookings)
+            //{
+            //    booking.PrintingHouseId = null;
+            //}
+
+            var printingHouse = _context.PrintingHouses.Include(p=>p.Bookings).FirstOrDefault(p=>p.Id == id);
+
             if (printingHouse != null)
             {
+                foreach (var booking in printingHouse.Bookings)
+                {
+                    booking.PrintingHouseId = null;
+                }
+
                 _context.PrintingHouses.Remove(printingHouse);
             }
 
@@ -218,6 +238,22 @@ namespace publishing.Controllers
             await _context.SaveChangesAsync();
 
             return Redirect(Request.Headers["Referer"].ToString());
+        }
+
+        private bool UniqueAddress(PrintingHouse printingHouse, string typeAction) 
+        {
+            PrintingHouse existPrintingHouse = null;
+
+            if (typeAction == "create")
+                existPrintingHouse = _context.PrintingHouses.FirstOrDefault(p => p.State == printingHouse.State && p.City == printingHouse.City && p.Street == printingHouse.Street && p.House == printingHouse.House);
+            else if(typeAction == "edit")
+                existPrintingHouse = _context.PrintingHouses.FirstOrDefault(p => (p.State == printingHouse.State && p.City == printingHouse.City && p.Street == printingHouse.Street && p.House == printingHouse.House) & p.Id != printingHouse.Id);
+
+            if (existPrintingHouse == null)
+                return true;
+
+            return false;
+
         }
     }
 }

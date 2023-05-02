@@ -25,7 +25,7 @@ namespace publishing.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Materials != null ? 
-                          View(await _context.Materials.ToListAsync()) :
+                          View(await _context.Materials.Include(m=>m.ProductMaterials).ToListAsync()) :
                           Problem("Entity set 'PublishingDBContext.Materials'  is null.");
         }
 
@@ -77,11 +77,29 @@ namespace publishing.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (ExistMaterial(material,"create"))
+                    return RedirectToAction("Create");
+
                 _context.Add(material);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(material);
+        }
+
+        private bool ExistMaterial(Material material, string typeAction) 
+        {
+            Material existMaterial = null;
+            if (typeAction == "create")
+                existMaterial = _context.Materials.FirstOrDefault(m => m.Type == material.Type && m.Color == material.Color && m.Size == material.Size && m.Cost == material.Cost);
+            else if (typeAction == "edit")
+                existMaterial = _context.Materials.FirstOrDefault(m => m.Type == material.Type && m.Color == material.Color && m.Size == material.Size && m.Cost == material.Cost && m.Id != material.Id);
+
+            if (existMaterial != null)
+                return true;
+
+            return false;
+
         }
 
         // GET: Materials/Edit/5
@@ -93,11 +111,15 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials.FindAsync(id);
+            var material =  _context.Materials.Include(m=>m.ProductMaterials).FirstOrDefault(m=>m.Id == id);
             if (material == null)
             {
                 return NotFound();
             }
+
+            if(material.ProductMaterials.Count > 0)
+                return new StatusCodeResult(403);
+
             return View(material);
         }
 
@@ -117,6 +139,9 @@ namespace publishing.Controllers
             {
                 try
                 {
+                    if (ExistMaterial(material,"edit"))
+                        return RedirectToAction("Edit", new {id});
+
                     _context.Update(material);
                     await _context.SaveChangesAsync();
                 }
@@ -145,12 +170,15 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var material = await _context.Materials
+            var material = await _context.Materials.Include(m=>m.ProductMaterials)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (material == null)
             {
                 return NotFound();
             }
+
+            if (material.ProductMaterials.Count > 0)
+                return new StatusCodeResult(403);
 
             return View(material);
         }

@@ -77,6 +77,9 @@ namespace publishing.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!IsNewEmployee(employee,"create"))
+                    return RedirectToAction("Create");
+
                 if (photo != null)
                 {
                     string extension = Path.GetExtension(photo.FileName);
@@ -153,6 +156,9 @@ namespace publishing.Controllers
 
             if (ModelState.IsValid)
             {
+                if (!IsNewEmployee(employee,"edit"))
+                    return RedirectToAction("Edit",new {id});
+
                 if (photo != null)
                 {
                     string extension = Path.GetExtension(photo.FileName);
@@ -233,9 +239,13 @@ namespace publishing.Controllers
             {
                 return Problem("Entity set 'PublishingDBContext.Employees'  is null.");
             }
-            var employee = await _context.Employees.FindAsync(id);
+
+            var employee = _context.Employees.Include(e => e.Bookings).FirstOrDefault(e => e.Id == id);
             if (employee != null)
             {
+                if (employee.Bookings.Count != 0)
+                    return RedirectToAction("Delete", new { id });
+                
                 if (!employee.Visual.IsNullOrEmpty())
                 {
                     System.IO.File.Delete(_appEnvironment.WebRootPath + employee.Visual);
@@ -252,7 +262,6 @@ namespace publishing.Controllers
         {
           return (_context.Employees?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
 
         public IActionResult LinkEmployeeWithBooking(int? id)
         {
@@ -290,6 +299,21 @@ namespace publishing.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", new { id = employeeId });
+        }
+
+        private bool IsNewEmployee(Employee employee,string typeAction) 
+        {
+            Employee existEmployee = null;
+
+            if(typeAction == "create")
+                existEmployee = _context.Employees.FirstOrDefault(e => e.Email == employee.Email | e.Phone == employee.Phone);
+            else if(typeAction == "edit")
+                existEmployee = _context.Employees.FirstOrDefault(e => (e.Email == employee.Email | e.Phone == employee.Phone) & e.Id != employee.Id);
+
+            if (existEmployee == null)
+                return true;
+
+            return false;
         }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using publishing.Areas.Identity.Data;
+using publishing.Infrastructure;
 using publishing.Models;
 using publishing.Models.ViewModels;
 
@@ -77,33 +78,33 @@ namespace publishing.Controllers
             return View(model);
         }
 
-        // GET: Bookings/Create
-        [Authorize(Roles ="customer")]
-        public IActionResult Create()
-        {
-            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name");
-            return View();
-        }
+        //// GET: Bookings/Create
+        //[Authorize(Roles ="customer")]
+        //public IActionResult Create()
+        //{
+        //    ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name");
+        //    return View();
+        //}
 
-        // POST: Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Start,End,Status,Cost,PrintingHouseId")] Booking booking)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name", booking.PrintingHouseId);
-            return View(booking);
-        }
+        //// POST: Bookings/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Start,End,Status,Cost,PrintingHouseId")] Booking booking)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(booking);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name", booking.PrintingHouseId);
+        //    return View(booking);
+        //}
 
         // GET: Bookings/Edit/5
-        [Authorize(Roles ="customer,admin")]
+        [Authorize(Roles ="manager,admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Bookings == null)
@@ -117,10 +118,7 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            if(booking.Status != "Ожидание")
-                return new StatusCodeResult(403);
-
-            if (!IsUserBooking(booking.Id))
+            if(booking.Status != "Выполняется")
                 return new StatusCodeResult(403);
 
             ViewData["PrintingHouseId"] = new SelectList(_context.PrintingHouses, "Id", "Name", booking.PrintingHouseId);
@@ -143,6 +141,12 @@ namespace publishing.Controllers
             {
                 try
                 {
+                    Customer customer = GetCustomerBooking(id);
+                    string subject = $"Изменение в заказе №{id}";
+                    string message = $"Уважаемый(-ая) {customer.Name}! Дата выполнения вашего заказа перенесена на {booking.End.Value.ToString("dd/MM/yyyy")}.<br>С уважением, \"Издательство\".";
+                    EmailSender emailSender = new EmailSender();
+                    emailSender.SendEmail(customer.Email, subject, message);
+
                     _context.Update(booking);
                     await _context.SaveChangesAsync();
                 }
@@ -164,7 +168,7 @@ namespace publishing.Controllers
         }
 
         // GET: Bookings/Delete/5
-        [Authorize(Roles ="customer,admin")]
+        [Authorize(Roles ="customer")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Bookings == null)
@@ -213,7 +217,8 @@ namespace publishing.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            //return RedirectToAction(nameof(Index));
+            return RedirectToAction("CustomerBookings", "Customers", new { emailCustomer = _userManager.GetUserAsync(HttpContext.User).Result.Email });
         }
 
         private bool BookingExists(int id)
@@ -234,6 +239,9 @@ namespace publishing.Controllers
                 return NotFound();
 
             if (!IsUserBooking(booking.Id))
+                return new StatusCodeResult(403);
+
+            if (booking.Status != "Ожидание")
                 return new StatusCodeResult(403);
 
             if (_context.BookingProducts.Count(bp => bp.BookingId == bookingId) > 1)
@@ -258,6 +266,9 @@ namespace publishing.Controllers
             Booking booking = _context.Bookings.Include(b => b.Employees).Where(b => b.Id == bookingId).First();
             if (booking == null)
                 return NotFound();
+
+            if (booking.Status != "Выполняется")
+                return new StatusCodeResult(403);
 
             if (booking.Employees.Count > 1)
             {
@@ -325,6 +336,16 @@ namespace publishing.Controllers
                     return false;
             }
             return true;
+        }
+
+        private Customer GetCustomerBooking(int bookingId)
+        {
+            var product = (from bp in _context.BookingProducts.Include(bp => bp.Product).ThenInclude(p => p.Customer) where bp.BookingId == bookingId select bp.Product).First();
+
+            if (product != null)
+                return product.Customer;
+            else
+                return null;
         }
     }
 }

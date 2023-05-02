@@ -5,7 +5,7 @@
 @inject UserManager<publishingUser> UserManager
 
 @{
-    ViewData["Title"] = "Подробнее";
+    ViewData["Title"] = "Просмотр заказа";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -126,7 +126,7 @@
                     @Html.DisplayFor(modelItem => Model.Cost)
                 </td>
                 <td>
-                    @if (!User.IsInRole("manager"))
+                    @if (User.IsInRole("customer"))
                     { 
                          <a asp-controller="Products" asp-action="Edit" asp-route-id="@item.Product.Id">Изменить</a>
                          <span>| </span>
@@ -240,16 +240,22 @@
 }
   
 <div>
-    @if (!User.IsInRole("manager"))
+    @if (!User.IsInRole("customer"))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.Booking.Id">Изменение данных о заказе</a>
-        <span>| </span>
-    }
-    @if (!User.IsInRole("customer")) { 
+        if (Model.Booking.Status == "Выполняется")
+        {
+            <a asp-action="Edit" asp-route-id="@Model?.Booking.Id">Изменение данных о заказе</a>
+            <span>| </span>
+        }
         <a asp-action="Index">Вернуться к списку заказов</a>
     }
     else
     {
+        if (Model.Booking.Status == "Ожидание")
+        {
+            <a asp-controller="Customers" asp-action="TransitionToSelectProducts" asp-route-bookingId="@Model.Booking.Id">Изменение данных о заказе</a>
+            <span>| </span>
+        }
         <a asp-controller="Customers" asp-action="CustomerBookings" asp-route-emailCustomer="@UserManager.GetUserName(User)">Вернуться к списку заказов</a>
     }
 </div>

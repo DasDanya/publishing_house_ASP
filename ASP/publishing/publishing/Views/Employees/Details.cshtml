@@ -1,7 +1,7 @@
 ﻿@model publishing.Models.Employee
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Просмотр сотрудника";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -74,13 +74,13 @@
         <div class="col-md-9">
             @{
                 if (Model.Bookings.Count != 0){<h4>Заказы</h4>}
-                else{<h4>Заказы отсутствуют</h4>}
+                else{<h4>Заказы отсутствуют</h4>
+                }
             }
-         </div>
+        </div>
         <div class="col-md-3 text-end">
             <a asp-action="LinkEmployeeWithBooking" asp-route-id="@Model.Id" class="btn btn-info" style="margin-top:5px;">Привязать к заказу</a>
-        </div>
-
+        </div>             
     </div>
 </div>
 
@@ -128,15 +128,7 @@
                             @Html.DisplayFor(modelItem => item.Cost)
                         </td>
                         <td>
-                            @if (User.IsInRole("admin"))
-                            {
-                                <a asp-controller="Bookings" asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
-                                <span>| </span>
-                                <a asp-controller="Bookings" asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-                                <span>| </span>
-                            }
-                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
-                            
+                            <a asp-controller="Bookings" asp-action="Details" asp-route-id="@item.Id">Подробнее</a>                            
                             @if (item.Status == "Выполняется")
                             {
                                 <span>| </span>

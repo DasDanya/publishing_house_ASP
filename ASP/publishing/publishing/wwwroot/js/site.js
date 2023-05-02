@@ -67,6 +67,24 @@ function SetDate() {
     document.getElementById("datefield").setAttribute("max", max_date);
 }
 
+function SetMaxDate()
+{
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var min_yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    today = min_yyyy + '-' + mm + '-' + dd;
+    document.getElementById("datefield").setAttribute("max", today);
+}
+
 function searchBookingInSelectBox() {
     var input = document.getElementById('numberBooking');
     var selectBox = document.getElementById('selectBox');

@@ -1,18 +1,19 @@
 ﻿@model IEnumerable<publishing.Models.Customer>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Список заказчиков";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Список заказчиков</h1>
 
-<p>
+@*<p>
     @if (User.IsInRole("admin"))
     {
         <a asp-action="Create">Добавить заказчика</a>
     }
-</p>
+</p>*@
+
 <table class="table">
     <thead>
         <tr>
@@ -41,13 +42,13 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                    @if (User.IsInRole("admin"))
+                   @* @if (User.IsInRole("admin"))
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a>
                         <span>| </span>
                         <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
                         <span>| </span>
-                    }
+                    }*@
                     <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a>
             </td>
         </tr>

@@ -10,28 +10,28 @@ namespace publishing.Models
         [Required(ErrorMessage = "Введите имя сотрудника")]
         [DataType(DataType.Text)]
         [StringLength(20, MinimumLength = 1, ErrorMessage = "Длина строки не входит в заданный диапазон:[1,20]")]
-        [DisplayName("Имя сотрудника")]
+        [DisplayName("Имя")]
         [RegularExpression("^[А-Яа-я ]+$", ErrorMessage = "Разрешается ввести только русские буквы")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Введите фамилию сотрудника")]
         [DataType(DataType.Text)]
         [StringLength(20, MinimumLength = 1, ErrorMessage = "Длина строки не входит в заданный диапазон:[1,20]")]
-        [DisplayName("Фамилия сотрудника")]
+        [DisplayName("Фамилия")]
         [RegularExpression("^[А-Яа-я ]+$", ErrorMessage = "Разрешается ввести только русские буквы")]
         public string Surname { get; set; }
 
 
         [DataType(DataType.Text)]
         [StringLength(20, MinimumLength = 1, ErrorMessage = "Длина строки не входит в заданный диапазон:[1,20]")]
-        [DisplayName("Отчество сотрудника")]
+        [DisplayName("Отчество")]
         [RegularExpression("^[А-Яа-я ]+$", ErrorMessage = "Разрешается ввести только русские буквы")]
         public string? Middlename { get; set; }
 
         [Required(ErrorMessage = "Введите должность сотрудника")]
         [DataType(DataType.Text)]
         [StringLength(30, MinimumLength = 5, ErrorMessage = "Длина строки не входит в заданный диапазон:[5,30]")]
-        [DisplayName("Должность сотрудника")]
+        [DisplayName("Должность")]
         [RegularExpression("^[А-Яа-я ]+$", ErrorMessage = "Разрешается ввести только русские буквы")]
         public string Type { get; set; }
 

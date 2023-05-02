@@ -1,7 +1,7 @@
 ﻿@model publishing.Models.TypeProduct
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Изменение данных о типе продукции";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -25,7 +25,7 @@
                 <span asp-validation-for="Margin" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Изменить" class="btn btn-primary" />
+                <input type="submit" value="Изменить" class="btn btn-primary" onclick="ConfirmAction('Вы подтверждаете изменение типа печатной продукции? Если измененный тип существует в базе данных, то действие будет отменено')" />
             </div>
         </form>
     </div>

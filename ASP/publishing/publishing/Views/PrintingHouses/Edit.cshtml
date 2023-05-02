@@ -1,7 +1,7 @@
 ﻿@model publishing.Models.PrintingHouse
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Изменение данных о типографии";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" id="form">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -54,7 +54,7 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Изменить" class="btn btn-primary" />
+                <input type="submit" value="Изменить" class="btn btn-primary" onclick="ConfirmAction('Вы подтверждаете изменение типографии? Если у изменненной типографии адрес уже существует в базе данных, то действие будет отменено')"/>
             </div>
         </form>
     </div>
@@ -69,9 +69,18 @@
         $(document).ready(function () {
             $('#summernote').summernote({
                 height: 200,
-                placeholder: 'Введите дополнительную информацию'
+                placeholder: 'Введите дополнительную информацию',
+                disableResizeEditor: true
             });
         });
+
+        $('#form').on('submit', function (e) {
+            if ($('#summernote').summernote('isEmpty')) {
+                alert('Необходимо ввести дополнительную информацию о сотруднике');
+                e.preventDefault();
+            }
+        });
+
     </script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

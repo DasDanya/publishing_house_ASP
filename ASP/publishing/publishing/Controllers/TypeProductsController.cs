@@ -25,7 +25,7 @@ namespace publishing.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.TypeProducts != null ? 
-                          View(await _context.TypeProducts.ToListAsync()) :
+                          View(await _context.TypeProducts.Include(tp=>tp.Products).ToListAsync()) :
                           Problem("Entity set 'PublishingDBContext.TypeProducts'  is null.");
         }
 
@@ -71,12 +71,32 @@ namespace publishing.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (ExistTypeProduct(typeProduct,"create"))
+                    return RedirectToAction("Create");
+
                 _context.Add(typeProduct);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(typeProduct);
         }
+
+        private bool ExistTypeProduct(TypeProduct typeProduct, string typeAction) 
+        {
+            TypeProduct existTypeProduct = null;
+
+            if(typeAction == "create")
+                existTypeProduct = _context.TypeProducts.FirstOrDefault(t => t.Type == typeProduct.Type && t.Margin == typeProduct.Margin);
+            else if(typeAction == "edit")
+                existTypeProduct = _context.TypeProducts.FirstOrDefault(t => t.Type == typeProduct.Type && t.Margin == typeProduct.Margin && t.Id != typeProduct.Id);
+
+            if (existTypeProduct != null)
+                return true;
+
+            return false;
+
+        }
+
 
         // GET: TypeProducts/Edit/5
         [Authorize(Roles = "admin")]
@@ -87,11 +107,15 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var typeProduct = await _context.TypeProducts.FindAsync(id);
+            var typeProduct =  _context.TypeProducts.Include(tp=>tp.Products).FirstOrDefault(tp=>tp.Id == id);
             if (typeProduct == null)
             {
                 return NotFound();
             }
+
+            if (typeProduct.Products.Count > 0)
+                return new StatusCodeResult(403);
+
             return View(typeProduct);
         }
 
@@ -111,6 +135,9 @@ namespace publishing.Controllers
             {
                 try
                 {
+                    if (ExistTypeProduct(typeProduct,"edit"))
+                        return RedirectToAction("Edit", new { id });
+
                     _context.Update(typeProduct);
                     await _context.SaveChangesAsync();
                 }
@@ -139,12 +166,15 @@ namespace publishing.Controllers
                 return NotFound();
             }
 
-            var typeProduct = await _context.TypeProducts
+            var typeProduct = await _context.TypeProducts.Include(tp=>tp.Products)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (typeProduct == null)
             {
                 return NotFound();
             }
+
+            if (typeProduct.Products.Count > 0)
+                return new StatusCodeResult(403);
 
             return View(typeProduct);
         }

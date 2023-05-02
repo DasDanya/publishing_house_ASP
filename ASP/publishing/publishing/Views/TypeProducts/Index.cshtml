@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<publishing.Models.TypeProduct>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Список типов продукции";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -35,7 +35,7 @@
                 @Html.DisplayFor(modelItem => item.Margin)
             </td>
             <td>
-               @if (User.IsInRole("admin")) 
+               @if (User.IsInRole("admin") && item.Products.Count == 0) 
                {
                     <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> 
                     <span>| </span>
