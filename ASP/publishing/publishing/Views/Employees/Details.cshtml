@@ -6,7 +6,12 @@
 }
 
 <h1>Информация о сотруднике</h1>
-<hr style="margin-bottom:0;" />
+<p style="margin-bottom:0px;">
+    @if (Model.Bookings.Count > 0)
+    {
+        <a asp-action="ReportAboutWork" asp-route-id="@Model.Id">Отчёт о работе сотрудника</a>    
+    }
+</p>
 
 <div style="display:flex">
     @*<hr style="margin-bottom:0;"/>*@

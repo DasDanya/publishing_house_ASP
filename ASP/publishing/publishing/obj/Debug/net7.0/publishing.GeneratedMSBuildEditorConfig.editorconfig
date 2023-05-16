@@ -84,6 +84,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/GetReportAboutCompletedBookings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcR2V0UmVwb3J0QWJvdXRDb21wbGV0ZWRCb29raW5ncy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/GetReportAboutCostCompletedBookings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcR2V0UmVwb3J0QWJvdXRDb3N0Q29tcGxldGVkQm9va2luZ3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Bookings/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9va2luZ3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -154,6 +162,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Employees/LinkEmployeeWithBooking.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXExpbmtFbXBsb3llZVdpdGhCb29raW5nLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Employees/ReportAboutWork.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW1wbG95ZWVzXFJlcG9ydEFib3V0V29yay5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/User/Documents/GitHub/publishing_house_ASP/ASP/publishing/publishing/Views/Error/Index.cshtml]

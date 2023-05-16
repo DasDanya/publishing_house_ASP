@@ -85,6 +85,40 @@ function SetMaxDate()
     document.getElementById("datefield").setAttribute("max", today);
 }
 
+function SetStartDate()
+{
+    var today = new Date();
+    var dd = today.getDate() - 1;
+    var mm = today.getMonth() + 1;
+    var min_yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+
+    today = min_yyyy + '-' + mm + '-' + dd;
+    document.getElementById("startField").setAttribute("max", today);
+}
+
+function CheckDifferenceBetweenDates()
+{
+    var startInput = document.getElementById('startField').value;
+    var endInput = document.getElementById('datefield').value;
+
+    var startDate = new Date(startInput);
+    var endDate = new Date(endInput);
+
+    if (!isNaN(endDate) && !isNaN(startDate)) {
+        if (endDate - startDate <= 0) {
+            alert('Дата конца интервала должна быть больше даты начала');
+            event.preventDefault();
+        }
+    }
+}
+
 function searchBookingInSelectBox() {
     var input = document.getElementById('numberBooking');
     var selectBox = document.getElementById('selectBox');

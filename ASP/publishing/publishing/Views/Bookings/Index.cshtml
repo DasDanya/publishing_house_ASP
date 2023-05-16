@@ -9,6 +9,13 @@
 
  <p>
    <a asp-controller="ManagerBooking" asp-action="Index">Управление заказами</a>
+    @if (Model.Where(m => m.Status == "Выполнен").Count() > 0)
+    {
+        <span>| </span>
+        <a asp-controller="Bookings" asp-action="GetReportAboutCompletedBookings">Отчёт о выполненных заказах</a>
+        <span>| </span>
+        <a asp-controller="Bookings" asp-action="GetReportAboutCostCompletedBookings">Отчёт о доходах</a>
+    }
 </p>
 
 <table class="table">

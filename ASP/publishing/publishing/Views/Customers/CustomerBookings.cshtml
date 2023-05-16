@@ -7,8 +7,16 @@
 
 <h1>Список заказов</h1>
 
+<div style="display:inline"></div>
 <p>
     <a asp-action="TransitionToSelectProducts" asp-route-bookingId="-1">Создать заказ</a>
+    @if (Model.Where(m=>m.Status == "Выполнен").Count() > 0)
+    {
+        <span>| </span>
+        <a asp-controller="Bookings" asp-action="GetReportAboutCompletedBookings">Отчёт о выполненных заказах</a>
+        <span>| </span>
+        <a asp-controller="Bookings" asp-action="GetReportAboutCostCompletedBookings">Отчёт о расходах</a>
+    }
 </p>
 @{
     if (Model.Count() > 0)

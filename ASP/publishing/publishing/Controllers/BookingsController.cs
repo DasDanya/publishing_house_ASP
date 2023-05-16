@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using publishing.Areas.Identity.Data;
 using publishing.Infrastructure;
 using publishing.Models;
@@ -19,11 +20,13 @@ namespace publishing.Controllers
     {
         private readonly PublishingDBContext _context;
         private readonly UserManager<publishingUser> _userManager;
+        private readonly IWebHostEnvironment _appEnvironment;
 
-        public BookingsController(PublishingDBContext context, UserManager<publishingUser> userManager)
+        public BookingsController(PublishingDBContext context, UserManager<publishingUser> userManager, IWebHostEnvironment appEnvironment)
         {
             _context = context;
             _userManager = userManager;
+            _appEnvironment = appEnvironment;
         }
 
         // GET: Bookings
@@ -141,7 +144,7 @@ namespace publishing.Controllers
             {
                 try
                 {
-                    Customer customer = GetCustomerBooking(id);
+                    Customer customer = GetBookingCustomer(id);
                     string subject = $"Изменение в заказе №{id}";
                     string message = $"Уважаемый(-ая) {customer.Name}! Дата выполнения вашего заказа перенесена на {booking.End.Value.ToString("dd/MM/yyyy")}.<br>С уважением, \"Издательство\".";
                     EmailSender emailSender = new EmailSender();
@@ -338,7 +341,7 @@ namespace publishing.Controllers
             return true;
         }
 
-        private Customer GetCustomerBooking(int bookingId)
+        private Customer GetBookingCustomer(int bookingId)
         {
             var product = (from bp in _context.BookingProducts.Include(bp => bp.Product).ThenInclude(p => p.Customer) where bp.BookingId == bookingId select bp.Product).First();
 
@@ -346,6 +349,201 @@ namespace publishing.Controllers
                 return product.Customer;
             else
                 return null;
+        }
+
+        public IActionResult GetReportAboutCompletedBookings()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetReportAboutCompletedBookings(DateTime? startDate, DateTime? endDate, string radioForReport)
+        {
+            if (startDate == null | endDate == null)
+                return NotFound();
+
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            string email = user.Result.Email;
+            string userName = _userManager.IsInRoleAsync(user.Result, "manager").Result ? "менеджер" : "администратор";
+
+            List<Booking> completedBookings = _context.Bookings.Include(b=>b.BookingProducts).ThenInclude(bp=>bp.Product).ThenInclude(p=>p.Customer).Where(b => b.Status == "Выполнен" & startDate <= b.End & b.End <= endDate).ToList();
+
+            if (completedBookings.Count > 0)
+            {
+                if (radioForReport == "email")
+                {
+                    string pathToReport = GetReportCompletedBookings(completedBookings, startDate.Value.ToString("d"), endDate.Value.ToString("d"), false).ToString();
+                    EmailSender emailSender = new EmailSender();
+                    string subject = "Отчёт о выполненных заказах";
+                    string message = $"Уважаемый, {userName}! Отчёт о выполненных заказах с {startDate.Value.ToString("d")} по {endDate.Value.ToString("d")} готов!<br>С уважением, \"Издательство\".";
+                    emailSender.SendEmailWithDocument(pathToReport, email, subject, message);
+                }
+                else if (radioForReport == "download")
+                {
+                    FileResult report = (FileResult)GetReportCompletedBookings(completedBookings, startDate.Value.ToString("d"), endDate.Value.ToString("d"), true);
+                    //return NotFound(report.);
+                    return report;
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Error", new { errorMessage = $"С {startDate.Value.ToString("d")} по {endDate.Value.ToString("d")} не был выполнен ни один заказ. Выберите другой временной интервал"});
+            }
+
+            //return RedirectToAction("GetReportAboutCompletedBookings", "Bookings");
+            return RedirectToAction("GetReportAboutCompletedBookings", "Bookings");
+        }
+
+        private object GetReportCompletedBookings(List<Booking> bookings, string startDate, string endDate, bool download)
+        {
+            string pathToWorkPiece = "/Reports/completed_bookings_draft.xlsx";
+            string result = $"/Reports/completed_bookings.xlsx";
+
+            FileInfo workPiece = new FileInfo(_appEnvironment.WebRootPath + pathToWorkPiece);
+            FileInfo fileInfoResult = new FileInfo(_appEnvironment.WebRootPath + result);
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage excelPackage = new ExcelPackage(workPiece))
+            {
+                //устанавливаем поля документа
+                excelPackage.Workbook.Properties.Author = "Издательство";
+                excelPackage.Workbook.Properties.Title = "Список выполненных заказов";
+                excelPackage.Workbook.Properties.Subject = "Выполненные заказы";
+                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                //плучаем лист по имени.
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["bookings"];
+                //получаем списко пользователей и в цикле заполняем лист данными
+                worksheet.Cells[2, 2].Value = $"с {startDate}";
+                worksheet.Cells[2, 4].Value = $"по {endDate}";
+                int startLine = 4;
+                foreach (Booking booking in bookings)
+                {
+                    worksheet.Cells[startLine, 1].Value = startLine - 3;
+                    worksheet.Cells[startLine, 2].Value = booking.Id;
+                    worksheet.Cells[startLine, 3].Value = booking.Start.ToString("d");
+                    worksheet.Cells[startLine, 4].Value = booking.End.Value.ToString("d");
+                    worksheet.Cells[startLine, 5].Value = $"{booking.Cost} ₽";
+                    worksheet.Cells[startLine, 6].Value = booking.BookingProducts.First().Product.Customer.Name;
+                    startLine++;
+                }
+                //созраняем в новое место
+
+                excelPackage.SaveAs(fileInfoResult);
+                //excelPackage.Dispose();
+            }
+
+            string file_type = "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet";
+            // Имя файла - необязательно
+            string file_name = $"completed_bookings.xlsx";
+
+            if (!download)
+                return _appEnvironment.WebRootPath + result;
+            else
+                return File(result, file_type, file_name);
+        }
+
+        public IActionResult GetReportAboutCostCompletedBookings()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetReportAboutCostCompletedBookings(DateTime? startDate, DateTime? endDate, string radioForReport) 
+        {
+            if (startDate == null | endDate == null)
+                return NotFound();
+
+            var user = _userManager.GetUserAsync(HttpContext.User);
+            string email = user.Result.Email;
+            string userName = _userManager.IsInRoleAsync(user.Result, "manager").Result ? "менеджер" : "администратор";
+
+            List<Booking> completedBookings = _context.Bookings.Where(b => b.Status == "Выполнен" & startDate <= b.End & b.End <= endDate).ToList();
+
+            if (completedBookings.Count > 0)
+            {
+                if (radioForReport == "email")
+                {
+                    string pathToReport = GetReportCostCompletedBookings(completedBookings, startDate.Value, endDate.Value, false).ToString();
+                    EmailSender emailSender = new EmailSender();
+                    string subject = "Отчёт о доходах от заказов";
+                    string message = $"Уважаемый(-ая), {userName}! Отчёт о доходах от заказов с {startDate.Value.ToString("d")} по {endDate.Value.ToString("d")} готов!<br>С уважением, \"Издательство\".";
+                    emailSender.SendEmailWithDocument(pathToReport, email, subject, message);
+                }
+                else if (radioForReport == "download")
+                {
+                    FileResult report = (FileResult)GetReportCostCompletedBookings(completedBookings, startDate.Value, endDate.Value, true);
+                    //return NotFound(report.);
+                    return report;
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Error", new { errorMessage = $"С {startDate.Value.ToString("d")} по {endDate.Value.ToString("d")} не был выполнен ни один заказ. Выберите другой временной интервал" });
+            }
+
+            //return RedirectToAction("GetReportAboutCompletedBookings", "Bookings");
+            return RedirectToAction("GetReportAboutCostCompletedBookings", "Bookings");
+        }
+
+        private object GetReportCostCompletedBookings(List<Booking> bookings, DateTime startDate, DateTime endDate, bool download)
+        {
+            string pathToWorkPiece = "/Reports/employee_cost_bookings.xlsx";
+            string result = $"/Reports/employee_cost_bookings_result.xlsx";
+
+            FileInfo workPiece = new FileInfo(_appEnvironment.WebRootPath + pathToWorkPiece);
+            FileInfo fileInfoResult = new FileInfo(_appEnvironment.WebRootPath + result);
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (ExcelPackage excelPackage = new ExcelPackage(workPiece))
+            {
+                //устанавливаем поля документа
+                excelPackage.Workbook.Properties.Author = "Издательство";
+                excelPackage.Workbook.Properties.Title = "Отчёт о расходах от заказов";
+                excelPackage.Workbook.Properties.Subject = "Расходы от заказов";
+                excelPackage.Workbook.Properties.Created = DateTime.Now;
+                //плучаем лист по имени.
+                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets["bookings"];
+                //получаем списко пользователей и в цикле заполняем лист данными
+                worksheet.Cells[2, 2].Value = $"с {startDate.ToString("d")}";
+                worksheet.Cells[2, 4].Value = $"по {endDate.ToString("d")}";
+                int startLine = 4;
+
+                DateTime endCount = new DateTime();
+                while (startDate.Date < endDate.Date)
+                {
+                    if ((endDate - startDate).TotalDays <= 6)
+                    {
+                        endCount = endDate;
+                    }
+                    else
+                    {
+                        endCount = startDate.AddDays(6);
+                    }
+
+                    //cost = bookings.Where(b => startDate <= b.End & b.End <= endCount).Sum(b => b.Cost);
+
+                    worksheet.Cells[startLine, 1].Value = startLine - 3;
+                    worksheet.Cells[startLine, 2].Value = startDate.ToString("d");
+                    worksheet.Cells[startLine, 3].Value = endCount.ToString("d");
+                    worksheet.Cells[startLine, 4].Value = $"{bookings.Where(b => startDate <= b.End & b.End <= endCount).Count()}";
+                    worksheet.Cells[startLine, 5].Value = $"{bookings.Where(b => startDate <= b.End & b.End <= endCount).Sum(b => b.Cost)} ₽";
+
+                    startDate = startDate.AddDays(7);
+                    startLine++;
+                }
+                //созраняем в новое место
+
+                excelPackage.SaveAs(fileInfoResult);
+            }
+
+            string file_type = "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet";
+            // Имя файла - необязательно
+            string file_name = "employee_cost_bookings_result.xlsx";
+
+            if (!download)
+                return _appEnvironment.WebRootPath + result;
+            else
+                return File(result, file_type, file_name);
         }
     }
 }
