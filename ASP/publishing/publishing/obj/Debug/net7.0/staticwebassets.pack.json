@@ -45,6 +45,14 @@
       "PackagePath": "staticwebassets\\Reports\\employee_cost_bookings_result.xlsx"
     },
     {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\Reports\\start_bookings_draft.xlsx",
+      "PackagePath": "staticwebassets\\Reports\\start_bookings_draft.xlsx"
+    },
+    {
+      "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\Reports\\start_bookings_result.xlsx",
+      "PackagePath": "staticwebassets\\Reports\\start_bookings_result.xlsx"
+    },
+    {
       "Id": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\Reports\\Володин Семен Александрович_bookings_result.xlsx",
       "PackagePath": "staticwebassets\\Reports\\Володин Семен Александрович_bookings_result.xlsx"
     },

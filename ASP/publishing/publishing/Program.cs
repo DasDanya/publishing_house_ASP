@@ -3,7 +3,8 @@ using publishing.Models;
 using Microsoft.AspNetCore.Identity;
 using publishing.Data;
 using publishing.Areas.Identity.Data;
-
+using Quartz;
+using publishing.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,40 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
     opt.LoginPath = new PathString("/Identity/Account/Login");
 });
+
+builder.Services.AddQuartz(q =>
+{
+    q.UseMicrosoftDependencyInjectionJobFactory();
+    var jobKey = new JobKey("OrderExtension");
+    var secondJobKey = new JobKey("ExecutionBookingReminder");
+    var thirdJobKey = new JobKey("GetStartBookings");
+
+    q.AddJob<OrderExtension>(opts => opts.WithIdentity(jobKey));
+    q.AddJob<ExecutionBookingReminder>(opts => opts.WithIdentity(secondJobKey));
+    q.AddJob<GetStartBookings>(opts => opts.WithIdentity(thirdJobKey));
+
+    q.AddTrigger(t => t
+    .ForJob(jobKey)
+    .WithIdentity("OrderExtension-trigger")
+    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(00,01))
+    );
+
+    q.AddTrigger(t => t
+    .ForJob(secondJobKey)
+    .WithIdentity("ExecutionBookingReminder-trigger")
+    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(6,00))
+    );
+
+    q.AddTrigger(t => t
+    .ForJob(thirdJobKey)
+    .WithIdentity("GetStartBookings-trigger")
+    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(1, 20))
+    );
+
+});
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+
 
 var app = builder.Build();
 

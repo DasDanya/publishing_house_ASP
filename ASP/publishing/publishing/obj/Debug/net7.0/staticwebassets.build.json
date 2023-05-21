@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "OIfHfAwjk0S2UNjZIgmoyS3tzxrtkhLxrPTGpByohok=",
+  "Hash": "YVdVJiU5/dmdU0iPZtqGtXt81EEPNb1b2z51Hz7S7cY=",
   "Source": "publishing",
   "BasePath": "_content/publishing",
   "Mode": "Default",
@@ -2429,6 +2429,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Reports\\employee_cost_bookings_result.xlsx"
+    },
+    {
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\Reports\\start_bookings_draft.xlsx",
+      "SourceId": "publishing",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\",
+      "BasePath": "_content/publishing",
+      "RelativePath": "Reports/start_bookings_draft.xlsx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Reports\\start_bookings_draft.xlsx"
+    },
+    {
+      "Identity": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\Reports\\start_bookings_result.xlsx",
+      "SourceId": "publishing",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\",
+      "BasePath": "_content/publishing",
+      "RelativePath": "Reports/start_bookings_result.xlsx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Reports\\start_bookings_result.xlsx"
     },
     {
       "Identity": "C:\\Users\\User\\Documents\\GitHub\\publishing_house_ASP\\ASP\\publishing\\publishing\\wwwroot\\Reports\\Володин Семен Александрович_bookings_result.xlsx",

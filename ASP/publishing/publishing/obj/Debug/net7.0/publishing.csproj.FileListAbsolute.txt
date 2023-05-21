@@ -564,3 +564,7 @@ C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bi
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Microsoft.IO.RecyclableMemoryStream.dll
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Quartz.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Quartz.AspNetCore.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Quartz.Extensions.DependencyInjection.dll
+C:\Users\User\Documents\GitHub\publishing_house_ASP\ASP\publishing\publishing\bin\Debug\net7.0\Quartz.Extensions.Hosting.dll

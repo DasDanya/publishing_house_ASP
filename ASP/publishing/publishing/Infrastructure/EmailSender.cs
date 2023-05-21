@@ -7,11 +7,13 @@ namespace publishing.Infrastructure
 {
     public class EmailSender
     {
+
         const string emailSender = "your_email";
-        const string emailPassword = "your_password";
-        const string senderName = "senderName";
-        const string smtpClient = "smtpClient";
-        const int port = 625; // Номер клиента 
+        const string emailPassword = "password";
+        const string senderName = "companyName";
+        const string smtpClient = "smtp.mail.ru";
+        const int port = 2525;
+
         public void SendEmail(string email, string subject, string message)
         {
             try
