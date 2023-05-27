@@ -69,7 +69,7 @@ namespace publishing.Infrastructure
                     worksheet.Cells[startLine, 1].Value = startLine - 3;
                     worksheet.Cells[startLine, 2].Value = booking.Id;
                     worksheet.Cells[startLine, 3].Value = booking.Start.ToString("d");
-                    worksheet.Cells[startLine, 4].Value = booking.End.Value.ToString("d");
+                    worksheet.Cells[startLine, 4].Value = booking.End == null ? "Отсутствует" : booking.End.Value.ToString("d");
                     worksheet.Cells[startLine, 5].Value = $"{booking.Cost} ₽";
                     worksheet.Cells[startLine, 6].Value = booking.BookingProducts.First().Product.Customer.Name;
                     startLine++;

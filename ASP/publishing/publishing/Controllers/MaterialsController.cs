@@ -22,11 +22,27 @@ namespace publishing.Controllers
         }
 
         // GET: Materials
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string? type, string? color, string? size, double? startCost, double? endCost)
         {
-              return _context.Materials != null ? 
-                          View(await _context.Materials.Include(m=>m.ProductMaterials).ToListAsync()) :
-                          Problem("Entity set 'PublishingDBContext.Materials'  is null.");
+            List<Material> materials = _context.Materials.Include(m => m.ProductMaterials).ToList();
+
+            if (type != null)
+                materials = materials.Where(m => m.Type == type).ToList();
+
+            if(color != null)
+                materials = materials.Where(m => m.Color == color).ToList();
+
+            if(size != null)
+                materials = materials.Where(m => m.Size == size).ToList();
+
+            if (startCost != null & endCost == null)
+                materials = materials.Where(m => m.Cost >= startCost.Value).ToList();
+            else if (startCost == null & endCost != null)
+                materials = materials.Where(m => m.Cost <= endCost.Value).ToList();
+            else if (startCost != null & endCost != null)
+                materials = materials.Where(m => m.Cost >= startCost.Value && m.Cost <= endCost.Value).ToList();
+
+            return View(materials);          
         }
 
         // GET: Materials/Details/5

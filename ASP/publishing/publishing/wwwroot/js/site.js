@@ -160,3 +160,32 @@ function SelectedFileWithRadio()
         }
     }
 }
+
+function CheckDifferenceBetweenStartEndDates() {
+    var startInput = document.getElementById('datefield').value;
+    var endInput = document.getElementById('endfield').value;
+
+    var startDate = new Date(startInput);
+    var endDate = new Date(endInput);
+
+    if (!isNaN(endDate) && !isNaN(startDate)) {
+        if (endDate - startDate < 0) {
+            alert('Дата конца интервала должна быть больше или равно дате начала');
+            event.preventDefault();
+        }
+    }
+}
+
+
+function CheckDifferenceBetween2Numbers(start, end)
+{
+    var startNumber = parseFloat(document.getElementById(start).value);
+    var endNumber = parseFloat(document.getElementById(end).value);
+
+    if (endNumber < startNumber)
+    {
+        alert('Стартовое числовое значение должно быть меньше или равно конечному числовому значению');
+        event.preventDefault();
+    }
+
+}

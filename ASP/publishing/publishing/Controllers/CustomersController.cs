@@ -15,6 +15,7 @@ using OfficeOpenXml;
 using System.IO.Pipelines;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace publishing.Controllers
 {
@@ -34,11 +35,20 @@ namespace publishing.Controllers
 
         // GET: Customers
         [Authorize(Roles = "manager,admin")]
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string? name, string? phoneNumber, string? email)
         {
-            return _context.Customers != null ?
-                        View(await _context.Customers.ToListAsync()) :
-                        Problem("Entity set 'PublishingDBContext.Customers'  is null.");
+            List<Customer> customers = _context.Customers.ToList();
+
+            if (name != null)
+                customers = customers.Where(c => c.Name == name).ToList();
+
+            if(phoneNumber != null)
+                customers = customers.Where(c => c.Phone == phoneNumber).ToList();
+
+            if (email != null)
+                customers = customers.Where(c => c.Email == email).ToList();
+
+            return View(customers);
         }
 
         // GET: Customers/Details/5
@@ -225,7 +235,7 @@ namespace publishing.Controllers
         }
 
         [Authorize(Roles = "customer")]
-        public async Task<IActionResult> CustomerBookings(string emailCustomer)
+        public async Task<IActionResult> CustomerBookings(string emailCustomer, string? status, string? date, DateTime? startDate, DateTime? endDate, int? startNumber, int? endNumber, double? startCost, double? endCost)
         {
             var customer = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Email == emailCustomer);
             if (customer == null)
@@ -234,12 +244,43 @@ namespace publishing.Controllers
             if (!IsCustomerEmail(emailCustomer))
                 return new StatusCodeResult(403);
 
-            //return NotFound($"{customer.Name}, {customer.Email}, {customer.Phone}, {customer.Products}");
-            return View(GetBookings(customer));
+
+            List<Booking> bookings = GetBookings(customer);
+            FilterController filterController = new FilterController(_context);
+
+
+            if (status != null && status != "Все")
+            {
+                bookings = filterController.GetBookingWithCertainStatus(status, bookings);
+            }
+
+            if (startDate != null || endDate != null)
+            {
+                bookings = filterController.GetBookingWithSertainDate(date, startDate, endDate, bookings);
+            }
+
+
+            if (startNumber != null || endNumber != null)
+            {
+                bookings = filterController.GetBookingWithSertainNumber(startNumber, endNumber, bookings);
+            }
+
+            if (startCost != null || endCost != null)
+            {
+                bookings = filterController.GetBookingsWithCertainCost(startCost, endCost, bookings);
+            }
+
+            SelectList statuses = new SelectList(new List<string> { "Все", "Ожидание", "Выполняется", "Выполнен" });
+            SelectList dates = new SelectList(new List<string> { "Дата приёма", "Дата выполнения" });
+            ViewBag.statuses = statuses;
+            ViewBag.dates = dates;
+
+
+            return View(bookings);
         }
 
         [Authorize(Roles = "customer")]
-        public async Task<IActionResult> CustomerProducts(string emailCustomer)
+        public async Task<IActionResult> CustomerProducts(string emailCustomer, string? name, string? type, double? startCost, double? endCost)
         {
             var customer = _context.Customers.Include(c => c.Products).FirstOrDefault(c => c.Email == emailCustomer);
             if (customer == null)
@@ -248,7 +289,27 @@ namespace publishing.Controllers
             if (!IsCustomerEmail(emailCustomer))
                 return new StatusCodeResult(403);
 
-            return View(GetProducts(customer, false));
+
+            List<Product> products = GetProducts(customer, false);
+
+            FilterController filterController = new FilterController(_context);
+
+            if (name != null)
+            {
+                products = filterController.GetProductsWithCertainName(name, products);
+            }
+
+            if (type != null)
+            {
+                products = filterController.GetProductsWithCertainType(type, products);
+            }
+
+            if (startCost != null || endCost != null)
+            {
+                products = filterController.GetProductsWithCertainCost(startCost, endCost, products);
+            }
+
+            return View(products);
         }
 
         private bool IsCustomerEmail(string email)

@@ -24,11 +24,33 @@ namespace publishing.Controllers
         }
 
         // GET: PrintingHouses
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string? name, string? phone, string? email, string? state, string? city, string? street, string? house)
         {
-            return _context.PrintingHouses != null ?
-                        View(await _context.PrintingHouses.ToListAsync()) :
-                        Problem("Entity set 'PublishingDBContext.PrintingHouses'  is null.");
+            List<PrintingHouse> printingHouses = _context.PrintingHouses.ToList();
+
+            if (name != null)
+                printingHouses = printingHouses.Where(p => p.Name == name).ToList();
+
+            if (phone != null)
+                printingHouses = printingHouses.Where(p => p.Phone == phone).ToList();
+
+            if (email != null)
+                printingHouses = printingHouses.Where(p => p.Email == email).ToList();
+
+            if (state != null)
+                printingHouses = printingHouses.Where(p => p.State == state).ToList();
+
+            if (city != null)
+                printingHouses = printingHouses.Where(p => p.City == city).ToList();
+
+            if (street != null)
+                printingHouses = printingHouses.Where(p => p.Street == street).ToList();
+
+            if (house != null)
+                printingHouses = printingHouses.Where(p => p.House == house).ToList();
+
+
+            return View(printingHouses);
         }
 
         // GET: PrintingHouses/Details/5
@@ -70,8 +92,8 @@ namespace publishing.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!UniqueAddress(printingHouse,"create"))
-                    return RedirectToAction("Create");
+                //if (!UniqueAddress(printingHouse,"create"))
+                //    return RedirectToAction("Create");
 
                 _context.Add(printingHouse);
                 await _context.SaveChangesAsync();
@@ -111,8 +133,8 @@ namespace publishing.Controllers
 
             if (ModelState.IsValid)
             {
-                if (!UniqueAddress(printingHouse, "edit"))
-                    return RedirectToAction("Edit", new {id});
+                //if (!UniqueAddress(printingHouse, "edit"))
+                //    return RedirectToAction("Edit", new {id});
 
                 try
                 {
@@ -240,21 +262,21 @@ namespace publishing.Controllers
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
-        private bool UniqueAddress(PrintingHouse printingHouse, string typeAction) 
-        {
-            PrintingHouse existPrintingHouse = null;
+        //private bool UniqueAddress(PrintingHouse printingHouse, string typeAction) 
+        //{
+        //    PrintingHouse existPrintingHouse = null;
 
-            if (typeAction == "create")
-                existPrintingHouse = _context.PrintingHouses.FirstOrDefault(p => p.State == printingHouse.State && p.City == printingHouse.City && p.Street == printingHouse.Street && p.House == printingHouse.House);
-            else if(typeAction == "edit")
-                existPrintingHouse = _context.PrintingHouses.FirstOrDefault(p => (p.State == printingHouse.State && p.City == printingHouse.City && p.Street == printingHouse.Street && p.House == printingHouse.House) & p.Id != printingHouse.Id);
+        //    if (typeAction == "create")
+        //        existPrintingHouse = _context.PrintingHouses.FirstOrDefault(p => p.State == printingHouse.State && p.City == printingHouse.City && p.Street == printingHouse.Street && p.House == printingHouse.House);
+        //    else if(typeAction == "edit")
+        //        existPrintingHouse = _context.PrintingHouses.FirstOrDefault(p => (p.State == printingHouse.State && p.City == printingHouse.City && p.Street == printingHouse.Street && p.House == printingHouse.House) & p.Id != printingHouse.Id);
 
-            if (existPrintingHouse == null)
-                return true;
+        //    if (existPrintingHouse == null)
+        //        return true;
 
-            return false;
+        //    return false;
 
-        }
+        //}
     }
 }
 

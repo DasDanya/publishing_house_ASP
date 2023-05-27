@@ -8,9 +8,9 @@ namespace publishing.Infrastructure
     public class EmailSender
     {
 
-        const string emailSender = "your_email";
+        const string emailSender = "mail";
         const string emailPassword = "password";
-        const string senderName = "companyName";
+        const string senderName = "company";
         const string smtpClient = "smtp.mail.ru";
         const int port = 2525;
 

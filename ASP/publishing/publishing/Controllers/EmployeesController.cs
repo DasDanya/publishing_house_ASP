@@ -32,11 +32,38 @@ namespace publishing.Controllers
         }
 
         // GET: Employees
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string? surname, string? name, string? middlename, string? type, DateTime? startBirthday, DateTime? endBirthday, string? phone, string? email)
         {
-              return _context.Employees != null ? 
-                          View(await _context.Employees.ToListAsync()) :
-                          Problem("Entity set 'PublishingDBContext.Employees'  is null.");
+            List<Employee> employees = _context.Employees.ToList();
+
+            if (surname != null)
+                employees = employees.Where(e => e.Surname == surname).ToList();
+
+            if (name != null)
+                employees = employees.Where(e => e.Name == name).ToList();
+
+            if (middlename != null)
+                employees = employees.Where(e => e.Middlename != null && e.Middlename == middlename).ToList();
+
+            if (type != null)
+                employees = employees.Where(e => e.Type == type).ToList();
+
+
+            if (startBirthday != null & endBirthday == null)
+                employees = employees.Where(e => e.Birthday.Date >= startBirthday.Value.Date).ToList();
+            else if (startBirthday == null & endBirthday != null)
+                employees = employees.Where(e => e.Birthday.Date <= endBirthday.Value.Date).ToList();
+            else if (startBirthday != null & endBirthday != null)
+                employees = employees.Where(e => e.Birthday.Date >= startBirthday.Value.Date && e.Birthday.Date <= endBirthday.Value.Date).ToList();
+
+            if (phone != null)
+                employees = employees.Where(e => e.Phone == phone).ToList();
+
+            if (email != null)
+                employees = employees.Where(e => e.Email == email).ToList();
+
+
+            return View(employees);
         }
 
         // GET: Employees/Details/5
@@ -105,18 +132,18 @@ namespace publishing.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            else 
-            {
-                string erorrs = "";
-                foreach (var item in ModelState)
-                {
-                    foreach (var error in item.Value.Errors)
-                    {
-                        erorrs += error.ErrorMessage + "\t";
-                    }
-                }
-                return NotFound(erorrs);
-            }
+            //else 
+            //{
+            //    string erorrs = "";
+            //    foreach (var item in ModelState)
+            //    {
+            //        foreach (var error in item.Value.Errors)
+            //        {
+            //            erorrs += error.ErrorMessage + "\t";
+            //        }
+            //    }
+            //    return NotFound(erorrs);
+            //}
             return View(employee);
         }
 

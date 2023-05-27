@@ -63,7 +63,7 @@ builder.Services.AddQuartz(q =>
     q.AddTrigger(t => t
     .ForJob(thirdJobKey)
     .WithIdentity("GetStartBookings-trigger")
-    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(1, 20))
+    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(00,02))
     );
 
 });

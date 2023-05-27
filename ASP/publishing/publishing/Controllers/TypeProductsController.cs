@@ -22,11 +22,22 @@ namespace publishing.Controllers
         }
 
         // GET: TypeProducts
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string? type, double? startMargin, double? endMargin)
         {
-              return _context.TypeProducts != null ? 
-                          View(await _context.TypeProducts.Include(tp=>tp.Products).ToListAsync()) :
-                          Problem("Entity set 'PublishingDBContext.TypeProducts'  is null.");
+            List<TypeProduct> typeProducts = _context.TypeProducts.ToList();
+
+            if (type != null)
+                typeProducts = typeProducts.Where(tp => tp.Type == type).ToList();
+
+            if (startMargin != null & endMargin == null)
+                typeProducts = typeProducts.Where(tp => tp.Margin >= startMargin.Value).ToList();
+            else if (startMargin == null & endMargin != null)
+                typeProducts = typeProducts.Where(tp => tp.Margin <= endMargin.Value).ToList();
+            else if (startMargin != null & endMargin != null)
+                typeProducts = typeProducts.Where(tp => tp.Margin >= startMargin.Value && tp.Margin <= endMargin.Value).ToList();
+
+
+            return View(typeProducts);
         }
 
         // GET: TypeProducts/Details/5

@@ -56,7 +56,7 @@ a {
 }
 
 .info__switch:checked ~ .info__body {
-    max-height: 100px;
+    max-height: 1000px;
 }
 
 .info__headline::before {

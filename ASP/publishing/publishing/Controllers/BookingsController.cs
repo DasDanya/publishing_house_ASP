@@ -31,15 +31,40 @@ namespace publishing.Controllers
 
         // GET: Bookings
         [Authorize(Roles ="admin,manager")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? status, string? date, DateTime? startDate, DateTime? endDate, int? startNumber, int? endNumber, double? startCost, double? endCost)
         {
-            //BookingIndexViewModel model = new BookingIndexViewModel();
-            //model.Bookings = _context.Bookings.Include(b => b.PrintingHouse).Include(b => b.Employees).ToList();
-            //var products = (from bp in _context.BookingProducts.Include(bp => bp.Product).Include(bp => bp.Booking) select bp.Product).ToList();
-            //model.Products = _context.Products.Include(p => p.Customer).Where(p => products.Contains(p)).ToList();
-            //return View(model);
-            var publishingDBContext = _context.Bookings.Include(b => b.PrintingHouse).Include(b => b.Employees);
-            return View(await publishingDBContext.ToListAsync());
+            List<Booking> bookings = _context.Bookings.Include(b => b.PrintingHouse).Include(b => b.Employees).ToList();
+            FilterController filterController = new FilterController(_context);
+
+
+            if (status != null && status != "Все") 
+            {
+               bookings = filterController.GetBookingWithCertainStatus(status,bookings);
+            }
+
+            if (startDate != null || endDate != null) 
+            {
+                bookings = filterController.GetBookingWithSertainDate(date, startDate, endDate, bookings);
+            }
+
+
+            if (startNumber != null || endNumber != null) 
+            {
+                bookings = filterController.GetBookingWithSertainNumber(startNumber, endNumber, bookings);
+            }
+
+            if (startCost != null || endCost != null) 
+            { 
+                bookings = filterController.GetBookingsWithCertainCost(startCost, endCost, bookings);
+            }
+
+            SelectList statuses = new SelectList(new List<string> { "Все", "Ожидание", "Выполняется", "Выполнен" });
+            SelectList dates = new SelectList(new List<string> { "Дата приёма", "Дата выполнения" });
+            ViewBag.statuses = statuses;
+            ViewBag.dates = dates;
+
+
+            return View(bookings);
         }
 
         // GET: Bookings/Detail

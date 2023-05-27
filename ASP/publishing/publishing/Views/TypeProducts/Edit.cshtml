@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Margin" class="control-label"></label>
-                <input asp-for="Margin" class="form-control" />
+                <input asp-for="Margin" class="form-control" type="number" onkeydown="javascript: return event.keyCode == 69 ? false : true"/>
                 <span asp-validation-for="Margin" class="text-danger"></span>
             </div>
             <div class="form-group">

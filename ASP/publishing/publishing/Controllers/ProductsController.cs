@@ -12,6 +12,7 @@ using publishing.Infrastructure;
 using publishing.Migrations;
 using publishing.Models;
 using publishing.Models.ViewModels;
+using Quartz.Core;
 
 namespace publishing.Controllers
 {
@@ -30,10 +31,31 @@ namespace publishing.Controllers
 
         // GET: Products
         [Authorize(Roles ="admin,manager")]
-        public async Task<IActionResult> Index()
+        public IActionResult Index(string? name, string? type, string? customer, double? startCost, double? endCost)
         {
-            var publishingDBContext = _context.Products.Include(p => p.Customer).Include(p => p.TypeProduct).Include(p => p.BookingProducts).Where(p => p.BookingProducts.Count > 0);
-            return View(await publishingDBContext.ToListAsync());
+            List<Product> products = _context.Products.Include(p => p.Customer).Include(p => p.TypeProduct).Include(p => p.BookingProducts).Where(p => p.BookingProducts.Count > 0).ToList();
+
+            if (customer != null)
+                products = products.Where(p => p.Customer.Name == customer).ToList();
+
+            FilterController filterController = new FilterController(_context);
+
+            if (name != null) 
+            {
+                products = filterController.GetProductsWithCertainName(name, products);
+            }
+
+            if (type != null) 
+            {
+                products = filterController.GetProductsWithCertainType(type, products);
+            }
+
+            if (startCost != null || endCost != null) 
+            {
+                products = filterController.GetProductsWithCertainCost(startCost, endCost, products);
+            }
+            
+            return View(products);
         }
 
         // GET: Products/Details/5
